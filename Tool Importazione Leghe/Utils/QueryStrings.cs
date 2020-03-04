@@ -9,6 +9,8 @@ namespace Tool_Importazione_Leghe.Utils
     /// <summary>
     /// In questa classe sono contenute tutte le stringhe di query utilizzare per eseguire le operazioni di CRUD 
     /// sulle diverse tabelle del database di partenza
+    /// 
+    /// MODIFICA DI TEST
     /// </summary>
     public static class QueryStrings
     {
