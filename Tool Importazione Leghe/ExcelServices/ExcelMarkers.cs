@@ -18,6 +18,11 @@ namespace Tool_Importazione_Leghe.ExcelServices
         #region FOGLIO NORMATIVE, LEGHE, CATEGORIE_LEGHE, BASI
 
         /// <summary>
+        /// Header che mi da indicazione della riga di colonna alla quale siamo arrivati
+        /// </summary>
+        public const string ROWNUMBER = "#";
+
+        /// <summary>
         /// Header di colonna per la riga relativa al materiale di partenza
         /// </summary>
         public const string MATERIALE_CELL = "MATERIALE";
@@ -39,6 +44,26 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// Header di colonna per la riga relativa al tipo di partenza
         /// </summary>
         public const string TIPO_CELL = "TIPO";
+
+
+        /// <summary>
+        /// Permette di ottenre la lista completa di markers con la quale distinguo il primo foglio excel
+        /// relativo alle informazioni generali
+        /// </summary>
+        /// <returns></returns>
+        public static List<string> GetAllColumnHeadersForGeneralInfoSheet()
+        {
+            List<string> currentInfo = new List<string>();
+
+            // inserimenti di tutte le informazioni utili per poter distinguere il primo foglio excel
+            currentInfo.Add(ROWNUMBER);
+            currentInfo.Add(MATERIALE_CELL);
+            currentInfo.Add(NORMATIVA_CELL);
+            currentInfo.Add(PAESEPRODUTTORE_CELL);
+            currentInfo.Add(TIPO_CELL);
+
+            return currentInfo;
+        }
 
         #endregion
 
@@ -73,6 +98,26 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// Header di colonna per la riga relativa al commento
         /// </summary>
         public const string COMMENTO_CELL = "Commento";
+
+
+        /// <summary>
+        /// Permette di ottenere la lista completa di markers per la distinzione del secondo foglio excel
+        /// relativo alle concentrazioni per un determinato materiale che deve comunque essere individuato 
+        /// prima all'interno del foglio excel
+        /// </summary>
+        /// <returns></returns>
+        public static List<string> GetAllColumnHeadersForConcentrationsInfoSheet()
+        {
+            List<string> currentInfo = new List<string>();
+
+            currentInfo.Add(CRITERI_CELL);
+            currentInfo.Add(MIN_CELL);
+            currentInfo.Add(MAX_CELL);
+            currentInfo.Add(APPROSSIMAZIONE_CELL);
+            currentInfo.Add(COMMENTO_CELL);
+
+            return currentInfo;
+        }
 
         #endregion
 
