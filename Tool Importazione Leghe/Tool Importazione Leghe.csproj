@@ -99,6 +99,8 @@
     <Compile Include="DatabaseServices\NormativeDBServices.cs" />
     <Compile Include="ExcelServices\ExcelMarkers.cs" />
     <Compile Include="ExcelServices\ExcelServices.cs" />
+    <Compile Include="ExcelServices\FoglioConcentrazioniServices.cs" />
+    <Compile Include="ExcelServices\FoglioGeneralInfoServices.cs" />
     <Compile Include="ExcelServices\ReadHeaders.cs" />
     <Compile Include="Logging\ExceptionMessages.cs" />
     <Compile Include="Logging\LoggingService.cs" />
@@ -109,6 +111,8 @@
     <Compile Include="Model\LabEntities.cs" />
     <Compile Include="Model\LegheDB.cs" />
     <Compile Include="Model\NormativeDB.cs" />
+    <Compile Include="Model\RowFoglio1Excel.cs" />
+    <Compile Include="Model\RowFoglio2Excel.cs" />
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Utils\Constants.cs" />
     <Compile Include="Utils\QueryStrings.cs" />

@@ -40,7 +40,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
 
         #region GETTERS SERVIZI
-
+        
         /// <summary>
         /// Getters per la lettura degli headers per il folgio excel corrente e per l'eventuale 
         /// riconscimento tra le 2 tipologie di fogli 
@@ -52,6 +52,8 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 return _currentReadHeadersServices;
             }
         }
+
+        
 
         #endregion
     }

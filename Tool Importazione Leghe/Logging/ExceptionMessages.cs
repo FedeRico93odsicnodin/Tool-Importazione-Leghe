@@ -48,7 +48,30 @@ namespace Tool_Importazione_Leghe.Logging
         /// con il quale avviene la modellizzazione delle tabelle db
         /// </summary>
         public const string PROBLEMACASTOGGETTODB = "problemi nel cercare di castare l'entita generale nella seguente entita {0}";
-        
+
+
+        #endregion
+
+
+        #region EXCEPTIONS MESSAGES EXCEL
+
+        /// <summary>
+        /// Indicazione che non è stato trovato all'interno delle celle una porzione che constraddistingua la tipologia di foglio che viene passata in input
+        /// </summary>
+        public const string NONHOTROVATOINFORMAZIONEIDENTIFICATORETABELLA = "non ho trovato nessuna informazione per distinguere sulla tipologia per il seguente foglio Excel {0}";
+
+
+        /// <summary>
+        /// Indicazione di stop nella lettura dell'header per incompletezza nella lettura dei marker, oltre alla tipologia di foglio specificata viene anche inserito 
+        /// il titolo dell'header che ha causato l'eccezione e il numero di riga e colonna per la quale questa eccezione si è verificata
+        /// </summary>
+        public const string NONHOTROVATOINFORMAZIONECOMPLETADIHEADER = "non ho trovato informazione completa per l'header per la tipologia di foglio {0} (header '{1}', riga {2}, colonna {3}";
+
+
+        /// <summary>
+        /// Indicazione di non aver trovato nessuna informazione utile per una certa tipologia di foglio che viene specificata in input
+        /// </summary>
+        public const string NONHOTROVATOINFORMAZIONEUTILEPERFOGLIO = "non ho trovato nessuna informazione per la seguente tipologia di foglio Excel {0}";
 
         #endregion
     }

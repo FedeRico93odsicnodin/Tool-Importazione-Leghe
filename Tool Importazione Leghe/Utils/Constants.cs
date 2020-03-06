@@ -19,6 +19,12 @@ namespace Tool_Importazione_Leghe.Utils
         /// </summary>
         public static string NPGConnectionString = "Server=localhost;Port=6543;User Id=postgres;Password=root;Database=MetalLab300";
 
+
+        /// <summary>
+        /// Stringa percorso nel quale trovo il file excel correntemente in analisi
+        /// </summary>
+        public static string CurrentFileExcelPath = "D:\\Projects\\GNR\\Tool Importazione Leghe\\Origin Leghe\\Excel\\Nickel_Alloys.xlsx";
+
         #endregion
 
 
@@ -39,5 +45,33 @@ namespace Tool_Importazione_Leghe.Utils
         }
 
         #endregion
+
+
+        #region EXCEL SHEETS
+
+        /// <summary>
+        /// Indicazione sulla tipologia di foglio excel sulla quale si sta iterando attualmente 
+        /// se si tratta di un foglio contenente le informazioni generali o 
+        /// il set di concentrazioni per un determinato materiale
+        /// </summary>
+        public enum TipologiaFoglioExcel
+        {
+            foglioInformazioniGenerali = 1,
+            foglioInformazioniConcentrazioni = 2
+        }
+
+
+        /// <summary>
+        /// Permette di capire se, leggendo il foglio excel 2 (corrispondente alle concentrazioni)
+        /// sarà fatta anche la lettura per deroga minima / massima
+        /// </summary>
+        public enum DevoInserireDeroghe
+        {
+            si = 1,
+            no = 2
+        }
+
+        #endregion
+
     }
 }
