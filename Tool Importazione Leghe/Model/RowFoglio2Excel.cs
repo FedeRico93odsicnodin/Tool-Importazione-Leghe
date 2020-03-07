@@ -40,5 +40,11 @@ namespace Tool_Importazione_Leghe.Model
         /// Corrispondenza con l'obiettivo
         /// </summary>
         public double Appross { get; set; }
+
+
+        /// <summary>
+        /// Informazione relativa al commento, non viene inserita al momento al db
+        /// </summary>
+        public string Commento { get; set; }
     }
 }

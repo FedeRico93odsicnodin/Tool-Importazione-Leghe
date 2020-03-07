@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tool_Importazione_Leghe.Model;
 
 namespace Tool_Importazione_Leghe.Utils
 {
@@ -12,6 +13,23 @@ namespace Tool_Importazione_Leghe.Utils
     public static class Constants
     {
         #region CONFIGURAZIONE AMBIENTE
+
+        /// <summary>
+        /// Indica in quale modalità avviare il tool se avere una semplice console application con dei parametri che vengono preconfigurati 
+        /// all'interno di un foglio excel o se si tratta di una WPF application
+        /// </summary>
+        public enum CurrentModalitaTool
+        {
+            isConsoleAppication = 1,
+            isWPFApplication = 2
+        }
+
+
+        /// <summary>
+        /// Permette di mappare in quale modalità il tool viene effettivamente lanciato
+        /// </summary>
+        public static CurrentModalitaTool CurrentModalitàTool;
+
 
         /// <summary>
         /// Stringa di connessione al database postgres sul quale vengono eseguite le operazioni 
@@ -24,6 +42,30 @@ namespace Tool_Importazione_Leghe.Utils
         /// Stringa percorso nel quale trovo il file excel correntemente in analisi
         /// </summary>
         public static string CurrentFileExcelPath = "D:\\Projects\\GNR\\Tool Importazione Leghe\\Origin Leghe\\Excel\\Nickel_Alloys.xlsx";
+
+
+        /// <summary>
+        /// Stringa indicante dove verranno memorizzati i logs per le diverse procedure 
+        /// </summary>
+        public static string LoggerFolder = "C:\\Loggers\\";
+
+
+        /// <summary>
+        /// Stringa indicante il log sulle diverse operazioni eseguite sul database
+        /// </summary>
+        public static string LoggerDatabase = "DatabaseOperationsLog.txt";
+
+
+        /// <summary>
+        /// Stringa indiciante il log sulle diverse operazioni eseguite per il file excel
+        /// </summary>
+        public static string LoggerExcel = "ExcelOperationsLog.txt";
+
+
+        /// <summary>
+        /// Stringa indicante il log sulle diverse operazioni eseguite per il file xml
+        /// </summary>
+        public static string LoggerXML = "XMLOperationsLog.txt";
 
         #endregion
 
@@ -70,6 +112,18 @@ namespace Tool_Importazione_Leghe.Utils
             si = 1,
             no = 2
         }
+
+        #endregion
+
+
+        #region LISTE COMUNI - CARICATE A PRESCINDERE DA DB
+
+        /// <summary>
+        /// Corrisponde alla lista di tutti gli elementi che vengono recuperati dal database di origine
+        /// nel caso delle diverse importazioni questi elementi vengono sempre checkati a priori per verificarne
+        /// poi la validità
+        /// </summary>
+        public static List<string> CurrentListElementi { get; set; }
 
         #endregion
 

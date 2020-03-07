@@ -29,5 +29,7 @@ namespace Tool_Importazione_Leghe.Model
         /// Indica un set di categorie leghe che viene direttamente recuperato dal documento di partenza --> DA CONFRONTARE CON QUESTO PARAMETRO
         /// </summary>
         public List<string> CategorieLegheCorrispondenti { get; set; }
+
+        
     }
 }

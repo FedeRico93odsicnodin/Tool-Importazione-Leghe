@@ -73,6 +73,12 @@ namespace Tool_Importazione_Leghe.Logging
         /// </summary>
         public const string NONHOTROVATOINFORMAZIONEUTILEPERFOGLIO = "non ho trovato nessuna informazione per la seguente tipologia di foglio Excel {0}";
 
+
+        /// <summary>
+        /// Indicazione di verifica di una eccezione nel tentativo di lettura del secondo foglio delle concentrazioni
+        /// </summary>
+        public const string HOTROVATOLASEGUENTEECCEZIONENELLEGGEREINFOFOGLIO2 = "durante la lettura del foglio 2 si è verificata la seguente eccezione {0}";
+
         #endregion
     }
 }

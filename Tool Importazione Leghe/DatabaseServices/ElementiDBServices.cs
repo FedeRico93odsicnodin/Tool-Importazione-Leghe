@@ -109,6 +109,25 @@ namespace Tool_Importazione_Leghe.DatabaseServices
             return GetSetDB(QueryStrings.GetAllElementi_Query).Cast<ElementiDB>().ToList();
         }
 
+
+        /// <summary>
+        /// Permette di tenere in memoria tutti gli elementi all'interno delle constants
+        /// per i successivi import.
+        /// Questo consente di checkare direttamente sulla lista presenti nella classe constants
+        /// </summary>
+        public void UpdateListaComuneElementi()
+        {
+            // recupero dal database del set di tutti gli elementi
+            List<ElementiDB> currentElementsSet = GetSetDB(QueryStrings.GetAllElementi_Query).Cast<ElementiDB>().ToList();
+
+            // istanza nuova lista di stringhe
+            List<string> currentElementsNames = new List<string>();
+
+            // inserimento nella lista comune di tutte le descrizioni di nome per gli elementi correnti
+            foreach (ElementiDB currentElementoDB in currentElementsSet)
+                currentElementsNames.Add(currentElementoDB.Symbol);
+        }
+
         #endregion
     }
 }
