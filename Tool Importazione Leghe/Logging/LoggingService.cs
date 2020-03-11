@@ -41,8 +41,65 @@ namespace Tool_Importazione_Leghe.Logging
         /// In base alla modalita del tool passata ho l'istanziazione dei diversi log che vengono messi a disposizione per l'import corrente 
         /// </summary>
         /// <param name="currentModalitaTool"></param>
-        public LoggingService(Constants.CurrentModalitaTool currentModalitaTool) 
+        public LoggingService() 
         {
+            // inizializzazione dei logs di partenza
+            InitializeLoggers();
+        }
+
+        #endregion
+
+
+        #region METODI PUBBLICI AND GETTERS
+        
+        /// <summary>
+        /// Servizio di log generale: passato il path del log e che cosa loggare 
+        /// viene inserita la riga nel documento
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <param name="logPath"></param>
+        public static void LogInADocument(string lines, string logPath)
+        {
+            System.IO.StreamWriter file = new System.IO.StreamWriter(logPath, true);
+            file.WriteLine(lines);
+
+            file.Close();
+        }
+
+
+        /// <summary>
+        /// Getters del servizio di log per il database
+        /// </summary>
+        public LoggingBase_Database GetLoggerDatabase
+        {
+            get
+            {
+                return _loggingServiceDatabase;
+            }
+        }
+
+
+        /// <summary>
+        /// Getters del servizio di log per il file excel
+        /// </summary>
+        public LoggingBase_Excel GetLoggerExcel
+        {
+            get
+            {
+                return _loggingServiceExcel;
+            }
+        }
+
+
+        /// <summary>
+        /// Getter per il servizio di log del file XML
+        /// </summary>
+        public LoggingBase_XML GetLoggerXML
+        {
+            get
+            {
+                return _loggingServiceXML;
+            }
         }
 
         #endregion
@@ -58,16 +115,20 @@ namespace Tool_Importazione_Leghe.Logging
             if (Constants.CurrentModalitàTool == Constants.CurrentModalitaTool.isConsoleAppication)
             {
                 // logger modalita console per database
-                _loggingServiceDatabase = new Logging_Console_Database(Constants.LoggerFolder + Constants.LoggerDatabase);
+                _loggingServiceDatabase = new Logging_Console_Database(Constants.LoggerFolder + Constants.LoggerProcedure);
+                _loggingServiceExcel = new Logging_Console_Excel(Constants.LoggerFolder + Constants.LoggerProcedure);
+                _loggingServiceXML = new Logging_Console_XML(Constants.LoggerFolder + Constants.LoggerProcedure);
 
             }
             else if (Constants.CurrentModalitàTool == Constants.CurrentModalitaTool.isWPFApplication)
             {
                 // logger modalita UI per database
-                _loggingServiceDatabase = new Logging_UI_Database(Constants.LoggerFolder + Constants.LoggerDatabase);
+                _loggingServiceDatabase = new Logging_UI_Database(Constants.LoggerFolder + Constants.LoggerProcedure);
+                _loggingServiceExcel = new Logging_UI_Excel(Constants.LoggerFolder + Constants.LoggerProcedure);
+                _loggingServiceXML = new Logging_UI_XML(Constants.LoggerFolder + Constants.LoggerProcedure);
             }
         }
-
+        
         #endregion
     }
 }

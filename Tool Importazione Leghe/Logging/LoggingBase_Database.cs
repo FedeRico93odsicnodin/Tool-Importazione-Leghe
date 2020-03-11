@@ -11,13 +11,25 @@ namespace Tool_Importazione_Leghe.Logging
     /// </summary>
     public abstract class LoggingBase_Database
     {
-
-        #region ATTRIBUTI PRIVATI
+        
+        #region ATTRIBUTI PROTECTED
 
         /// <summary>
         /// Gestione della variabile contenente il path per il log corrente database
         /// </summary>
         protected string _currentLogDatabase;
+
+        #endregion
+
+
+        #region ATTRIBUTI PUBBLICI 
+
+        /// <summary>
+        /// Permette la segnalazione di una determinata eccezione nata nell'analisi 
+        /// delle diverse parti del file excel in questione
+        /// </summary>
+        /// <param name="currentException"></param>
+        public abstract void SegnalazioneEccezione(string currentException);
 
         #endregion
 

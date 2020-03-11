@@ -172,6 +172,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
                 #endregion
 
+
                 #region POPOLAZIONE OGGETTO
                 
                 currentRowConcentrazioni.Criterio = currentEl;

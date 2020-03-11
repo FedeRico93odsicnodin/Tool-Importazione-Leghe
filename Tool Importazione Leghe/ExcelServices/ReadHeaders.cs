@@ -30,29 +30,43 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <returns></returns>
         internal void ReadFirstInformation_DatiPrimari(Microsoft.Office.Interop.Excel._Worksheet currentExcelSheet, out int firstUtilCol, out int firstUtilRow)
         {
-            int firstMarkerCol = 0;
-            int firstMarkerRow = 0;
 
-            #region VALIDATORE SU PRIMO VALORE PER L'HEADER CORRENTE
-
-            TrovaPrimoMarker(currentExcelSheet, ExcelMarkers.ROWNUMBER, out firstMarkerCol, out firstMarkerRow);
-            
-            #endregion
-
-
-            #region VALIDATORE SUGLI HEADERS RIMANENTI + RECUPERO DEGLI INDICI PER LA PRIMA INFORMAZIONE UTILE
-
-            // non ho trovato posizioni utili
+            // attribuzione del valore di default per la riga e la colonna in uscita
             firstUtilCol = 0;
             firstUtilRow = 0;
 
-            // eventuale marker sul quale ricevo eccezione
-            string markerExcelIteration = String.Empty;
+            try
+            {
 
-            // cerco di vedere se trovo tutti gli headers e ritorno il primo indice di riga e colonna per il foglio corrente nel quale ci sia valore utile per poter eseguire l'iterazione finale delle informazioni
-            TrovaSequenzaColonneHeaderIndividuazioneFoglioExcel(currentExcelSheet, firstMarkerCol, firstMarkerRow, ExcelMarkers.GetAllColumnHeadersForGeneralInfoSheet(), out firstUtilCol, out firstUtilRow, out markerExcelIteration);
-            
-            #endregion
+                int firstMarkerCol = 0;
+                int firstMarkerRow = 0;
+
+                #region VALIDATORE SU PRIMO VALORE PER L'HEADER CORRENTE
+
+                TrovaPrimoMarker(currentExcelSheet, ExcelMarkers.ROWNUMBER, out firstMarkerCol, out firstMarkerRow);
+
+                #endregion
+
+
+                #region VALIDATORE SUGLI HEADERS RIMANENTI + RECUPERO DEGLI INDICI PER LA PRIMA INFORMAZIONE UTILE
+
+                // non ho trovato posizioni utili
+                firstUtilCol = 0;
+                firstUtilRow = 0;
+
+                // eventuale marker sul quale ricevo eccezione
+                string markerExcelIteration = String.Empty;
+
+                // cerco di vedere se trovo tutti gli headers e ritorno il primo indice di riga e colonna per il foglio corrente nel quale ci sia valore utile per poter eseguire l'iterazione finale delle informazioni
+                TrovaSequenzaColonneHeaderIndividuazioneFoglioExcel(currentExcelSheet, firstMarkerCol, firstMarkerRow, ExcelMarkers.GetAllColumnHeadersForGeneralInfoSheet(), out firstUtilCol, out firstUtilRow, out markerExcelIteration);
+
+                #endregion
+            }
+            catch (Exception e)
+            {
+                ServiceLocator.GetLoggingService.GetLoggerExcel.SegnalazioneEccezione(e.Message);
+            }
+
             
         }
 
@@ -68,9 +82,9 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <param name="currentExcelSheet"></param>
         /// <param name="currentMarker"></param>
         /// <param name="columnNumber"></param>
-        /// <param name="rowNumner"></param>
+        /// <param name="rowNumber"></param>
         /// <returns></returns>
-        private void TrovaPrimoMarker(Microsoft.Office.Interop.Excel._Worksheet currentExcelSheet, string currentMarker, out int columnNumber, out int rowNumner)
+        private void TrovaPrimoMarker(Microsoft.Office.Interop.Excel._Worksheet currentExcelSheet, string currentMarker, out int columnNumber, out int rowNumber)
         {
             int currentRow = 0;
             int currentColumn = 0;
@@ -89,10 +103,13 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     if (marker1 == currentMarker)
                     {
                         columnNumber = currentColumn;
-                        rowNumner = currentRow;
+                        rowNumber = currentRow;
 
-                        // eccezione sul fatto che non si è trovata nessuna informazione per distinguere la tabella delle informazioni generali per la prima tipologia di foglio excel
-                        throw new Exception(String.Format(ExceptionMessages.NONHOTROVATOINFORMAZIONEIDENTIFICATORETABELLA, Constants.TipologiaFoglioExcel.foglioInformazioniGenerali.ToString()));
+                        // segnalazione di aver trovato il primo marker per il foglio excel corrente
+                        ServiceLocator.GetLoggingService.GetLoggerExcel.ReadHeaders_HoTrovatoInformazionePerIlPrimoMarker(currentExcelSheet.Name, currentMarker, Constants.TipologiaFoglioExcel.foglioInformazioniGenerali, columnNumber, rowNumber);
+
+                        return;
+                        
                     }
                     else currentColumn++;
 
@@ -108,7 +125,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
             while (currentRow <= 10);
 
             columnNumber = 0;
-            rowNumner = 0;
+            rowNumber = 0;
 
             // eccezione sul fatto che non si è trovata nessuna informazione per distinguere la tabella delle informazioni generali per la prima tipologia di foglio excel
             throw new Exception(String.Format(ExceptionMessages.NONHOTROVATOINFORMAZIONEIDENTIFICATORETABELLA, Constants.TipologiaFoglioExcel.foglioInformazioniGenerali.ToString()));
@@ -147,6 +164,9 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     
                 }
 
+                // segnalazione di aver trovato il primo marker per il foglio excel corrente
+                ServiceLocator.GetLoggingService.GetLoggerExcel.ReadHeaders_HoTrovatoInformazionePerIlPrimoMarker(currentExcelSheet.Name, currentHeader, Constants.TipologiaFoglioExcel.foglioInformazioniGenerali, iterationColumn, iterationRow);
+
                 iterationColumn++;
             }
 
@@ -173,7 +193,9 @@ namespace Tool_Importazione_Leghe.ExcelServices
             colIndex = currentColIndex;
             rowIndex = currentColIndex;
             markerExc = currentListHeaders.FirstOrDefault();
-            
+
+            // segnalazione di aver trovato correttamente l'header e le prime informazioni di colonna / riga
+            ServiceLocator.GetLoggingService.GetLoggerExcel.ReadHeaders_TrovatoTuttiMarkers(currentExcelSheet.Name, colIndex, rowIndex);
         }
 
         #endregion

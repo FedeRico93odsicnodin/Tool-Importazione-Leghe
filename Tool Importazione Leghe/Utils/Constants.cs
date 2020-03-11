@@ -53,19 +53,7 @@ namespace Tool_Importazione_Leghe.Utils
         /// <summary>
         /// Stringa indicante il log sulle diverse operazioni eseguite sul database
         /// </summary>
-        public static string LoggerDatabase = "DatabaseOperationsLog.txt";
-
-
-        /// <summary>
-        /// Stringa indiciante il log sulle diverse operazioni eseguite per il file excel
-        /// </summary>
-        public static string LoggerExcel = "ExcelOperationsLog.txt";
-
-
-        /// <summary>
-        /// Stringa indicante il log sulle diverse operazioni eseguite per il file xml
-        /// </summary>
-        public static string LoggerXML = "XMLOperationsLog.txt";
+        public static string LoggerProcedure = "ImportazioneLoggingProcedure.txt";
 
         #endregion
 
@@ -112,7 +100,7 @@ namespace Tool_Importazione_Leghe.Utils
             si = 1,
             no = 2
         }
-
+        
         #endregion
 
 
