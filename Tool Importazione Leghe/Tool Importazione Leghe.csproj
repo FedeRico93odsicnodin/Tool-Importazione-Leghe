@@ -122,6 +122,7 @@
     <Compile Include="Model\NormativeDB.cs" />
     <Compile Include="Model\RowFoglio1Excel.cs" />
     <Compile Include="Model\RowFoglio2Excel.cs" />
+    <Compile Include="ModifiedElements\ExtendedStopWatch.cs" />
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Utils\Configurations.cs" />
     <Compile Include="Utils\Constants.cs" />

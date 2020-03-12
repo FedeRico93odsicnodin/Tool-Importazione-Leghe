@@ -15,6 +15,12 @@ namespace Tool_Importazione_Leghe.Utils
         #region CONFIGURAZIONE AMBIENTE
 
         /// <summary>
+        /// File corrente dal quale vengono lette tutte le configurazioni relative all'import da eseguire per le leghe 
+        /// </summary>
+        public const string CurrentFileConfig = "ImportLegheConfig.txt";
+
+
+        /// <summary>
         /// Indica in quale modalità avviare il tool se avere una semplice console application con dei parametri che vengono preconfigurati 
         /// all'interno di un foglio excel o se si tratta di una WPF application
         /// </summary>
@@ -29,6 +35,28 @@ namespace Tool_Importazione_Leghe.Utils
         /// Permette di mappare in quale modalità il tool viene effettivamente lanciato
         /// </summary>
         public static CurrentModalitaTool CurrentModalitàTool;
+
+
+        /// <summary>
+        /// Indicazione su che tipologia di import si sta seguendo
+        /// </summary>
+        public enum TipologiaImport
+        {
+            excel_to_database = 1,
+            database_to_excel = 2,
+            xml_to_database = 3,
+            database_to_xml = 4,
+            database_to_database = 5,
+            excel_to_excel = 6,
+            xml_to_xml = 7
+        }
+
+
+        /// <summary>
+        /// Indicazione sulla tipologia di import corrente in base agli altri parametri letti
+        /// all'interno del file di configurazioni
+        /// </summary>
+        public static TipologiaImport CurrentTipologiaImport;
 
 
         /// <summary>
