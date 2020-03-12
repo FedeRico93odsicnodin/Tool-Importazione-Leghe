@@ -27,6 +27,11 @@ namespace Tool_Importazione_Leghe.Logging
             base._currentLogDatabase = currentLogPath;
         }
 
+        public override void SegnalazioneEccezione(string currentException)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

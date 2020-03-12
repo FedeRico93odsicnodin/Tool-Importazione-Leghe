@@ -58,7 +58,7 @@ namespace Tool_Importazione_Leghe.Logging
         /// </summary>
         /// <param name="lines"></param>
         /// <param name="logPath"></param>
-        public static void LogInADocument(string lines, string logPath)
+        internal static void LogInADocument(string lines, string logPath)
         {
             System.IO.StreamWriter file = new System.IO.StreamWriter(logPath, true);
             file.WriteLine(lines);

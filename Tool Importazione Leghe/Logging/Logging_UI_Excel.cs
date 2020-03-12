@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tool_Importazione_Leghe.Utils;
 
 namespace Tool_Importazione_Leghe.Logging
 {
@@ -22,6 +23,21 @@ namespace Tool_Importazione_Leghe.Logging
         public Logging_UI_Excel(string currentLogPath)
         {
             base._currentLogExcel = currentLogPath;
+        }
+
+        public override void ReadHeaders_HoTrovatoInformazionePerIlPrimoMarker(string currentFoglioExcel, string primoMarker, Constants.TipologiaFoglioExcel currentTipologiaFoglioExcel, int currentCol, int currentRow)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void ReadHeaders_TrovatoTuttiMarkers(string currentFoglioExcel, int currentCol, int currentRow)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SegnalazioneEccezione(string currentException)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

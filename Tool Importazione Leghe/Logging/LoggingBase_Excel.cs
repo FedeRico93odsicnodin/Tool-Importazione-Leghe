@@ -35,7 +35,7 @@ namespace Tool_Importazione_Leghe.Logging
         /// <summary>
         /// Stringa da formattare per il messaggio relativo al ritrovamento di una informazione di header
         /// </summary>
-        protected const string hoTrovatoInformazioniPerIlPrimoMarker = "foglio {0} di ho trovato le informazioni per '{1}' ({2}) in col {3}, row {4}";
+        protected string hoTrovatoInformazioniPerIlPrimoMarker = "foglio {0} ho trovato le informazioni per '{1}' ({2}) in col {3}, row {4}";
 
         #endregion
 

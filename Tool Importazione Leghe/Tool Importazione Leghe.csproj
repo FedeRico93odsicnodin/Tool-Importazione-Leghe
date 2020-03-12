@@ -123,6 +123,7 @@
     <Compile Include="Model\RowFoglio1Excel.cs" />
     <Compile Include="Model\RowFoglio2Excel.cs" />
     <Compile Include="ServiceLocator.cs" />
+    <Compile Include="Utils\Configurations.cs" />
     <Compile Include="Utils\Constants.cs" />
     <Compile Include="Utils\QueryStrings.cs" />
     <Page Include="MainWindow.xaml">
