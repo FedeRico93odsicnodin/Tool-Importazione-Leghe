@@ -20,7 +20,7 @@ namespace Tool_Importazione_Leghe.Logging
         /// <param name="currentLogPath"></param>
         public Logging_UI_XML(string currentLogPath)
         {
-            base._currentLogXML = currentLogPath;
+            base._currentLogFile = currentLogPath;
         }
 
         #endregion

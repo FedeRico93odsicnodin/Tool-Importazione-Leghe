@@ -17,7 +17,7 @@ namespace Tool_Importazione_Leghe.Logging
         /// <summary>
         /// Gestione della variabile contenente il path per il log corrente database
         /// </summary>
-        protected string _currentLogExcel;
+        protected string _currentLogFile;
 
 
         /// <summary>
@@ -70,7 +70,23 @@ namespace Tool_Importazione_Leghe.Logging
         /// <param name="currentCol"></param>
         /// <param name="currentRow"></param>
         public abstract void ReadHeaders_TrovatoTuttiMarkers(string currentFoglioExcel, int currentCol, int currentRow);
-       
+
+        #endregion
+
+
+        #region SETTERS
+
+        /// <summary>
+        /// Mi permette di aggiornare il file di log con il valore corrente
+        /// </summary>
+        public string LoggerFile
+        {
+            set
+            {
+                _currentLogFile = value;
+            }
+        }
+
         #endregion
 
     }

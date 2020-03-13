@@ -22,7 +22,7 @@ namespace Tool_Importazione_Leghe.Logging
         /// <param name="currentLogPath"></param>
         public Logging_UI_Excel(string currentLogPath)
         {
-            base._currentLogExcel = currentLogPath;
+            base._currentLogFile = currentLogPath;
         }
 
         public override void ReadHeaders_HoTrovatoInformazionePerIlPrimoMarker(string currentFoglioExcel, string primoMarker, Constants.TipologiaFoglioExcel currentTipologiaFoglioExcel, int currentCol, int currentRow)

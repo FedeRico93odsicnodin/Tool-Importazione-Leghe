@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.438
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tool Importazione Leghe", "Tool Importazione Leghe\Tool Importazione Leghe.csproj", "{824B1903-C00F-4CC3-950C-BEEA03AFF82B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImportazioneLeghe_Console", "ImportazioneLeghe_Console\ImportazioneLeghe_Console.csproj", "{9063DC52-5B47-4633-BD28-6D720FFFD6CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{824B1903-C00F-4CC3-950C-BEEA03AFF82B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{824B1903-C00F-4CC3-950C-BEEA03AFF82B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{824B1903-C00F-4CC3-950C-BEEA03AFF82B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9063DC52-5B47-4633-BD28-6D720FFFD6CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9063DC52-5B47-4633-BD28-6D720FFFD6CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9063DC52-5B47-4633-BD28-6D720FFFD6CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9063DC52-5B47-4633-BD28-6D720FFFD6CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

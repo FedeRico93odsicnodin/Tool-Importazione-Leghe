@@ -22,7 +22,7 @@ namespace Tool_Importazione_Leghe.Logging
         /// <param name="currentLogPath"></param>
         public Logging_Console_Excel(string currentLogPath)
         {
-            base._currentLogExcel = currentLogPath;
+            base._currentLogFile = currentLogPath;
         }
 
 
@@ -47,7 +47,7 @@ namespace Tool_Importazione_Leghe.Logging
             Console.WriteLine(currentMessage);
 
             // log del messaggio iniziale all'interno del log excel
-            LoggingService.LogInADocument(currentMessage, base._currentLogExcel);
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
 
         }
 

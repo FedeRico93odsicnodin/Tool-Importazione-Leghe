@@ -23,7 +23,7 @@ namespace Tool_Importazione_Leghe.Logging
         /// <param name="currentLogPath"></param>
         public Logging_UI_Database(string currentLogPath)
         {
-            base._currentLogDatabase = currentLogPath;
+            base._currentLogFile = currentLogPath;
         }
 
         public override void SegnalazioneEccezione(string currentException)

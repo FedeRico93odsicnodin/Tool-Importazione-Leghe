@@ -103,13 +103,16 @@
     <Compile Include="ExcelServices\FoglioGeneralInfoServices.cs" />
     <Compile Include="ExcelServices\ReadHeaders.cs" />
     <Compile Include="Logging\ExceptionMessages.cs" />
+    <Compile Include="Logging\LoggingBase_Configurations.cs" />
     <Compile Include="Logging\LoggingBase_Database.cs" />
     <Compile Include="Logging\LoggingBase_Excel.cs" />
     <Compile Include="Logging\LoggingBase_XML.cs" />
     <Compile Include="Logging\LoggingService.cs" />
+    <Compile Include="Logging\Logging_Console_Configurations.cs" />
     <Compile Include="Logging\Logging_Console_Database.cs" />
     <Compile Include="Logging\Logging_Console_Excel.cs" />
     <Compile Include="Logging\Logging_Console_XML.cs" />
+    <Compile Include="Logging\Logging_UI_Configurations.cs" />
     <Compile Include="Logging\Logging_UI_Database.cs" />
     <Compile Include="Logging\Logging_UI_Excel.cs" />
     <Compile Include="Logging\Logging_UI_XML.cs" />

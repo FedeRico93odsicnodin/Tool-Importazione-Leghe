@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tool_Importazione_Leghe.DatabaseServices;
 using Tool_Importazione_Leghe.Logging;
+using Tool_Importazione_Leghe.Utils;
 
 namespace Tool_Importazione_Leghe
 {
@@ -22,7 +23,17 @@ namespace Tool_Importazione_Leghe
         private static DBServices _currentDBServices;
 
 
+        /// <summary>
+        /// Servizi relativi ai messaggi di segnalazione per tutte le componenti che intervengono all'interno 
+        /// del programma in questione
+        /// </summary>
         private static LoggingService _currentLoggingService;
+
+
+        /// <summary>
+        /// Servizi relativi alle configurazioni che verranno adottate dal programma in questione
+        /// </summary>
+        private static Configurations _currentConfigurations;
 
         #endregion
 
@@ -58,6 +69,22 @@ namespace Tool_Importazione_Leghe
                 return _currentLoggingService;
             }
 
+        }
+
+
+        /// <summary>
+        /// Getters per le configurazioni correnti adottate all'interno del programma 
+        /// (e lette dall'opportuno file di configurazione)
+        /// </summary>
+        public static Configurations GetConfigurations
+        {
+            get
+            {
+                if (_currentConfigurations == null)
+                    _currentConfigurations = new Configurations();
+
+                return _currentConfigurations;
+            }
         }
 
         #endregion

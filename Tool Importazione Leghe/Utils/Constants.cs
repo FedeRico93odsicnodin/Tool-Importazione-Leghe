@@ -34,7 +34,7 @@ namespace Tool_Importazione_Leghe.Utils
         /// <summary>
         /// Permette di mappare in quale modalità il tool viene effettivamente lanciato
         /// </summary>
-        public static CurrentModalitaTool CurrentModalitàTool;
+        public static CurrentModalitaTool CurrentModalitàTool = CurrentModalitaTool.isConsoleAppication;
 
 
         /// <summary>
@@ -61,15 +61,40 @@ namespace Tool_Importazione_Leghe.Utils
 
         /// <summary>
         /// Stringa di connessione al database postgres sul quale vengono eseguite le operazioni 
-        /// di import
+        /// di import (origine)
         /// </summary>
         public static string NPGConnectionString = "Server=localhost;Port=6543;User Id=postgres;Password=root;Database=MetalLab300";
 
 
         /// <summary>
-        /// Stringa percorso nel quale trovo il file excel correntemente in analisi
+        /// Stringa di connessione al database postgres sul quale vengono eseguite le operazioni
+        /// di import (destinazione)
+        /// </summary>
+        public static string NPGConnectionString_Destination = "Server=localhost;Port=6543;User Id=postgres;Password=root;Database=MetalLab300";
+
+
+        /// <summary>
+        /// Stringa percorso nel quale trovo il file excel correntemente in analisi (origine)
         /// </summary>
         public static string CurrentFileExcelPath = "D:\\Projects\\GNR\\Tool Importazione Leghe\\Origin Leghe\\Excel\\Nickel_Alloys.xlsx";
+
+
+        /// <summary>
+        /// Stringa percorso nel quale trovo il file excel correntemente in analisi (destinazione)
+        /// </summary>
+        public static string CurrentFileExcelPath_Destination = "D:\\Projects\\GNR\\Tool Importazione Leghe\\Origin Leghe\\Excel\\Nickel_Alloys.xlsx";
+
+
+        /// <summary>
+        /// Stringa percorso nel quale trovo il xml correntemente in analisi (origine)
+        /// </summary>
+        public static string CurrentFileXMLPath = "F:\\Projects\\GNR\\Tool Importazione Leghe\\Origin-Dest Leghe\\XML\\ALL_1.7221-G26CR.xml";
+
+
+        /// <summary>
+        /// Stringa percorso nel quale trovo il xml correntemente in analisi (destinazione)
+        /// </summary>
+        public static string CurrentFileXMLPath_Destination = "F:\\Projects\\GNR\\Tool Importazione Leghe\\Origin-Dest Leghe\\XML\\ALL_1.7221-G26CR.xml";
 
 
         /// <summary>

@@ -13,6 +13,28 @@ namespace Tool_Importazione_Leghe.Logging
     /// </summary>
     public static class ExceptionMessages
     {
+        #region CONFIGURATIONS
+
+        /// <summary>
+        /// Messaggio di errore nella lettura del file di configurazione
+        /// </summary>
+        public const string PROBLEMIDILETTURACONFIGURAZIONI = "si è verificato un errore nella lettura delle configurazioni, si prega di aggiornare il file";
+
+
+        /// <summary>
+        /// Messaggio relativo a non aver trovato il file di configurazione per il progetto corrente 
+        /// </summary>
+        public const string NONHOTROVATOFILECONFIGURAZIONI = "non ho trovato il file di configurazioni, si prega di inserirlo nella cartella bin";
+
+
+        /// <summary>
+        /// Messaggio relativo alla lettura scorretta del nuovo percorso nel quale andare a inserire il file di log corrente 
+        /// </summary>
+        public const string ERRORELETTURACONFIGURAZIONELOGFILE = "ho riscontrato un errore nella lettura del nuovo path per il log corrente \n";
+
+        #endregion
+
+        
         #region DBSERVICES
 
         /// <summary>

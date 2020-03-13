@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Tool_Importazione_Leghe.Utils;
 
@@ -13,8 +15,29 @@ namespace Tool_Importazione_Leghe.Logging
     /// </summary>
     public class LoggingService
     {
-        #region ATTRIBUTI PRIATI
+        #region MESSAGGI 
+
+        /// <summary>
+        /// Identificatore messaggio proveniente dal servizio di log corrente 
+        /// </summary>
+        private string loggingIdentifier = "LOGGING: ";
+
+        /// <summary>
+        /// Messaggio da mostrare nel caso in cui la folder di log non esista e deve essere creata 
+        /// </summary>
+        private string messaggoCreazioneCartellaLog = "la cartella corrente relativa al log non esite, la sto ricreando";
+
+
+        /// <summary>
+        /// Messagio da mostrare quando la cartella è stata creata e il log inserito al suo interno
+        /// </summary>
+        private string messaggioCreazioneCartella = "ho appena ricreato la cartella per il log corrente e ho inserito questo al suo interno";
         
+        #endregion
+
+
+        #region ATTRIBUTI PRIATI
+
         /// <summary>
         /// Sevizio corrente per la gestione del log Database
         /// </summary>
@@ -31,6 +54,12 @@ namespace Tool_Importazione_Leghe.Logging
         /// Servizio corrente per la gestione del log XML
         /// </summary>
         private LoggingBase_XML _loggingServiceXML;
+
+
+        /// <summary>
+        /// Servizio corrente per la gestione del log delle configurazioni
+        /// </summary>
+        private LoggingBase_Configurations _loggingBaseConfigurations;
 
         #endregion
 
@@ -64,6 +93,22 @@ namespace Tool_Importazione_Leghe.Logging
             file.WriteLine(lines);
 
             file.Close();
+        }
+
+
+        /// <summary>
+        /// Permette di fare passare un po di tempo all'interno della console
+        /// </summary>
+        internal static void GetSomeTimeOnConsole()
+        {
+
+            for (int i = 0; i < 2; i++)
+            {
+                Thread.Sleep(500);
+                Console.Write(".");
+            }
+
+            Console.WriteLine("\n\n");
         }
 
 
@@ -102,6 +147,31 @@ namespace Tool_Importazione_Leghe.Logging
             }
         }
 
+
+        /// <summary>
+        /// Getter per il servizio di log delle configurazioni
+        /// </summary>
+        public LoggingBase_Configurations GetLoggerConfiguration
+        {
+            get
+            {
+                return _loggingBaseConfigurations;
+            }
+        }
+
+
+        /// <summary>
+        /// Mi permette di aggiornare il log file per tutti i servizi di log che lo necessitino a partire 
+        /// dal nuovo path dato dall'utente (e che deve essere già inserito all'interno delle configurazioni
+        /// </summary>
+        public void RefreshLogFile()
+        {
+            this._loggingBaseConfigurations.LoggerFile = Constants.LoggerFolder + Constants.LoggerProcedure;
+            this._loggingServiceDatabase.LoggerFile = Constants.LoggerFolder + Constants.LoggerProcedure;
+            this._loggingServiceExcel.LoggerFile = Constants.LoggerFolder + Constants.LoggerProcedure;
+            this._loggingServiceXML.LoggerFile = Constants.LoggerFolder + Constants.LoggerProcedure;
+        }
+
         #endregion
 
 
@@ -118,6 +188,7 @@ namespace Tool_Importazione_Leghe.Logging
                 _loggingServiceDatabase = new Logging_Console_Database(Constants.LoggerFolder + Constants.LoggerProcedure);
                 _loggingServiceExcel = new Logging_Console_Excel(Constants.LoggerFolder + Constants.LoggerProcedure);
                 _loggingServiceXML = new Logging_Console_XML(Constants.LoggerFolder + Constants.LoggerProcedure);
+                _loggingBaseConfigurations = new Logging_Console_Configurations(Constants.LoggerFolder + Constants.LoggerProcedure);
 
             }
             else if (Constants.CurrentModalitàTool == Constants.CurrentModalitaTool.isWPFApplication)
@@ -126,7 +197,38 @@ namespace Tool_Importazione_Leghe.Logging
                 _loggingServiceDatabase = new Logging_UI_Database(Constants.LoggerFolder + Constants.LoggerProcedure);
                 _loggingServiceExcel = new Logging_UI_Excel(Constants.LoggerFolder + Constants.LoggerProcedure);
                 _loggingServiceXML = new Logging_UI_XML(Constants.LoggerFolder + Constants.LoggerProcedure);
+                _loggingBaseConfigurations = new Logging_UI_Configurations(Constants.LoggerFolder + Constants.LoggerProcedure);
             }
+        }
+
+
+        /// <summary>
+        /// Permette di creare la cartella di log corrente nel caso in cui non esista 
+        /// </summary>
+        private void InitializeLogFolder()
+        {
+            if(!Directory.Exists(Constants.LoggerFolder))
+            {
+
+            }
+        }
+
+
+        /// <summary>
+        /// Mi permette di loggare a console la creazione per la folder corrente 
+        /// </summary>
+        private void LogConsoleMessageCreazioneFolder()
+        {
+
+        }
+
+
+        /// <summary>
+        /// Mi permette di loggare a UI la creazione per la folder corrente 
+        /// </summary>
+        private void LogUIMessageCreazioneFolder()
+        {
+
         }
         
         #endregion
