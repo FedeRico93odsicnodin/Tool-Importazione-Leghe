@@ -104,9 +104,22 @@ namespace Tool_Importazione_Leghe.Utils
 
 
         /// <summary>
+        /// Questo mi dice se ho letto il path nel quale verrà inserito il file di log o meno
+        /// prima della lettura salvo tutto in memoria per poi scrivere ...
+        /// </summary>
+        public static bool HoLettoDocPath = false;
+
+
+        /// <summary>
         /// Stringa indicante il log sulle diverse operazioni eseguite sul database
         /// </summary>
         public static string LoggerProcedure = "ImportazioneLoggingProcedure.txt";
+
+
+        /// <summary>
+        /// Indicazione sulla lettura di tutte le configurazioni per la procedura corrente 
+        /// </summary>
+        public static bool HoLettoTutteLeConfigurazioni = false;
 
         #endregion
 

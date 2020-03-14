@@ -50,6 +50,12 @@ namespace Tool_Importazione_Leghe.Logging
 
 
         /// <summary>
+        /// Messaggio di lettura corretta di tutte le configurazioni all'interno del file di configurazioni
+        /// </summary>
+        protected string _messaggioLetturaCorrettaTutteLeConfigurazioni = "tutte le configurazioni sono state lette correttamente";
+
+
+        /// <summary>
         /// Messaggio inizio timer
         /// </summary>
         protected string _messaggioInizioTimer = "ho appena fatto partire il timer su tutta la procedura";
@@ -58,7 +64,7 @@ namespace Tool_Importazione_Leghe.Logging
         /// <summary>
         /// Messagio fine timer
         /// </summary>
-        protected string _messagioStopTimer = "ho appena fermato il timer su tutta la procedura";
+        protected string _messaggioStopTimer = "ho appena fermato il timer su tutta la procedura";
 
         #endregion
 
@@ -96,6 +102,12 @@ namespace Tool_Importazione_Leghe.Logging
         /// Messagio di segnalazione di stop del timer per la procedura corrente 
         /// </summary>
         public abstract void HoAppenaStoppatoTimerSuProcedura();
+
+
+        /// <summary>
+        /// Messaggio relativ alla lettura corretta di tutte le configurazioni
+        /// </summary>
+        public abstract void LetturaCorrettaDiTutteLeConfigurazioni();
 
         #endregion
 

@@ -78,28 +78,33 @@ namespace Tool_Importazione_Leghe.Logging
         #region EXCEPTIONS MESSAGES EXCEL
 
         /// <summary>
+        /// Indicazione di problema nell'apertura di un determinato foglio excel che era stato inserito nelle configurazioni
+        /// </summary>
+        public static string PROBLEMIAPERTURAFOGLIOEXCEL = "ho avuto problemi nell'apertura del seguente foglio excel {0}";
+
+        /// <summary>
         /// Indicazione che non è stato trovato all'interno delle celle una porzione che constraddistingua la tipologia di foglio che viene passata in input
         /// </summary>
-        public const string NONHOTROVATOINFORMAZIONEIDENTIFICATORETABELLA = "non ho trovato nessuna informazione per distinguere sulla tipologia per il seguente foglio Excel {0}";
+        public static string NONHOTROVATOINFORMAZIONEIDENTIFICATORETABELLA = "non ho trovato nessuna informazione per distinguere sulla tipologia per il seguente foglio Excel {0}";
 
 
         /// <summary>
         /// Indicazione di stop nella lettura dell'header per incompletezza nella lettura dei marker, oltre alla tipologia di foglio specificata viene anche inserito 
         /// il titolo dell'header che ha causato l'eccezione e il numero di riga e colonna per la quale questa eccezione si è verificata
         /// </summary>
-        public const string NONHOTROVATOINFORMAZIONECOMPLETADIHEADER = "non ho trovato informazione completa per l'header per la tipologia di foglio {0} (header '{1}', riga {2}, colonna {3}";
+        public static string NONHOTROVATOINFORMAZIONECOMPLETADIHEADER = "non ho trovato informazione completa per l'header per la tipologia di foglio {0} (header '{1}', riga {2}, colonna {3}";
 
 
         /// <summary>
         /// Indicazione di non aver trovato nessuna informazione utile per una certa tipologia di foglio che viene specificata in input
         /// </summary>
-        public const string NONHOTROVATOINFORMAZIONEUTILEPERFOGLIO = "non ho trovato nessuna informazione per la seguente tipologia di foglio Excel {0}";
+        public static string NONHOTROVATOINFORMAZIONEUTILEPERFOGLIO = "non ho trovato nessuna informazione per la seguente tipologia di foglio Excel {0}";
 
 
         /// <summary>
         /// Indicazione di verifica di una eccezione nel tentativo di lettura del secondo foglio delle concentrazioni
         /// </summary>
-        public const string HOTROVATOLASEGUENTEECCEZIONENELLEGGEREINFOFOGLIO2 = "durante la lettura del foglio 2 si è verificata la seguente eccezione {0}";
+        public static string HOTROVATOLASEGUENTEECCEZIONENELLEGGEREINFOFOGLIO2 = "durante la lettura del foglio 2 si è verificata la seguente eccezione {0}";
 
         #endregion
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tool_Importazione_Leghe;
+using Tool_Importazione_Leghe.Utils;
 
 namespace ImportazioneLeghe_Console
 {
@@ -19,6 +20,16 @@ namespace ImportazioneLeghe_Console
 
             // lettura delle configurazioni correnti
             ServiceLocator.GetConfigurations.ReadConfigFile();
+
+            if(Constants.HoLettoTutteLeConfigurazioni)
+            {
+                ServiceLocator.GetLoggingService.HoLettoConfigurazioniPremereUnTastoPerContinuare();
+                Console.ReadKey();
+
+                // avviamento import corrente
+                ImportActivity currentActivity = new ImportActivity(Constants.CurrentTipologiaImport);
+                currentActivity.Do_Import();
+            }
 
 
         }

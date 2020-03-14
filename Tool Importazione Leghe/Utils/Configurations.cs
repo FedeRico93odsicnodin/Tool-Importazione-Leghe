@@ -114,6 +114,8 @@ namespace Tool_Importazione_Leghe.Utils
             _letturaConfig.Add(this.CURRENTMODALITATOOL);
             _letturaConfig.Add(this.TIPOLOGIA_IMPORT);
 
+            _letturaConfig.Add(this.PATHLOGFILE);
+
 
             _currentTimerOnProcedure = new ExtendedStopWatch();
         }
@@ -411,26 +413,26 @@ namespace Tool_Importazione_Leghe.Utils
                     string newLogPath = currentLetturaConfig.Substring(this.PATHLOGFILE[0].ToString().Length);
 
                     newLogPath = newLogPath.Trim();
+                    
 
-                    // verifica sul fatto che il path di log sia attualmente diverso rispetto a quello di default
-                    if(newLogPath != (Constants.LoggerFolder + Constants.LoggerProcedure))
+                    try
                     {
-                        try
-                        {
-                            File.Move((Constants.LoggerFolder + Constants.LoggerProcedure), newLogPath);
-                            Constants.LoggerFolder = newLogPath;
+                        Constants.LoggerFolder = newLogPath;
 
-                            // comunicazione al servizio di log che il path dove continuare a loggare le informazioni è cambiato
-                            ServiceLocator.GetLoggingService.RefreshLogFile();
+                        // nuove direttive log
+                        CreateNewLogFile();
 
-                        }
-                        catch(Exception e)
-                        {
-                            string currentExceptionMessage = ExceptionMessages.ERRORELETTURACONFIGURAZIONELOGFILE + e.Message;
+                        // comunicazione al servizio di log che il path dove continuare a loggare le informazioni è cambiato
+                        ServiceLocator.GetLoggingService.RefreshLogFile();
 
-                            throw new Exception(currentExceptionMessage);
-                        }
                     }
+                    catch(Exception e)
+                    {
+                        string currentExceptionMessage = ExceptionMessages.ERRORELETTURACONFIGURAZIONELOGFILE + e.Message;
+
+                        throw new Exception(currentExceptionMessage);
+                    }
+                    
 
                     // ho letto la configurazione sulla modalita del tool 
                     _letturaConfig.Where(x => x[0] == this.PATHLOGFILE[0]).FirstOrDefault()[1] = true;
@@ -440,13 +442,15 @@ namespace Tool_Importazione_Leghe.Utils
                 }
 
                 
-                // dico che ho finito con la lettura ora inizio con la verifica delle informazioni lette
-                ServiceLocator.GetLoggingService.GetLoggerConfiguration.StoPerVedereSeTutteLeConfigurazioniSonoCorrette();
-
-
-                // check validità sulle configurazioni appena lette
-                CheckFileValidity();
             }
+
+
+            // dico che ho finito con la lettura ora inizio con la verifica delle informazioni lette
+            ServiceLocator.GetLoggingService.GetLoggerConfiguration.StoPerVedereSeTutteLeConfigurazioniSonoCorrette();
+
+
+            // check validità sulle configurazioni appena lette
+            CheckFileValidity();
         }
 
 
@@ -468,10 +472,39 @@ namespace Tool_Importazione_Leghe.Utils
             // raise exception
             if (currentNotFilledProperties.Count > 0)
                 throw new Exception(ExceptionMessages.PROBLEMIDILETTURACONFIGURAZIONI);
+            else
+            {
+                ServiceLocator.GetLoggingService.GetLoggerConfiguration.LetturaCorrettaDiTutteLeConfigurazioni();
+                Constants.HoLettoTutteLeConfigurazioni = true;
+            }
+                
 
         }
 
 
+        /// <summary>
+        /// Con questa configurazione richiamo i servizi all'interno del servizio di log per 
+        /// la creazione della cartella e l'inserimento delle righe che fino ad ora sono state inserite 
+        /// in memoria per il log e la procedura corrente 
+        /// </summary>
+        private void CreateNewLogFile()
+        {
+            
+            // recupero delle stringhe fino a qui da inserire nel log 
+            List<string> currentLogLines = ServiceLocator.GetLoggingService.GetLoggerCurrentLines;
+
+            // creazione eventuale della folder nella quale andare a inserire il log
+            LoggingService.InitializeLogFolder();
+
+            // inserimento delle linee all'interno del log
+            File.WriteAllLines(Constants.LoggerFolder + Constants.LoggerProcedure, currentLogLines);
+
+            // indicazione di scrittura sul log da qui in avanti
+            Constants.HoLettoDocPath = true;
+
+            // indicazione di aver eseguito questa procedura
+        }
+        
         #endregion
     }
 }

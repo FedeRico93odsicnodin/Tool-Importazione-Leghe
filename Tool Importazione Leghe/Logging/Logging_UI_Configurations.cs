@@ -42,6 +42,11 @@ namespace Tool_Importazione_Leghe.Logging
             throw new NotImplementedException();
         }
 
+        public override void LetturaCorrettaDiTutteLeConfigurazioni()
+        {
+            throw new NotImplementedException();
+        }
+
         public override void LetturaScorrettaConfigurazione(string currentConfigurazione)
         {
             throw new NotImplementedException();

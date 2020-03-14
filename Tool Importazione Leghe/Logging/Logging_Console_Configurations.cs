@@ -75,9 +75,9 @@ namespace Tool_Importazione_Leghe.Logging
         /// </summary>
         public override void StoPerVedereSeTutteLeConfigurazioniSonoCorrette()
         {
-            string currentMessage = base._messaggioLetturaCorrettaConfigurazione;
+            string currentMessage = base._messaggioDiInizioVerificaCorrettezzaConfigurazioni;
 
-            currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString() + base._loggerConfigurationsIdentifier + currentMessage;
+            currentMessage =  "\n" + ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString() + base._loggerConfigurationsIdentifier + currentMessage;
 
             Console.WriteLine(currentMessage);
 
@@ -94,9 +94,9 @@ namespace Tool_Importazione_Leghe.Logging
         /// </summary>
         public override void HoAppenaInizializzatoTimerSuProcedura()
         {
-            string currentMessage = base._messaggioInizioTimer;
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
 
-            currentMessage = base._loggerConfigurationsIdentifier + currentMessage;
+            currentMessage += base._loggerConfigurationsIdentifier + base._messaggioInizioTimer;
 
             Console.WriteLine(currentMessage);
 
@@ -113,7 +113,7 @@ namespace Tool_Importazione_Leghe.Logging
         /// </summary>
         public override void HoAppenaStoppatoTimerSuProcedura()
         {
-            string currentMessage = base._messagioStopTimer;
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
 
             currentMessage = base._loggerConfigurationsIdentifier + currentMessage;
 
@@ -123,6 +123,23 @@ namespace Tool_Importazione_Leghe.Logging
             LoggingService.LogInADocument(currentMessage, base._currentLogFile);
 
             LoggingService.GetSomeTimeOnConsole();
+        }
+
+
+        /// <summary>
+        /// Lettura corretta di tutte le configurazioni a console
+        /// </summary>
+        public override void LetturaCorrettaDiTutteLeConfigurazioni()
+        {
+            string currentMessage = "\n" + ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+
+            currentMessage += base._loggerConfigurationsIdentifier + base._messaggioLetturaCorrettaTutteLeConfigurazioni;
+
+            Console.WriteLine(currentMessage);
+
+            // log del messaggio iniziale all'interno del log excel
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+            
         }
 
         #endregion

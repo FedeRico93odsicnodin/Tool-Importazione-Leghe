@@ -13,7 +13,7 @@ namespace Tool_Importazione_Leghe.Logging
     public abstract class LoggingBase_Excel
     {
         #region ATTRIBUTI PRIVATI - MESSAGGI
-
+        
         /// <summary>
         /// Gestione della variabile contenente il path per il log corrente database
         /// </summary>
@@ -23,20 +23,20 @@ namespace Tool_Importazione_Leghe.Logging
         /// <summary>
         /// Marker da inserire durante la lettura del file excel per ogni riga che viene loggata 
         /// </summary>
-        protected const string excelReaderIdentifier = "EXCEL READER: ";
+        protected const string excelReaderIdentifier = " EXCEL READER: ";
 
 
         /// <summary>
         /// Marker da inserire durante la scrittura del file excel per ogni riga che viene loggata
         /// </summary>
-        protected const string exccelWriterIdentifier = "EXCEL WRITER: ";
+        protected const string exccelWriterIdentifier = " EXCEL WRITER: ";
 
 
         /// <summary>
         /// Stringa da formattare per il messaggio relativo al ritrovamento di una informazione di header
         /// </summary>
         protected string hoTrovatoInformazioniPerIlPrimoMarker = "foglio {0} ho trovato le informazioni per '{1}' ({2}) in col {3}, row {4}";
-
+        
         #endregion
 
 

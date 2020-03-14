@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Excel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tool_Importazione_Leghe.Logging;
 
 namespace Tool_Importazione_Leghe.ExcelServices
 {
@@ -14,6 +16,18 @@ namespace Tool_Importazione_Leghe.ExcelServices
     class ExcelServices
     {
         #region ATTRIBUTI PRIVATI
+
+        /// <summary>
+        /// Processo di apertura per il file excel corrente
+        /// </summary>
+        private Application _currentApplicationExcel;
+
+
+        /// <summary>
+        /// File excel aperto per l'istanza di importazione corrente
+        /// </summary>
+        private Workbook _currentFileExcel;
+
 
         /// <summary>
         /// Servizio dove si trovano i metodi per il riconoscimento vero e proprio di un determinato header e quindi 
@@ -53,7 +67,33 @@ namespace Tool_Importazione_Leghe.ExcelServices
             }
         }
 
-        
+        #endregion
+
+
+        #region METODI PUBBLICI
+
+        /// <summary>
+        /// Apertura del file excel che viene inserito nelle costanti durante la configurazione
+        /// </summary>
+        /// <param name="currentExcelPath"></param>
+        public void OpenFileExcel(string currentExcelPath)
+        {
+            try
+            {
+
+                _currentApplicationExcel = new Application();
+
+                _currentFileExcel = _currentApplicationExcel.Workbooks.Open(currentExcelPath);
+            }
+            catch(Exception e)
+            {
+                string currentExceptionMsg = String.Format(ExceptionMessages.PROBLEMIAPERTURAFOGLIOEXCEL, currentExcelPath);
+                currentExceptionMsg += "\n";
+                currentExceptionMsg += e.Message;
+
+                throw new Exception(currentExceptionMsg);
+            }
+        }
 
         #endregion
     }
