@@ -46,11 +46,24 @@ namespace Tool_Importazione_Leghe.Logging
 
 
         /// <summary>
-        /// Separatore delle attività correnti
+        /// Separatore delle attività correnti CONSOLE
         /// </summary>
         public override void GetSeparatorActivity()
         {
             string currentLogMessage = "\n" + base.separatorActivity + "\n";
+
+            Console.WriteLine(currentLogMessage);
+
+            LoggingService.LogInADocument(currentLogMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Separatore internal activity CONSOLE
+        /// </summary>
+        public override void GetSeparatorInternalActivity()
+        {
+            string currentLogMessage = base.separatorInternalProcesses;
 
             Console.WriteLine(currentLogMessage);
 

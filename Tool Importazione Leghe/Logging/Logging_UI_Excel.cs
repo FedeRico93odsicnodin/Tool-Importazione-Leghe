@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tool_Importazione_Leghe.ExcelServices;
 using Tool_Importazione_Leghe.Utils;
 
 namespace Tool_Importazione_Leghe.Logging
@@ -23,6 +24,16 @@ namespace Tool_Importazione_Leghe.Logging
         public Logging_UI_Excel(string currentLogPath)
         {
             base._currentLogFile = currentLogPath;
+        }
+        
+        public override void AperturaCorrettaFileExcel(string currentFileExcel, XlsServices.CurrentModalitaExcel modalitaCorrente)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void HoTrovatoIlSeguenteFoglioExcel(string currentFoglioExcelName, string currentFileExcel, XlsServices.CurrentModalitaExcel modalitaCorrente)
+        {
+            throw new NotImplementedException();
         }
 
         public override void ReadHeaders_HoTrovatoInformazionePerIlPrimoMarker(string currentFoglioExcel, string primoMarker, Constants.TipologiaFoglioExcel currentTipologiaFoglioExcel, int currentCol, int currentRow)

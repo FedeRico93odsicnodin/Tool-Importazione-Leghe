@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tool_Importazione_Leghe.DatabaseServices;
+using Tool_Importazione_Leghe.ExcelServices;
 using Tool_Importazione_Leghe.Logging;
 using Tool_Importazione_Leghe.Utils;
 
@@ -21,6 +22,13 @@ namespace Tool_Importazione_Leghe
         /// per l'import stabilito dal programma
         /// </summary>
         private static DBServices _currentDBServices;
+
+
+        /// <summary>
+        /// Servizi excel sulle diverse tab che sono coinvolte nella possibile lettura 
+        /// scrittura per il file di excel corrente
+        /// </summary>
+        private static XlsServices _currentExcelServices;
 
 
         /// <summary>
@@ -51,6 +59,21 @@ namespace Tool_Importazione_Leghe
                     _currentDBServices = new DBServices();
 
                 return _currentDBServices;
+            }
+        }
+
+
+        /// <summary>
+        /// Getter per i servizi excel disponibili
+        /// </summary>
+        public static XlsServices GetExcelServices
+        {
+            get
+            {
+                if (_currentExcelServices == null)
+                    _currentExcelServices = new XlsServices();
+
+                return _currentExcelServices;
             }
         }
 

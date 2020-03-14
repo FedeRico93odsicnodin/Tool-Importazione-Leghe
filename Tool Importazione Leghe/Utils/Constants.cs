@@ -152,8 +152,9 @@ namespace Tool_Importazione_Leghe.Utils
         /// </summary>
         public enum TipologiaFoglioExcel
         {
-            foglioInformazioniGenerali = 1,
-            foglioInformazioniConcentrazioni = 2
+            Unknown = 0,
+            Informazioni_Lega = 1,
+            Informazioni_Concentrazione = 2
         }
 
 

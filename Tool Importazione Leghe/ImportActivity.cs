@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tool_Importazione_Leghe.Utils;
+using static Tool_Importazione_Leghe.ExcelServices.XlsServices;
 
 namespace Tool_Importazione_Leghe
 {
@@ -125,7 +126,29 @@ namespace Tool_Importazione_Leghe
         /// </summary>
         private void Do_Import_ExcelToDatabase()
         {
-            Console.WriteLine("mi trovo qui");
+            #region LETTURA INFORMAZIONI FILE EXCEL
+
+            // apertura del file excel corrente - lo apro per leggere le informazioni da caricare a database
+            ServiceLocator.GetExcelServices.OpenFileExcel(Constants.CurrentFileExcelPath, CurrentModalitaExcel.EXCELREADER);
+
+            // separazione delle attività
+            ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorInternalActivity();
+
+            // lettura primaria di tutti i fogli excel che sono presenti per il documento
+            ServiceLocator.GetExcelServices.ReadSheetsExcelFile(CurrentModalitaExcel.EXCELREADER);
+
+            // separazione delle attività
+            ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorInternalActivity();
+
+            #endregion
+
+
+            #region SCRITTURA INFORMAZIONI IN DB
+
+
+
+            #endregion
+
         }
 
 

@@ -13,7 +13,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
     /// grazie a questo metodo riesco a distinguere la presenza di un determinato header per un certo foglio 
     /// e quindi capire come procedere nella lettura e per quale caso siamo (se il tipo di sheet 1 o il tipo di sheet 2)
     /// </summary>
-    internal class ReadHeaders
+    public class ReadHeaders
     {
         #region METODI PUBBLICI - MI DICONO QUALE SIA IL FOGLIO EXCEL CORRNTE
 
@@ -106,7 +106,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                         rowNumber = currentRow;
 
                         // segnalazione di aver trovato il primo marker per il foglio excel corrente
-                        ServiceLocator.GetLoggingService.GetLoggerExcel.ReadHeaders_HoTrovatoInformazionePerIlPrimoMarker(currentExcelSheet.Name, currentMarker, Constants.TipologiaFoglioExcel.foglioInformazioniGenerali, columnNumber, rowNumber);
+                        ServiceLocator.GetLoggingService.GetLoggerExcel.ReadHeaders_HoTrovatoInformazionePerIlPrimoMarker(currentExcelSheet.Name, currentMarker, Constants.TipologiaFoglioExcel.Informazioni_Lega, columnNumber, rowNumber);
 
                         return;
                         
@@ -128,7 +128,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
             rowNumber = 0;
 
             // eccezione sul fatto che non si è trovata nessuna informazione per distinguere la tabella delle informazioni generali per la prima tipologia di foglio excel
-            throw new Exception(String.Format(ExceptionMessages.NONHOTROVATOINFORMAZIONEIDENTIFICATORETABELLA, Constants.TipologiaFoglioExcel.foglioInformazioniGenerali.ToString()));
+            throw new Exception(String.Format(ExceptionMessages.NONHOTROVATOINFORMAZIONEIDENTIFICATORETABELLA, Constants.TipologiaFoglioExcel.Informazioni_Lega.ToString()));
         }
 
 
@@ -160,12 +160,12 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     rowIndex = 0;
                     markerExc = currentHeader;
                     // eccezione sul fatto che non si è trovata nessuna informazione per distinguere la tabella delle informazioni generali per la prima tipologia di foglio excel
-                    throw new Exception(String.Format(ExceptionMessages.NONHOTROVATOINFORMAZIONECOMPLETADIHEADER, Constants.TipologiaFoglioExcel.foglioInformazioniGenerali.ToString(), markerExc, iterationRow, iterationColumn)); ;
+                    throw new Exception(String.Format(ExceptionMessages.NONHOTROVATOINFORMAZIONECOMPLETADIHEADER, Constants.TipologiaFoglioExcel.Informazioni_Lega.ToString(), markerExc, iterationRow, iterationColumn)); ;
                     
                 }
 
                 // segnalazione di aver trovato il primo marker per il foglio excel corrente
-                ServiceLocator.GetLoggingService.GetLoggerExcel.ReadHeaders_HoTrovatoInformazionePerIlPrimoMarker(currentExcelSheet.Name, currentHeader, Constants.TipologiaFoglioExcel.foglioInformazioniGenerali, iterationColumn, iterationRow);
+                ServiceLocator.GetLoggingService.GetLoggerExcel.ReadHeaders_HoTrovatoInformazionePerIlPrimoMarker(currentExcelSheet.Name, currentHeader, Constants.TipologiaFoglioExcel.Informazioni_Lega, iterationColumn, iterationRow);
 
                 iterationColumn++;
             }
@@ -184,7 +184,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     markerExc = currentListHeaders.FirstOrDefault();
 
                     // eccezione sul fatto che non si è trovata nessuna informazione per distinguere la tabella delle informazioni generali per la prima tipologia di foglio excel
-                    throw new Exception(String.Format(ExceptionMessages.NONHOTROVATOINFORMAZIONEUTILEPERFOGLIO, Constants.TipologiaFoglioExcel.foglioInformazioniGenerali.ToString())); ;
+                    throw new Exception(String.Format(ExceptionMessages.NONHOTROVATOINFORMAZIONEUTILEPERFOGLIO, Constants.TipologiaFoglioExcel.Informazioni_Lega.ToString())); ;
                 }    
             }
 

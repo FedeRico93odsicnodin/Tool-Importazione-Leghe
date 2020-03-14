@@ -39,6 +39,12 @@ namespace Tool_Importazione_Leghe.Logging
 
 
         /// <summary>
+        /// Mi serve per separare i diversi processi in avvenimento corrente e per una particolare procedura  
+        /// </summary>
+        protected string separatorInternalProcesses = "--";
+
+
+        /// <summary>
         /// Messaggio relativo alla procedura di import in avvio corrente
         /// </summary>
         protected string avviamentoDiUnaCertaOperazione = "si sta avviamento la seguente procedura di import: {0}";
@@ -60,6 +66,12 @@ namespace Tool_Importazione_Leghe.Logging
         /// Permette di ottenere dei separatori nel caso in cui siano avviate più attività di import
         /// </summary>
         public abstract void GetSeparatorActivity();
+
+
+        /// <summary>
+        /// Mi permette di ottenere un separatore per l'attività interna rispetto a una attività primaria
+        /// </summary>
+        public abstract void GetSeparatorInternalActivity();
 
         #endregion
 
