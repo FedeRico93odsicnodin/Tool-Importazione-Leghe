@@ -131,6 +131,7 @@
     <Compile Include="Model\Categorie_LegheDB.cs" />
     <Compile Include="Model\ConcLegaDB.cs" />
     <Compile Include="Model\ElementiDB.cs" />
+    <Compile Include="Model\ExcelConcQuadrant.cs" />
     <Compile Include="Model\ExcelSheet.cs" />
     <Compile Include="Model\LabEntities.cs" />
     <Compile Include="Model\LegheDB.cs" />

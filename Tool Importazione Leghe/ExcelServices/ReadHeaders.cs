@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tool_Importazione_Leghe.Logging;
+using Tool_Importazione_Leghe.Model;
 using Tool_Importazione_Leghe.Utils;
 
 namespace Tool_Importazione_Leghe.ExcelServices
@@ -62,6 +63,39 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// </summary>
         private int _posizioneColonnaPrimoMarker = 0;
 
+
+        /// <summary>
+        /// Permette di mappare tutte le informazioni relative alle posizione dalle quali iniziare a leggere i diversi oggetti 
+        /// per le concentrazioni
+        /// </summary>
+        private List<ExcelConcQuadrant> _currentPositionsConcentrations;
+
+
+        /// <summary>
+        /// Indicazione del massimo indice per la colonna sul foglio excel corrente
+        /// </summary>
+        private int MaxExcelSheetPos_col = 0;
+
+
+        /// <summary>
+        /// Indicazione del massimo indice di riga sul foglio excel corrente
+        /// </summary>
+        private int MaxExcelSheetPos_row = 0;
+
+
+        /// <summary>
+        /// Indice che mi dice quale sarà il limite nella lettura delle concentrazioni rispetto alla colonna 
+        /// se spostandomi in orizzontale sulle colonne non trovo piu quadranti utili dopo questo limite allora fermo l'iterazione
+        /// </summary>
+        private const int LIMITCOL_LETTURACONCENTRAZIONI = 15;
+
+
+        /// <summary>
+        /// Indice che mi dice quale sarà il limite nella lettura delle concentraizoni rispetto alla riga
+        /// se spostandomi in verticale sulle righe non trovo piu quadranti utili dopo questo limite allora fermo l'iterazione
+        /// </summary>
+        private const int LIMITROW_LETTURACONCENTRAZIONI = 15;
+
         #endregion 
 
 
@@ -89,7 +123,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
             try
             {
                 // vado a leggere l'header per il foglio excel corrente
-                bool hoLettoHeader = ReadHeader(ref currentExcelSheet, currentTipologiaFoglio);
+                bool hoLettoHeader = ReadHeader_DatiLega(ref currentExcelSheet, currentTipologiaFoglio);
 
                 // non ho letto le informazioni utili di header
                 if (!hoLettoHeader)
@@ -137,6 +171,35 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
             
         }
+
+
+        /// <summary>
+        /// Lettura di un certo foglio excel sul quale si riconoscono le posizioni utili per la lettura delle concentrazioni associate
+        /// ai diversi materiali, il risultato è avere la validità del foglio come di un foglio relativo alle concentrazioni e avere 
+        /// un set di posizioni dalle quali iniziare a leggerle
+        /// </summary>
+        /// <param name="currentExcelSheet"></param>
+        /// <param name="currentTipologiaFoglio"></param>
+        /// <param name="detectedMaterials"></param>
+        /// <returns></returns>
+        internal bool ReadHeaders_Concentrazioni(ref ExcelWorksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaFoglio, out List<ExcelConcQuadrant> detectedMaterials)
+        {
+            // reset attributi di lettura corrente
+            _tracciaCurrentCol = 1;
+            _tracciaCurrentRow = 1;
+            _currentMarker = String.Empty;
+
+            // reset della lista sulla quale si andranno a inserire le eventuali posizioni utili trovate per la lettura delle concentrazioni
+            detectedMaterials = new List<ExcelConcQuadrant>();
+
+            // recupero dei limiti di riga-colonna per il foglio excel corrente
+            MaxExcelSheetPos_col = currentExcelSheet.Dimension.End.Column;
+            MaxExcelSheetPos_row = currentExcelSheet.Dimension.End.Row;
+
+
+
+            return false;
+        }
         
         #endregion
 
@@ -150,7 +213,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <param name="currentExcelSheet"></param>
         /// <param name="currentTipologiaFoglio"></param>
         /// <returns></returns>
-        private bool ReadHeader(ref ExcelWorksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaFoglio)
+        private bool ReadHeader_DatiLega(ref ExcelWorksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaFoglio)
         {
             // recupero degli header per la certa tipologia di foglio excel
             List<string> currentHeaderFoglio = new List<string>();
@@ -292,6 +355,126 @@ namespace Tool_Importazione_Leghe.ExcelServices
             currentInfoRow = 0;
 
             return false;
+        }
+
+
+        /// <summary>
+        /// Ritorna le coordinate per una determinata posizione di lettura delle diverse concentrazioni per una determinata lega
+        /// all'interno del foglio corrente
+        /// </summary>
+        /// <param name="currentExcelSheet"></param>
+        /// <param name="currentTipologiaFoglio"></param>
+        /// <returns></returns>
+        private bool RecognizeConcentrationsPosition(ref ExcelWorksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaFoglio)
+        {
+            // recupero degli header per la certa tipologia di foglio excel
+            List<string> currentHeaderFoglio = new List<string>();
+
+
+            if (currentTipologiaFoglio == Utils.Constants.TipologiaFoglioExcel.Informazioni_Concentrazione)
+                currentHeaderFoglio = ExcelMarkers.GetAllColumnHeadersForConcentrationsInfoSheet();
+
+            // non ho trovato nessuna informazione utile di header per il foglio corrente
+            if (currentHeaderFoglio.Count() == 0)
+            {
+                ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoNessunaInformazioneDiMarker(currentExcelSheet.Name);
+                return false;
+            }
+
+
+            // iterazione a partire dalla prima riga 
+            do
+            {
+
+                do
+                {
+                    // passo alla riga successiva se non ho ancora incontrato informazioni utili
+                    if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value == null)
+                    {
+                        _tracciaCurrentRow++;
+                        continue;
+                    }
+
+                    // se non mi trovo piu nei limit allora rompo il ciclo
+                    if (!CheckLimitRowCurrentIteration(_tracciaCurrentCol, _tracciaCurrentRow))
+                        break;
+
+
+                    // ho trovato una informazione
+                }
+                while (_tracciaCurrentRow <= MaxExcelSheetPos_row);
+
+
+                // ricalcolo posizione index per iterazione su colonne successive
+                _tracciaCurrentCol = RicalcolaPosizioneColonna(ref currentExcelSheet);
+
+            }
+            while (_tracciaCurrentCol <= MaxExcelSheetPos_col);
+
+
+            if (_currentPositionsConcentrations.Count == 0)
+                return false;
+
+            return true;
+        }
+
+
+        /// <summary>
+        /// Mi permette di ricalcolare la posizione della nuova colonna quando si completa il riconoscimento dei quadranti 
+        /// "in verticale"
+        /// </summary>
+        /// <param name="currentExcelSheet"></param>
+        /// <returns></returns>
+        private int RicalcolaPosizioneColonna(ref ExcelWorksheet currentExcelSheet)
+        {
+            // se non è presente nessun elemento nella lista dei possibili elementi incontrati allora sposto l'indice di colonna di una sola posizione
+            if (_currentPositionsConcentrations.Count == 0)
+                return _tracciaCurrentCol++;
+
+            // calcolo del massimo indice di colonna 
+            int newColIndex = _currentPositionsConcentrations.Select(x => x.EndConc_X).Max();
+
+            return newColIndex++;
+        }
+
+
+        /// <summary>
+        /// Mi permette di capire se sono passati i limiti rispetto alla lettura sulla colonna corrente 
+        /// delle diverse concentrazioni che dovrei riscontrare alle righe successive
+        /// </summary>
+        /// <param name="currentColIndex"></param>
+        /// <param name="currentRowIndex"></param>
+        /// <returns></returns>
+        private bool CheckLimitRowCurrentIteration(int currentColIndex, int currentRowIndex)
+        {
+            // non ho ancora inserito nessun elemento nella lista e ho superato i limiti di riga
+            if (_currentPositionsConcentrations.Count == 0 && _tracciaCurrentRow == LIMITROW_LETTURACONCENTRAZIONI)
+                return false;
+
+            // trovo l'indice di riga massimo letto per l'ultimo elemento su questa colonna 
+            int currentMaxRow = _currentPositionsConcentrations.Where(x => x.StartConc_X == currentColIndex).Select(x => x.EndConc_Y).Max();
+
+            if (currentRowIndex > currentMaxRow + LIMITROW_LETTURACONCENTRAZIONI)
+                return false;
+
+            return true;
+        }
+
+
+        /// <summary>
+        /// Permette di fare un fill di tutte le informazioni relative al materiale corrente a partire dall'indice di 
+        /// riga e colonna riscontrati, viene restituito l'oggetto e ci si muovera in verticale rispetto
+        /// alla lettura che ne viene fatta
+        /// </summary>
+        /// <param name="currentColIndex"></param>
+        /// <param name="currentRowIndex"></param>
+        /// <returns></returns>
+        private ExcelConcQuadrant FillMaterialConcentrationInfo(int currentColIndex, int currentRowIndex)
+        {
+            ExcelConcQuadrant currentQuadrantConcentrations = new ExcelConcQuadrant();
+
+
+            return currentQuadrantConcentrations;
         }
 
         #endregion
