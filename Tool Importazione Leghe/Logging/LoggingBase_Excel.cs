@@ -34,10 +34,22 @@ namespace Tool_Importazione_Leghe.Logging
 
 
         /// <summary>
-        /// Stringa da formattare per il messaggio relativo al ritrovamento di una informazione di header
+        /// Messaggio di segnalazione di nessun marker trovato per il foglio excel del nome che viene passato in input
         /// </summary>
-        protected string hoTrovatoInformazioniPerIlPrimoMarker = "foglio {0} ho trovato le informazioni per '{1}' ({2}) in col {3}, row {4}";
+        protected string _nonHoTrovatoMarkerPerIlFoglioExcel = "non ho trovato nessuna informazione di marker per il folgio excel '{0}'";
 
+
+        /// <summary>
+        /// Messaggio di segnalazione di non aver trovato nessuna informazione utile corrispondente per un determinato marker all'interno del foglio excel
+        /// </summary>
+        protected string _nonHoTrovatoInformazionePerIlSeguenteMarker = "non ho trovato una corrispondenza per il seguente marker: '{0}', col {1}, row {2}";
+
+
+        /// <summary>
+        /// Messaggio segnalazione di aver trovato tutti i marker per un determinato foglio excel che viene identificato per una certa lettura
+        /// </summary>
+        protected string _hoTrovatoTuttiMarker = "ho trovato tutti i marker per il seguente foglio '{0}', identificato come '{1}'";
+        
         #endregion
 
 
@@ -84,26 +96,29 @@ namespace Tool_Importazione_Leghe.Logging
 
 
         /// <summary>
-        /// Segnalazione di aver trovato il primo marker utile per il foglio excel corrente nella specifica 
-        /// colonna e riga caratterizzante il foglio
+        /// Non ho trovato nessuna informazione di marker per il foglio excel passato in input
         /// </summary>
         /// <param name="currentFoglioExcel"></param>
-        /// <param name="primoMarker"></param>
-        /// <param name="currentTipologiaFoglioExcel"></param>
-        /// <param name="currentCol"></param>
-        /// <param name="currentRow"></param>
-        public abstract void ReadHeaders_HoTrovatoInformazionePerIlPrimoMarker(string currentFoglioExcel, string primoMarker, Constants.TipologiaFoglioExcel currentTipologiaFoglioExcel, int currentCol, int currentRow);
+        public abstract void NonHoTrovatoNessunaInformazioneDiMarker(string currentFoglioExcel);
 
 
         /// <summary>
-        /// Segnalazione di aver trovato tutte le informazioni di lettura per l'header e restituzioen della prima 
-        /// posizione utile per la quale iniziare a leggere le informazioni
+        /// Indicazione di non aver trovato informazione utile per un determinato marker
         /// </summary>
-        /// <param name="currentFoglioExcel"></param>
+        /// <param name="currentMarker"></param>
         /// <param name="currentCol"></param>
         /// <param name="currentRow"></param>
-        public abstract void ReadHeaders_TrovatoTuttiMarkers(string currentFoglioExcel, int currentCol, int currentRow);
+        public abstract void NonHoTrovatoInformazionePerIlSeguenteMarker(string currentMarker, int currentCol, int currentRow);
 
+
+        /// <summary>
+        /// Indicazione di aver trovato tutti i marker, il determinato foglio excel è stato riconosciuto come 
+        /// contenente informazioni per una certa categoria tra leghe e concentrazioni
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        /// <param name="currentTipologia"></param>
+        public abstract void HoTrovatoTuttiIMarker(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologia);
+        
         #endregion
 
 

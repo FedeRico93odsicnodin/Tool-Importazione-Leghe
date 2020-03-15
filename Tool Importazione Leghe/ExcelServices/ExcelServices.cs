@@ -67,24 +67,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
         }
 
         #endregion
-
-
-        #region GETTERS SERVIZI
         
-        /// <summary>
-        /// Getters per la lettura degli headers per il folgio excel corrente e per l'eventuale 
-        /// riconscimento tra le 2 tipologie di fogli 
-        /// </summary>
-        public ReadHeaders GetReadHeadersServices
-        {
-            get
-            {
-                return _currentReadHeadersServices;
-            }
-        }
-
-        #endregion
-
 
         #region METODI PUBBLICI
         
@@ -137,7 +120,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
         {
             _currentSheetsExcel = new List<ExcelSheet>();
 
-            int indexExcelSheet = 0;
+            int indexExcelSheet = 1;
 
             foreach(Worksheet currentWorksheet in _currentFileExcel.Sheets)
             {
@@ -157,6 +140,28 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
                 indexExcelSheet++;
                 
+            }
+        }
+
+
+        /// <summary>
+        /// Permette il riconoscimento dei diversi fogli excel presenti all'interno del file 
+        /// in modo da poter poi prendere le informazioni per la lega e per le concentrazioni
+        /// </summary>
+        public void RecognizeSheetsExcelFile(CurrentModalitaExcel currentModalita) 
+        {
+            foreach(ExcelSheet currentSheet in _currentSheetsExcel)
+            {
+                // reccupero del foglio excel vero e proprio dal documento aperto negli steps precedenti
+                Worksheet currentSheetExcel = _currentFileExcel.Sheets[currentSheet.PositionInExcelFile];
+
+
+                // prime informazioni di riga e colonna utili per la lettura delle informazioni successive
+                int currentInfoCol = 0;
+                int currentInfoRow = 0;
+
+                // riconoscimento della tipologia del foglio excel corrente
+                _currentReadHeadersServices.ReadFirstInformation_DatiPrimari(ref currentSheetExcel, Utils.Constants.TipologiaFoglioExcel.Informazioni_Lega, out currentInfoCol, out currentInfoRow);
             }
         }
 

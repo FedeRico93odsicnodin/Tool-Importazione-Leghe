@@ -140,6 +140,9 @@ namespace Tool_Importazione_Leghe
             // separazione delle attività
             ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorInternalActivity();
 
+            // riconoscimento dei fogli excel all'interno del file
+            ServiceLocator.GetExcelServices.RecognizeSheetsExcelFile(CurrentModalitaExcel.EXCELREADER);
+
             #endregion
 
 

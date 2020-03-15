@@ -37,7 +37,7 @@ namespace Tool_Importazione_Leghe.Logging
 
             currentLogMessage += base.importActivityIdentifier + String.Format(base.avviamentoDiUnaCertaOperazione, currentProcedure);
 
-            base._currentProcedure = currentProcedure;
+            base._currentProcedure = FormatProceduraImport(currentProcedure);
 
             Console.WriteLine(currentLogMessage);
 

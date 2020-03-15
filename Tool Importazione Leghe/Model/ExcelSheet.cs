@@ -42,5 +42,19 @@ namespace Tool_Importazione_Leghe.Model
         /// Tiene traccia del fatto che il foglio sia stato effettivamente letto o meno
         /// </summary>
         public bool Letto { get; set; }
+
+
+        /// <summary>
+        /// Permette di posizionarsi sulla prima colonna utile per le informazioni da leggere su questo 
+        /// foglio excel
+        /// </summary>
+        public int Info_Col { get; set; }
+
+
+        /// <summary>
+        /// Permette di posizionarsi sulla prima riga utile per le informazioni da leggere su questo 
+        /// foglio excel
+        /// </summary>
+        public int Info_Row { get; set; }
     }
 }

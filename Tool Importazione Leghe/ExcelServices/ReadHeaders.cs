@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Excel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,48 @@ namespace Tool_Importazione_Leghe.ExcelServices
     /// </summary>
     public class ReadHeaders
     {
+        #region ATTRIBUTI PRIVATI
+
+        /// <summary>
+        /// Tiene traccia dell'indice di colonna corrente per l'eventuale gestione dell'eccezione
+        /// </summary>
+        private int _tracciaCurrentCol = 0;
+
+
+        /// <summary>
+        /// Tiene traccia dell'indice di riga corrente per l'eventuale gestione dell'eccezione
+        /// </summary>
+        private int _tracciaCurrentRow = 0;
+
+
+        /// <summary>
+        /// Tiene traccia del marker corrente per l'eventuale gestione dell'eccezione
+        /// </summary>
+        private string _currentMarker = String.Empty;
+
+
+        /// <summary>
+        /// Indica il limite sul numero di righe che posso leggere per trovare l'informazione relativa all'header
+        /// </summary>
+        private const int LIMITROW = 20;
+
+
+        /// <summary>
+        /// indica il limite sul numero di colonne che posso leggere per trovare l'informazione relativa all'header
+        /// </summary>
+        private const int LIMITCOL = 20;
+
+
+        /// <summary>
+        /// Indica il limite sul numero di righe che posso leggere a partire dall'individuazione dell'header per trovare il primo valore 
+        /// utile per l'informazione sul foglio excel corrente
+        /// </summary>
+        private const int LIMITINFOROW = 10;
+
+        #endregion 
+
+
+
         #region METODI PUBBLICI - MI DICONO QUALE SIA IL FOGLIO EXCEL CORRNTE
 
         /// <summary>
@@ -28,174 +71,160 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <param name="firstUtilCol"></param>
         /// <param name="firstUtilRow"></param>
         /// <returns></returns>
-        internal void ReadFirstInformation_DatiPrimari(Microsoft.Office.Interop.Excel._Worksheet currentExcelSheet, out int firstUtilCol, out int firstUtilRow)
+        internal Utils.Constants.TipologiaFoglioExcel ReadFirstInformation_DatiPrimari(ref Worksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaFoglio, out int firstUtilCol, out int firstUtilRow)
         {
-
-            // attribuzione del valore di default per la riga e la colonna in uscita
-            firstUtilCol = 0;
-            firstUtilRow = 0;
 
             try
             {
+                // vado a leggere l'header per il foglio excel corrente
+                bool hoLettoHeader = ReadHeader(ref currentExcelSheet, currentTipologiaFoglio);
 
-                int firstMarkerCol = 0;
-                int firstMarkerRow = 0;
+                // non ho letto le informazioni utili di header
+                if (!hoLettoHeader)
+                {
 
-                #region VALIDATORE SU PRIMO VALORE PER L'HEADER CORRENTE
+                    // attribuzione del valore di default per la riga e la colonna in uscita
+                    firstUtilCol = _tracciaCurrentCol;
+                    firstUtilRow = _tracciaCurrentRow;
+                    return Utils.Constants.TipologiaFoglioExcel.Unknown;
+                }
 
-                TrovaPrimoMarker(currentExcelSheet, ExcelMarkers.ROWNUMBER, out firstMarkerCol, out firstMarkerRow);
 
-                #endregion
+                // calcolo la prima informazione utile per il foglio excel corrente
+                CalculateFirstInformation(ref currentExcelSheet, currentTipologiaFoglio, out _tracciaCurrentCol, out _tracciaCurrentRow);
 
 
-                #region VALIDATORE SUGLI HEADERS RIMANENTI + RECUPERO DEGLI INDICI PER LA PRIMA INFORMAZIONE UTILE
-
-                // non ho trovato posizioni utili
-                firstUtilCol = 0;
-                firstUtilRow = 0;
-
-                // eventuale marker sul quale ricevo eccezione
-                string markerExcelIteration = String.Empty;
-
-                // cerco di vedere se trovo tutti gli headers e ritorno il primo indice di riga e colonna per il foglio corrente nel quale ci sia valore utile per poter eseguire l'iterazione finale delle informazioni
-                TrovaSequenzaColonneHeaderIndividuazioneFoglioExcel(currentExcelSheet, firstMarkerCol, firstMarkerRow, ExcelMarkers.GetAllColumnHeadersForGeneralInfoSheet(), out firstUtilCol, out firstUtilRow, out markerExcelIteration);
-
-                #endregion
             }
             catch (Exception e)
             {
-                ServiceLocator.GetLoggingService.GetLoggerExcel.SegnalazioneEccezione(e.Message);
+                string currentExceptionMessage = String.Format(ExceptionMessages.HOTROVATOECCEZIONELETTURAHEADER, currentExcelSheet.Name, _currentMarker, _tracciaCurrentCol, _tracciaCurrentRow);
+                currentExceptionMessage += "\n" + e.Message;
+                throw new Exception(currentExceptionMessage);
             }
+
+            // attribuzione del valore di default per la riga e la colonna in uscita
+            firstUtilCol = _tracciaCurrentCol;
+            firstUtilRow = _tracciaCurrentRow;
+
+
+            return Utils.Constants.TipologiaFoglioExcel.Unknown;
 
             
         }
-
+        
         #endregion
 
 
-        #region METODI PRIVATI - DI SUPPORTO AI METODI PRECEDENTI
-
+        #region METODI PUBBLICI DI RICONOSCIMENTO HEADER E LETTURA PRIMA INFORMAZIONE
+        
         /// <summary>
-        /// Questo metodo trova il primo marker della serie relativamente a un determinato foglio di excel 
-        /// sul quale bisogna capire l'dentità
+        /// Permette di leggere un determinato header all'interno del foglio excel
+        /// con una certa convenzione adottata sul limite di riga e di colonna per l'esecuzione della lettura
         /// </summary>
         /// <param name="currentExcelSheet"></param>
-        /// <param name="currentMarker"></param>
-        /// <param name="columnNumber"></param>
-        /// <param name="rowNumber"></param>
+        /// <param name="currentTipologiaFoglio"></param>
         /// <returns></returns>
-        private void TrovaPrimoMarker(Microsoft.Office.Interop.Excel._Worksheet currentExcelSheet, string currentMarker, out int columnNumber, out int rowNumber)
+        private bool ReadHeader(ref Worksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaFoglio)
         {
-            int currentRow = 0;
-            int currentColumn = 0;
+            // recupero degli header per la certa tipologia di foglio excel
+            List<string> currentHeaderFoglio = new List<string>();
 
-            // indicazione del primo marker che devo incontrare per distinguere questa tipologia di foglio excel
-            string marker1 = String.Empty;
 
-            do
+            if (currentTipologiaFoglio == Utils.Constants.TipologiaFoglioExcel.Informazioni_Lega)
+                currentHeaderFoglio = ExcelMarkers.GetAllColumnHeadersForGeneralInfoSheet();
+
+            // non ho trovato nessuna informazione utile di header per il foglio corrente
+            if (currentHeaderFoglio.Count() == 0)
             {
-
-                do
-                {
-                    marker1 = currentExcelSheet.Cells[currentRow, currentColumn].Value;
-
-                    // ho già trovato il marker corrispondente al primo
-                    if (marker1 == currentMarker)
-                    {
-                        columnNumber = currentColumn;
-                        rowNumber = currentRow;
-
-                        // segnalazione di aver trovato il primo marker per il foglio excel corrente
-                        ServiceLocator.GetLoggingService.GetLoggerExcel.ReadHeaders_HoTrovatoInformazionePerIlPrimoMarker(currentExcelSheet.Name, currentMarker, Constants.TipologiaFoglioExcel.Informazioni_Lega, columnNumber, rowNumber);
-
-                        return;
-                        
-                    }
-                    else currentColumn++;
-
-                }
-                // per convenzione prendo uno spettro di colonne che sia <= 5
-                while (currentColumn <= 5);
-
-                currentRow++;
-                currentColumn = 0;
-
+                ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoNessunaInformazioneDiMarker(currentExcelSheet.Name);
+                return false;
             }
-            // per convenzione mi fermo quando la linea in lettura corrente è = 10
-            while (currentRow <= 10);
 
-            columnNumber = 0;
-            rowNumber = 0;
+            // indicazione sul fatto che trovo la prima informazione di colonna 
+            bool trovato = false;
+            
 
-            // eccezione sul fatto che non si è trovata nessuna informazione per distinguere la tabella delle informazioni generali per la prima tipologia di foglio excel
-            throw new Exception(String.Format(ExceptionMessages.NONHOTROVATOINFORMAZIONEIDENTIFICATORETABELLA, Constants.TipologiaFoglioExcel.Informazioni_Lega.ToString()));
+            foreach(string currentMarkerHeader in currentHeaderFoglio)
+            {
+                // attribuisco il marker per l'analisi corrente
+                _currentMarker = currentMarkerHeader;
+
+                // individuazione di riga per il riconoscimento dell'header corrente 
+                if(_currentMarker == currentHeaderFoglio[0])
+                {
+                    // iterazione per la riga corrente 
+                    while(_tracciaCurrentRow < LIMITROW)
+                    {
+
+                        // iterazione per la colonna corrente
+                        while(_tracciaCurrentCol < LIMITCOL)
+                        {
+                            if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString() == _currentMarker)
+                            {
+                                trovato = true;
+                                break;
+                            }
+                            else
+                                _tracciaCurrentCol++;
+                                
+                        }
+
+                        if (trovato)
+                            break;
+                        else
+                        {
+                            _tracciaCurrentRow++;
+                            continue;
+                        }
+                            
+                    }
+                }
+                else
+                {
+                    // se non trovo nessuna informazione per il primo header allora ritorno false
+                    if(!trovato)
+                    {
+                        ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazionePerIlSeguenteMarker(_currentMarker, _tracciaCurrentCol, _tracciaCurrentRow);
+                        return false;
+                    }
+                    else
+                    {
+                        // incrementazione del marker successivo su colonna 
+                        _tracciaCurrentCol++;
+                        _currentMarker = currentMarkerHeader;
+
+                        // riconoscimento di tutte le altre colonne successive alla prima - se non ritrovo lo stesso marker ritorno false
+                        if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString() != _currentMarker)
+                        {
+                            ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazionePerIlSeguenteMarker(_currentMarker, _tracciaCurrentCol, _tracciaCurrentRow);
+                            return false;
+                        }
+
+                    }
+                }
+            }
+
+            ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoTuttiIMarker(currentExcelSheet.Name, currentTipologiaFoglio);
+
+            return true;
         }
 
 
         /// <summary>
-        /// Permette di capire se trovo esattamente una corrispondenza per l'header relativo ad un determinato foglio excel 
-        /// tra quelli possibili per andare a estrapolare le informazioni (eventualmente) sottostanti
-        /// Viene per questo passata anche la lista di tutti gli headers di colonna, ricavabili dagli excel markers
+        /// Una volta individuata la tipologia per il foglio excel corrente individuo la prima informazione utile per poter 
+        /// poi leggere i dati contenuti nel foglio
         /// </summary>
         /// <param name="currentExcelSheet"></param>
-        /// <param name="currentColIndex"></param>
-        /// <param name="currentRowIndex"></param>
-        /// <param name="currentListHeaders"></param>
-        /// <param name="colIndex"></param>
-        /// <param name="rowIndex"></param>
-        /// <param name="markerExc"></param>
-        /// <returns></returns>
-        private void TrovaSequenzaColonneHeaderIndividuazioneFoglioExcel(Microsoft.Office.Interop.Excel._Worksheet currentExcelSheet, int currentColIndex, int currentRowIndex, List<string> currentListHeaders, out int colIndex, out int rowIndex, out string markerExc)
+        /// <param name=""></param>
+        /// <param name="currentInfoCol"></param>
+        /// <param name="currentInfoRow"></param>
+        private void CalculateFirstInformation(ref Worksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaExcel, out int currentInfoCol, out int currentInfoRow)
         {
-            // imposto i 2 valori per l'iterazione corrente
-            int iterationColumn = currentColIndex;
-            int iterationRow = currentRowIndex;
 
-            foreach (string currentHeader in currentListHeaders)
-            {
-                // mi trovo nella condizione per la quale non è stato riconosciuto un determinato header per l'iterazione corrente 
-                if (currentExcelSheet.Cells[iterationRow, iterationColumn].Value != currentHeader)
-                {
-                    colIndex = 0;
-                    rowIndex = 0;
-                    markerExc = currentHeader;
-                    // eccezione sul fatto che non si è trovata nessuna informazione per distinguere la tabella delle informazioni generali per la prima tipologia di foglio excel
-                    throw new Exception(String.Format(ExceptionMessages.NONHOTROVATOINFORMAZIONECOMPLETADIHEADER, Constants.TipologiaFoglioExcel.Informazioni_Lega.ToString(), markerExc, iterationRow, iterationColumn)); ;
-                    
-                }
+            // attribuzione del valore di default per la riga e la colonna in uscita
+            currentInfoCol = _tracciaCurrentCol;
+            currentInfoRow = _tracciaCurrentRow;
 
-                // segnalazione di aver trovato il primo marker per il foglio excel corrente
-                ServiceLocator.GetLoggingService.GetLoggerExcel.ReadHeaders_HoTrovatoInformazionePerIlPrimoMarker(currentExcelSheet.Name, currentHeader, Constants.TipologiaFoglioExcel.Informazioni_Lega, iterationColumn, iterationRow);
-
-                iterationColumn++;
-            }
-
-            // se trovo tutte le corrispondenze allora imposto il 
-            iterationColumn = currentColIndex;
-
-            while(currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value == null)
-            {
-                currentRowIndex++;
-
-                if (currentRowIndex > 20)
-                {
-                    colIndex = 0;
-                    rowIndex = 0;
-                    markerExc = currentListHeaders.FirstOrDefault();
-
-                    // eccezione sul fatto che non si è trovata nessuna informazione per distinguere la tabella delle informazioni generali per la prima tipologia di foglio excel
-                    throw new Exception(String.Format(ExceptionMessages.NONHOTROVATOINFORMAZIONEUTILEPERFOGLIO, Constants.TipologiaFoglioExcel.Informazioni_Lega.ToString())); ;
-                }    
-            }
-
-            // ritorno true solo in questo caso: ho trovato la corrispondenza per l'header corrente e posso assegnare il primo valore di riga e colonna
-            // per le informazioni da trovare all'interno del documento
-            colIndex = currentColIndex;
-            rowIndex = currentColIndex;
-            markerExc = currentListHeaders.FirstOrDefault();
-
-            // segnalazione di aver trovato correttamente l'header e le prime informazioni di colonna / riga
-            ServiceLocator.GetLoggingService.GetLoggerExcel.ReadHeaders_TrovatoTuttiMarkers(currentExcelSheet.Name, colIndex, rowIndex);
         }
 
         #endregion

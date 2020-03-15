@@ -47,7 +47,19 @@ namespace Tool_Importazione_Leghe.Logging
         /// <summary>
         /// Messaggio relativo alla procedura di import in avvio corrente
         /// </summary>
-        protected string avviamentoDiUnaCertaOperazione = "si sta avviamento la seguente procedura di import: {0}";
+        protected string avviamentoDiUnaCertaOperazione = "si sta avviando la seguente procedura di import: {0}";
+
+
+        /// <summary>
+        /// Permette di formattare la stringa relativa alla procedura di import corrente 
+        /// </summary>
+        /// <param name="currentProceduraImport"></param>
+        /// <returns></returns>
+        protected string FormatProceduraImport(string currentProceduraImport)
+        {
+            currentProceduraImport = currentProceduraImport.Replace("_", " ");
+            return currentProceduraImport;
+        }
         
         #endregion
 

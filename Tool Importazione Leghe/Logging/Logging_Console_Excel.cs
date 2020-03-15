@@ -30,31 +30,7 @@ namespace Tool_Importazione_Leghe.Logging
 
 
         #region MESSAGES
-
-        /// <summary>
-        /// Scrittura del messaggio di ritrovamento delle informazioni per il primo header letto per il documento corrente
-        /// </summary>
-        /// <param name="currentFoglioExcel"></param>
-        /// <param name="primoMarker"></param>
-        /// <param name="currentTipologiaFoglioExcel"></param>
-        /// <param name="currentCol"></param>
-        /// <param name="currentRow"></param>
-        public override void ReadHeaders_HoTrovatoInformazionePerIlPrimoMarker(string currentFoglioExcel, string primoMarker, Constants.TipologiaFoglioExcel currentTipologiaFoglioExcel, int currentCol, int currentRow)
-        {
-            string currentMessage = String.Format(base.hoTrovatoInformazioniPerIlPrimoMarker, currentFoglioExcel, primoMarker, currentTipologiaFoglioExcel.ToString(), currentCol, currentRow);
-            Console.WriteLine(currentMessage);
-
-            // log del messaggio iniziale all'interno del log excel
-            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
-
-        }
         
-
-        public override void ReadHeaders_TrovatoTuttiMarkers(string currentFoglioExcel, int currentCol, int currentRow)
-        {
-            throw new NotImplementedException();
-        }
-
         public override void SegnalazioneEccezione(string currentException)
         {
             throw new NotImplementedException();
@@ -91,6 +67,59 @@ namespace Tool_Importazione_Leghe.Logging
             string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
             currentMessage += FormatModalitaCorrente(modalitaCorrente);
             currentMessage += String.Format(base._hoTrovatoSeguenteFoglioExcel, currentFoglioExcelName, currentFileExcel);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Implementazione a console della mancanza dei marker per l'individuazione del tipo per il foglio excel correntemente in lettura
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        public override void NonHoTrovatoNessunaInformazioneDiMarker(string currentFoglioExcel)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._nonHoTrovatoMarkerPerIlFoglioExcel, currentFoglioExcel);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console di non aver trovato nessuna informazione utile per il riconoscimento di un determinato 
+        /// header di colonna 
+        /// </summary>
+        /// <param name="currentMarker"></param>
+        /// <param name="currentCol"></param>
+        /// <param name="currentRow"></param>
+        public override void NonHoTrovatoInformazionePerIlSeguenteMarker(string currentMarker, int currentCol, int currentRow)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._nonHoTrovatoInformazionePerIlSeguenteMarker, currentMessage, currentCol, currentRow);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console di aver trovato tutti i marker, il foglio excel è stato correttamente identificato 
+        /// per la lettura di certe informazioni tra leghe e concentrazioni
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        /// <param name="currentTipologia"></param>
+        public override void HoTrovatoTuttiIMarker(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologia)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._hoTrovatoTuttiMarker, currentFoglioExcel, currentTipologia);
 
             Console.WriteLine(currentMessage);
 
