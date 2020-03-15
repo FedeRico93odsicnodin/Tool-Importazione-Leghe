@@ -101,7 +101,7 @@ namespace Tool_Importazione_Leghe.Logging
         {
             string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
             currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
-            currentMessage += String.Format(base._nonHoTrovatoInformazionePerIlSeguenteMarker, currentMessage, currentCol, currentRow);
+            currentMessage += String.Format(base._nonHoTrovatoInformazionePerIlSeguenteMarker, currentMarker, currentCol, currentRow);
 
             Console.WriteLine(currentMessage);
 
@@ -120,6 +120,59 @@ namespace Tool_Importazione_Leghe.Logging
             string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
             currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
             currentMessage += String.Format(base._hoTrovatoTuttiMarker, currentFoglioExcel, currentTipologia);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console non aver trovato informazioni utili per il foglio in analisi corrente
+        /// </summary>
+        /// <param name="currentFoglio"></param>
+        /// <param name="currentTipologia"></param>
+        public override void SegnalazioneFoglioContenutoNullo(string currentFoglio, Constants.TipologiaFoglioExcel currentTipologia)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._nonHoTrovatoInformazioniUtiliDiLega, currentFoglio, currentTipologia.ToString());
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Display a console dell'informazione utile trovata per il determinato foglio excel corrente
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        /// <param name="currentTipologia"></param>
+        /// <param name="currentCol"></param>
+        /// <param name="currentRow"></param>
+        public override void SegnalazioneTrovatoContenutoUtile(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologia, int currentCol, int currentRow)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._hoTrovatoContenutoPerIlFoglio, currentCol, currentRow, currentFoglioExcel, currentTipologia.ToString());
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console e nel log che il foglio excel è stato riconosciuto come di una certa tipologia
+        /// </summary>
+        /// <param name="currentFoglio"></param>
+        /// <param name="currentTipologia"></param>
+        public override void HoRiconosciutoSeguenteFoglioCome(string currentFoglio, Constants.TipologiaFoglioExcel currentTipologia)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._hoRiconosciutoFoglioExcelCome, currentFoglio, currentTipologia.ToString());
 
             Console.WriteLine(currentMessage);
 

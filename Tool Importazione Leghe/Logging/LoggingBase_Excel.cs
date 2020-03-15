@@ -49,6 +49,25 @@ namespace Tool_Importazione_Leghe.Logging
         /// Messaggio segnalazione di aver trovato tutti i marker per un determinato foglio excel che viene identificato per una certa lettura
         /// </summary>
         protected string _hoTrovatoTuttiMarker = "ho trovato tutti i marker per il seguente foglio '{0}', identificato come '{1}'";
+
+
+        /// <summary>
+        /// Segnalazione di aver trovato del contenuto utile per il foglio excel riconosciuto di una certa tipologia
+        /// </summary>
+        protected string _hoTrovatoContenutoPerIlFoglio = "ho trovato contenuto in col = {0}, row = {1} per il foglio '{2}' riconosciuto come '{3}', la lettura del contenuto comincerà da qui";
+
+
+        /// <summary>
+        /// Messaggio di indicazione che benche il foglio sia stato riconosciuto effettivamente come foglio di informazione di leghe 
+        /// non si è trovata nessuna informazione utile per questo foglio, quindi viene inserito come foglio a contenuto nullo
+        /// </summary>
+        protected string _nonHoTrovatoInformazioniUtiliDiLega = "non ho trovato nessuna informazione per il foglio '{0}' riconosciuto come '{1}', il foglio è sconosciuto";
+
+
+        /// <summary>
+        /// Messaggio di riconoscimento di un determinato foglio excel contenuto nel file come portatore di informazioni di un certo tipo
+        /// </summary>
+        protected string _hoRiconosciutoFoglioExcelCome = "ho riconosciuto il seguente foglio excel '{0}' come '{1}'";
         
         #endregion
 
@@ -118,6 +137,33 @@ namespace Tool_Importazione_Leghe.Logging
         /// <param name="currentFoglioExcel"></param>
         /// <param name="currentTipologia"></param>
         public abstract void HoTrovatoTuttiIMarker(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologia);
+
+
+        /// <summary>
+        /// Indicazione di aver trovato del contenuto per il determinato foglio excel in lettura corrente
+        /// la lettura effettiva del contenuto avverrà dall'indice indicato
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        /// <param name="currentTipologia"></param>
+        public abstract void SegnalazioneTrovatoContenutoUtile(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologia, int currentCol, int currentRow);
+
+
+
+        /// <summary>
+        /// Indicazione che non si è trovata nessuna informazione utile per un determinato foglio excel riconosciuto come 
+        /// un certo contenitore per dati su lega / concentrazioni
+        /// </summary>
+        /// <param name="currentFoglio"></param>
+        /// <param name="currentTipologia"></param>
+        public abstract void SegnalazioneFoglioContenutoNullo(string currentFoglio, Constants.TipologiaFoglioExcel currentTipologia);
+
+
+        /// <summary>
+        /// Indicazione che il foglio excel è stato riconosciuto come una certa tipologia
+        /// </summary>
+        /// <param name="currentFoglio"></param>
+        /// <param name="currentTipologia"></param>
+        public abstract void HoRiconosciutoSeguenteFoglioCome(string currentFoglio, Constants.TipologiaFoglioExcel currentTipologia);
         
         #endregion
 

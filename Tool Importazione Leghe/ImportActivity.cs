@@ -128,20 +128,23 @@ namespace Tool_Importazione_Leghe
         {
             #region LETTURA INFORMAZIONI FILE EXCEL
 
-            // apertura del file excel corrente - lo apro per leggere le informazioni da caricare a database
-            ServiceLocator.GetExcelServices.OpenFileExcel(Constants.CurrentFileExcelPath, CurrentModalitaExcel.EXCELREADER);
+            // inizio lettura file excel corrente
+            ServiceLocator.GetExcelServices.OpenExcelFile();
+            
+            // separazione delle attività
+            ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorInternalActivity();
+
+            // lettura delle informazioni di base per i fogli excel contenuti 
+            ServiceLocator.GetExcelServices.ReadCurrentSheets(CurrentModalitaExcel.EXCELREADER);
 
             // separazione delle attività
             ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorInternalActivity();
 
-            // lettura primaria di tutti i fogli excel che sono presenti per il documento
-            ServiceLocator.GetExcelServices.ReadSheetsExcelFile(CurrentModalitaExcel.EXCELREADER);
+            // riconoscimento dei fogli nei quali ci sono le informazioni di lega
+            ServiceLocator.GetExcelServices.ReadHeaderLeghe(CurrentModalitaExcel.EXCELREADER);
 
-            // separazione delle attività
-            ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorInternalActivity();
+            Console.ReadKey();
 
-            // riconoscimento dei fogli excel all'interno del file
-            ServiceLocator.GetExcelServices.RecognizeSheetsExcelFile(CurrentModalitaExcel.EXCELREADER);
 
             #endregion
 

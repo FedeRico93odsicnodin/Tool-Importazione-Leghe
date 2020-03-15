@@ -80,7 +80,19 @@ namespace Tool_Importazione_Leghe.Logging
         /// <summary>
         /// Indicazione di problema nell'apertura di un determinato foglio excel che era stato inserito nelle configurazioni
         /// </summary>
-        public static string PROBLEMIAPERTURAFOGLIOEXCEL = "ho avuto problemi nell'apertura del seguente foglio excel {0}";
+        public static string PROBLEMIAPERTURAFOGLIOEXCEL = "ho avuto problemi nell'apertura del seguente file excel '{0}'";
+
+
+        /// <summary>
+        /// Segnalazione che il file excel e la variabile di contenimento sono state trovate a null
+        /// </summary>
+        public static string CONTENUTONULLOVARIABILEEXCEL = "contenuto nullo per la variabile che dovrebbe contenere il file excel, si prega di ricontrollare azioni interne di import";
+
+
+        /// <summary>
+        /// Segnalazione di nessun foglio trovato per la lista contenente tutti i fogli excel mappati sul documento
+        /// </summary>
+        public static string NESSUNFOGLIOCONTENUTOINEXCEL = "nessun foglio excel trovato, si prega di ricontrollare il contenuto del file e le azioni interne di import";
 
 
         /// <summary>
@@ -93,10 +105,7 @@ namespace Tool_Importazione_Leghe.Logging
         /// Indicazione di verifica di una eccezione nel tentativo di lettura del secondo foglio delle concentrazioni
         /// </summary>
         public static string HOTROVATOLASEGUENTEECCEZIONENELLEGGEREINFOFOGLIO2 = "durante la lettura del foglio 2 si è verificata la seguente eccezione {0}";
-
-
-
-
+        
         #endregion
     }
 }

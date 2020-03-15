@@ -1,4 +1,5 @@
 ﻿using Microsoft.Office.Interop.Excel;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,13 +22,13 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <summary>
         /// Tiene traccia dell'indice di colonna corrente per l'eventuale gestione dell'eccezione
         /// </summary>
-        private int _tracciaCurrentCol = 0;
+        private int _tracciaCurrentCol = 1;
 
 
         /// <summary>
         /// Tiene traccia dell'indice di riga corrente per l'eventuale gestione dell'eccezione
         /// </summary>
-        private int _tracciaCurrentRow = 0;
+        private int _tracciaCurrentRow = 1;
 
 
         /// <summary>
@@ -39,13 +40,13 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <summary>
         /// Indica il limite sul numero di righe che posso leggere per trovare l'informazione relativa all'header
         /// </summary>
-        private const int LIMITROW = 20;
+        private const int LIMITROW = 5;
 
 
         /// <summary>
         /// indica il limite sul numero di colonne che posso leggere per trovare l'informazione relativa all'header
         /// </summary>
-        private const int LIMITCOL = 20;
+        private const int LIMITCOL = 5;
 
 
         /// <summary>
@@ -53,6 +54,13 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// utile per l'informazione sul foglio excel corrente
         /// </summary>
         private const int LIMITINFOROW = 10;
+
+
+        /// <summary>
+        /// Indice che viene settato con la posizione di colonna per il primo marker per la restituzione corretta delle prime informazioni 
+        /// utili relative al foglio corrente e da cui partire con la lettura effettiva dei dati
+        /// </summary>
+        private int _posizioneColonnaPrimoMarker = 0;
 
         #endregion 
 
@@ -71,9 +79,13 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <param name="firstUtilCol"></param>
         /// <param name="firstUtilRow"></param>
         /// <returns></returns>
-        internal Utils.Constants.TipologiaFoglioExcel ReadFirstInformation_DatiPrimari(ref Worksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaFoglio, out int firstUtilCol, out int firstUtilRow)
+        internal bool ReadFirstInformation_DatiPrimari(ref ExcelWorksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaFoglio, out int firstUtilCol, out int firstUtilRow)
         {
-
+            // reset attributi di lettura corrente
+            _tracciaCurrentCol = 1;
+            _tracciaCurrentRow = 1;
+            _currentMarker = String.Empty;
+            
             try
             {
                 // vado a leggere l'header per il foglio excel corrente
@@ -86,14 +98,28 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     // attribuzione del valore di default per la riga e la colonna in uscita
                     firstUtilCol = _tracciaCurrentCol;
                     firstUtilRow = _tracciaCurrentRow;
-                    return Utils.Constants.TipologiaFoglioExcel.Unknown;
+                    return false;
+                }
+                
+                // calcolo la prima informazione utile per il foglio excel corrente
+                bool esisteContenuto = CalculateFirstInformation(ref currentExcelSheet, currentTipologiaFoglio, out _tracciaCurrentCol, out _tracciaCurrentRow);
+
+                if(!esisteContenuto)
+                {
+                    // attribuzione del valore di default per la riga e la colonna in uscita
+                    firstUtilCol = _tracciaCurrentCol;
+                    firstUtilRow = _tracciaCurrentRow;
+                    return false;
                 }
 
-
-                // calcolo la prima informazione utile per il foglio excel corrente
-                CalculateFirstInformation(ref currentExcelSheet, currentTipologiaFoglio, out _tracciaCurrentCol, out _tracciaCurrentRow);
-
-
+                // l'unico modo per riconoscere il foglio nella modalita corrente è avere headers e informazioni
+                if(hoLettoHeader && esisteContenuto)
+                {
+                    // attribuzione del valore di default per la riga e la colonna in uscita
+                    firstUtilCol = _tracciaCurrentCol;
+                    firstUtilRow = _tracciaCurrentRow;
+                    return true;
+                }
             }
             catch (Exception e)
             {
@@ -107,7 +133,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
             firstUtilRow = _tracciaCurrentRow;
 
 
-            return Utils.Constants.TipologiaFoglioExcel.Unknown;
+            return false;
 
             
         }
@@ -124,7 +150,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <param name="currentExcelSheet"></param>
         /// <param name="currentTipologiaFoglio"></param>
         /// <returns></returns>
-        private bool ReadHeader(ref Worksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaFoglio)
+        private bool ReadHeader(ref ExcelWorksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaFoglio)
         {
             // recupero degli header per la certa tipologia di foglio excel
             List<string> currentHeaderFoglio = new List<string>();
@@ -153,14 +179,23 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 if(_currentMarker == currentHeaderFoglio[0])
                 {
                     // iterazione per la riga corrente 
-                    while(_tracciaCurrentRow < LIMITROW)
+                    while(_tracciaCurrentRow <= LIMITROW)
                     {
 
                         // iterazione per la colonna corrente
-                        while(_tracciaCurrentCol < LIMITCOL)
+                        while(_tracciaCurrentCol <= LIMITCOL)
                         {
+                            // cella nulla, continuo nella ricerca
+                            if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value == null)
+                            {
+                                _tracciaCurrentCol++;
+                                continue;
+                            }
+                                
+
                             if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString() == _currentMarker)
                             {
+                                _posizioneColonnaPrimoMarker = _tracciaCurrentCol;
                                 trovato = true;
                                 break;
                             }
@@ -173,6 +208,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                             break;
                         else
                         {
+                            _tracciaCurrentCol = 1;
                             _tracciaCurrentRow++;
                             continue;
                         }
@@ -192,6 +228,14 @@ namespace Tool_Importazione_Leghe.ExcelServices
                         // incrementazione del marker successivo su colonna 
                         _tracciaCurrentCol++;
                         _currentMarker = currentMarkerHeader;
+
+                        // cella nulla
+                        if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value == null)
+                        {
+                            ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazionePerIlSeguenteMarker(_currentMarker, _tracciaCurrentCol, _tracciaCurrentRow);
+                            return false;
+                        }
+
 
                         // riconoscimento di tutte le altre colonne successive alla prima - se non ritrovo lo stesso marker ritorno false
                         if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString() != _currentMarker)
@@ -218,13 +262,36 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <param name=""></param>
         /// <param name="currentInfoCol"></param>
         /// <param name="currentInfoRow"></param>
-        private void CalculateFirstInformation(ref Worksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaExcel, out int currentInfoCol, out int currentInfoRow)
+        private bool CalculateFirstInformation(ref ExcelWorksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaExcel, out int currentInfoCol, out int currentInfoRow)
         {
 
-            // attribuzione del valore di default per la riga e la colonna in uscita
-            currentInfoCol = _tracciaCurrentCol;
-            currentInfoRow = _tracciaCurrentRow;
+            // impostazione della colonna sulla quale inizio a leggere le prime informazioni utili per il foglio corrente
+            _tracciaCurrentCol = _posizioneColonnaPrimoMarker;
 
+            // itero sull'indice di riga finche non trovo un valore utile da cui iniziare la lettura delle informazioni per gli steps successivi
+            do
+            {
+                _tracciaCurrentRow++;
+
+                if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value == null)
+                    continue;
+
+                currentInfoCol = _tracciaCurrentCol;
+                currentInfoRow = _tracciaCurrentRow;
+
+                ServiceLocator.GetLoggingService.GetLoggerExcel.SegnalazioneTrovatoContenutoUtile(currentExcelSheet.Name, currentTipologiaExcel, _tracciaCurrentCol, _tracciaCurrentRow);
+
+                return true;
+            }
+            while (_tracciaCurrentRow <= LIMITINFOROW);
+
+
+            ServiceLocator.GetLoggingService.GetLoggerExcel.SegnalazioneFoglioContenutoNullo(currentExcelSheet.Name, currentTipologiaExcel);
+
+            currentInfoCol = 0;
+            currentInfoRow = 0;
+
+            return false;
         }
 
         #endregion

@@ -31,6 +31,11 @@ namespace Tool_Importazione_Leghe.Logging
             throw new NotImplementedException();
         }
 
+        public override void HoRiconosciutoSeguenteFoglioCome(string currentFoglio, Constants.TipologiaFoglioExcel currentTipologia)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void HoTrovatoIlSeguenteFoglioExcel(string currentFoglioExcelName, string currentFileExcel, XlsServices.CurrentModalitaExcel modalitaCorrente)
         {
             throw new NotImplementedException();
@@ -53,6 +58,16 @@ namespace Tool_Importazione_Leghe.Logging
         
 
         public override void SegnalazioneEccezione(string currentException)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SegnalazioneFoglioContenutoNullo(string currentFoglio, Constants.TipologiaFoglioExcel currentTipologia)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SegnalazioneTrovatoContenutoUtile(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologia, int currentCol, int currentRow)
         {
             throw new NotImplementedException();
         }

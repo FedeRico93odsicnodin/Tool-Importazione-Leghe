@@ -1,6 +1,7 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,23 +19,17 @@ namespace Tool_Importazione_Leghe.ExcelServices
     public class XlsServices
     {
         #region ATTRIBUTI PRIVATI
-
-        /// <summary>
-        /// Processo di apertura per il file excel corrente
-        /// </summary>
-        private Application _currentApplicationExcel;
-
-
-        /// <summary>
-        /// File excel aperto per l'istanza di importazione corrente
-        /// </summary>
-        private Workbook _currentFileExcel;
-
-
+        
         /// <summary>
         /// Nome per il file excel correntemente aperto
         /// </summary>
         private string _currentExcelName;
+
+
+        /// <summary>
+        /// Indicazione dell'apertura del file excel corrente
+        /// </summary>
+        private ExcelPackage _currentOpenedExcel;
 
 
         /// <summary>
@@ -80,88 +75,119 @@ namespace Tool_Importazione_Leghe.ExcelServices
             EXCELREADER = 1,
             EXCELWRITER = 2
         }
-
-
+        
+        
         /// <summary>
-        /// Apertura del file excel che viene inserito nelle costanti durante la configurazione
+        /// Con questo metodo si esegue una prima apertura del file excel di partenza 
         /// </summary>
-        /// <param name="currentExcelPath"></param>
-        /// <param name="currentModalitaLettura"></param>
-        public void OpenFileExcel(string currentExcelPath, CurrentModalitaExcel currentModalitaLettura)
+        public void OpenExcelFile()
         {
             try
             {
+                // set licenza corrente
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-                _currentApplicationExcel = new Application();
+                _currentExcelName = GeneralUtilities.GetFileName(Utils.Constants.CurrentFileExcelPath);
 
-                _currentFileExcel = _currentApplicationExcel.Workbooks.Open(currentExcelPath);
+                // apertura excel corrente
+                FileStream currentFileExcel = new FileStream(Utils.Constants.CurrentFileExcelPath,FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                _currentOpenedExcel = new ExcelPackage(currentFileExcel);
 
-                _currentExcelName = GeneralUtilities.GetFileName(currentExcelPath);
-
-                ServiceLocator.GetLoggingService.GetLoggerExcel.AperturaCorrettaFileExcel(_currentExcelName, currentModalitaLettura);
-
+                // segnalazione apertura corretta per il file excel corrente
+                ServiceLocator.GetLoggingService.GetLoggerExcel.AperturaCorrettaFileExcel(_currentExcelName, CurrentModalitaExcel.EXCELREADER);
+                
             }
             catch(Exception e)
             {
-                string currentExceptionMsg = String.Format(ExceptionMessages.PROBLEMIAPERTURAFOGLIOEXCEL, currentExcelPath);
+                string currentExceptionMsg = String.Format(ExceptionMessages.PROBLEMIAPERTURAFOGLIOEXCEL, _currentExcelName);
                 currentExceptionMsg += "\n";
                 currentExceptionMsg += e.Message;
 
-                throw new Exception(currentExceptionMsg);
+                ServiceLocator.GetLoggingService.GetLoggerExcel.SegnalazioneEccezione(currentExceptionMsg);
             }
+
         }
 
 
         /// <summary>
-        /// Permette il display di tutti i fogli di lavoro contenuti all'interno del file excel aperto
+        /// Permette di leggere le informazioni di base per i fogli excel presenti nel documento che 
+        /// è stato appena aperto
         /// </summary>
-        /// <param name="currentModalita"></param>
-        public void ReadSheetsExcelFile(CurrentModalitaExcel currentModalita)
+        /// <param name="currentExcelFile"></param>
+        public void ReadCurrentSheets(CurrentModalitaExcel CurrentModalita)
         {
+            if (_currentOpenedExcel == null)
+                throw new Exception(ExceptionMessages.CONTENUTONULLOVARIABILEEXCEL);
+
+
+            // segnalazione della posizione per il file excel corrente
+            int currentSheetPosition = 0;
+
+            // inizializzazione della lista relativa ai fogli excel in lettura corrente
             _currentSheetsExcel = new List<ExcelSheet>();
 
-            int indexExcelSheet = 1;
-
-            foreach(Worksheet currentWorksheet in _currentFileExcel.Sheets)
+            foreach(ExcelWorksheet currentWorksheet in _currentOpenedExcel.Workbook.Worksheets)
             {
-                string sheetName = currentWorksheet.Name;
+                string currentSheetName = currentWorksheet.Name;
 
-                ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoIlSeguenteFoglioExcel(sheetName, _currentExcelName, currentModalita);
+                ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoIlSeguenteFoglioExcel(currentSheetName, _currentExcelName, CurrentModalita);
 
-                ExcelSheet sheetObj = new ExcelSheet();
+                ExcelSheet currentSheetInfo = new ExcelSheet();
 
-                sheetObj.SheetName = sheetName;
-                sheetObj.SheetName = _currentExcelName;
-                sheetObj.TipologiaRiconosciuta = Utils.Constants.TipologiaFoglioExcel.Unknown;
-                sheetObj.PositionInExcelFile = indexExcelSheet;
-                sheetObj.Letto = false;
+                currentSheetInfo.SheetName = currentSheetName;
+                currentSheetInfo.ExcelFile = _currentExcelName;
+                currentSheetInfo.PositionInExcelFile = currentSheetPosition;
+                currentSheetInfo.Letto = false;
+                currentSheetInfo.TipologiaRiconosciuta = Utils.Constants.TipologiaFoglioExcel.Unknown;
+                currentSheetInfo.Letto = false;
+                currentSheetInfo.Info_Col = 0;
+                currentSheetInfo.Info_Row = 0;
 
-                _currentSheetsExcel.Add(sheetObj);
+                _currentSheetsExcel.Add(currentSheetInfo);
 
-                indexExcelSheet++;
-                
+                currentSheetPosition++;
             }
         }
 
 
         /// <summary>
-        /// Permette il riconoscimento dei diversi fogli excel presenti all'interno del file 
-        /// in modo da poter poi prendere le informazioni per la lega e per le concentrazioni
+        /// Permette la lettura corretta degli headers e quindi la distinzione di tutti i fogli per i quali 
+        /// sono presenti delle informazioni di lega che dovranno poi essere mappate dalle diverse concentrazioni 
+        /// contenute nei fogli rimanenti
         /// </summary>
-        public void RecognizeSheetsExcelFile(CurrentModalitaExcel currentModalita) 
+        /// <param name="CurrentModalita"></param>
+        public void ReadHeaderLeghe(CurrentModalitaExcel CurrentModalita)
         {
-            foreach(ExcelSheet currentSheet in _currentSheetsExcel)
+            if (_currentSheetsExcel == null)
+                throw new Exception(ExceptionMessages.NESSUNFOGLIOCONTENUTOINEXCEL);
+
+            if (_currentSheetsExcel.Count == 0)
+                throw new Exception(ExceptionMessages.NESSUNFOGLIOCONTENUTOINEXCEL);
+
+            foreach(ExcelSheet currentExcelSheet in _currentSheetsExcel)
             {
-                // reccupero del foglio excel vero e proprio dal documento aperto negli steps precedenti
-                Worksheet currentSheetExcel = _currentFileExcel.Sheets[currentSheet.PositionInExcelFile];
+                int currentColInfo = 0;
+                int currentRowInfo = 0;
+
+                int currentSheetPos = currentExcelSheet.PositionInExcelFile;
+
+                ExcelWorksheet currentFoglio = _currentOpenedExcel.Workbook.Worksheets[currentSheetPos];
+
+                // controllo che il foglio sia di informazioni generali di lega
+                if (_currentReadHeadersServices.ReadFirstInformation_DatiPrimari(ref currentFoglio, Constants.TipologiaFoglioExcel.Informazioni_Lega, out currentColInfo, out currentRowInfo))
+                {
+                    // riconscimento del foglio come contenitore di informazioni generali di lega
+                    ServiceLocator.GetLoggingService.GetLoggerExcel.HoRiconosciutoSeguenteFoglioCome(currentFoglio.Name, Constants.TipologiaFoglioExcel.Informazioni_Lega);
+
+                    currentExcelSheet.TipologiaRiconosciuta = Constants.TipologiaFoglioExcel.Informazioni_Lega;
+                    currentExcelSheet.Info_Col = currentColInfo;
+                    currentExcelSheet.Info_Row = currentRowInfo;
+                }
 
 
-                // prime informazioni di riga e colonna utili per la lettura delle informazioni successive
-                int currentInfoCol = 0;
-                int currentInfoRow = 0;
+                // separazione delle attività
+                ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorInternalActivity();
 
-                // riconoscimento della tipologia del foglio excel corrente
-                _currentReadHeadersServices.ReadFirstInformation_DatiPrimari(ref currentSheetExcel, Utils.Constants.TipologiaFoglioExcel.Informazioni_Lega, out currentInfoCol, out currentInfoRow);
             }
         }
 
