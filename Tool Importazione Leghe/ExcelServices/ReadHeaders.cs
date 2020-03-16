@@ -96,8 +96,34 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// </summary>
         private const int LIMITROW_LETTURACONCENTRAZIONI = 15;
 
-        #endregion 
 
+        /// <summary>
+        /// Questa lista contiene tutti gli headers necessari al ricoscimento del quadrante di header per le diverse concentrazioni
+        /// del materiale in questione
+        /// </summary>
+        private List<string> _concentrationsList;
+
+
+        /// <summary>
+        /// Constante che mi dice quale deve essere la spaziatura massima tra gli elementi contenuti all'interno di un quadrante delle concentrazioni
+        /// e per quanto riguarda la linea (le colonne devono essere invece tutte attaccate)
+        /// </summary>
+        private const int LIMITBETWEENCONCENTRATIONSROWS = 5;
+
+        #endregion
+
+
+        #region COSTRUTTORE
+
+        /// <summary>
+        /// Inizializzazione della lista di header per le concentrazioni
+        /// </summary>
+        public ReadHeaders()
+        {
+            _concentrationsList = ExcelMarkers.GetAllColumnHeadersForConcentrationsInfoSheet();
+        }
+
+        #endregion
 
 
         #region METODI PUBBLICI - MI DICONO QUALE SIA IL FOGLIO EXCEL CORRNTE
@@ -397,10 +423,13 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
                     // se non mi trovo piu nei limit allora rompo il ciclo
                     if (!CheckLimitRowCurrentIteration(_tracciaCurrentCol, _tracciaCurrentRow))
+                    {
+                        _tracciaCurrentRow++;
                         break;
-
-
+                    }
+                    
                     // ho trovato una informazione
+
                 }
                 while (_tracciaCurrentRow <= MaxExcelSheetPos_row);
 
@@ -432,7 +461,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 return _tracciaCurrentCol++;
 
             // calcolo del massimo indice di colonna 
-            int newColIndex = _currentPositionsConcentrations.Select(x => x.EndConc_X).Max();
+            int newColIndex = _currentPositionsConcentrations.Select(x => x.Conc_Start_Right_X).Max();
 
             return newColIndex++;
         }
@@ -452,7 +481,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 return false;
 
             // trovo l'indice di riga massimo letto per l'ultimo elemento su questa colonna 
-            int currentMaxRow = _currentPositionsConcentrations.Where(x => x.StartConc_X == currentColIndex).Select(x => x.EndConc_Y).Max();
+            int currentMaxRow = _currentPositionsConcentrations.Where(x => x.Conc_Start_Left_X == currentColIndex).Select(x => x.Conc_Start_Right_Y).Max();
 
             if (currentRowIndex > currentMaxRow + LIMITROW_LETTURACONCENTRAZIONI)
                 return false;
@@ -466,15 +495,234 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// riga e colonna riscontrati, viene restituito l'oggetto e ci si muovera in verticale rispetto
         /// alla lettura che ne viene fatta
         /// </summary>
+        /// <param name="currentExcelSheet"></param>
         /// <param name="currentColIndex"></param>
         /// <param name="currentRowIndex"></param>
         /// <returns></returns>
-        private ExcelConcQuadrant FillMaterialConcentrationInfo(int currentColIndex, int currentRowIndex)
+        private ExcelConcQuadrant FillMaterialConcentrationInfo(ref ExcelWorksheet currentExcelSheet, int currentColIndex, int currentRowIndex)
         {
+            // indicazione su aver trovato o meno tutti gli elementi
+            bool hoTrovatoNome = false;
+            bool hoTrovatoHeader = false;
+            bool hoTrovatoConcentrazioni = false;
+
+
+            // tengo in memoria gli indici da cui inizio a individuare la tabella
+            int startingIndexTitle_Left_X = currentRowIndex;
+            int startingIndexTitle_Left_Y = currentColIndex;
+
+            // tengo in memoria gli indici da cui inizio a individuare la riga degli headers
+            int indexHeader_Left_X = 0;
+            int indexHeader_Left_Y = 0;
+            int indexHeader_Right_X = 0;
+            int indexHeader_Right_Y = 0;
+
+            // tengo in memoria gli indici del quadrante relativo alle concentrazioni
+            int index_Conc_Left_Start_X = 0;
+            int index_Conc_Left_Start_Y = 0;
+
+            int index_Conc_Left_End_X = 0;
+            int index_Conc_Left_End_Y = 0;
+
+            int index_Conc_Right_Start_X = 0;
+            int index_Conc_Right_Start_Y = 0;
+
+            int index_Conc_Right_End_X = 0;
+            int index_Conc_Right_End_Y = 0;
+
+            // inizializzazione oggetto contenente gli indici
             ExcelConcQuadrant currentQuadrantConcentrations = new ExcelConcQuadrant();
 
 
+            #region VERIFICA NOME
+
+            
+
+            if(currentExcelSheet.Cells[startingIndexTitle_Left_X, startingIndexTitle_Left_Y].Value == null)
+                ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazioniPerTitoloMateriale(startingIndexTitle_Left_X, startingIndexTitle_Left_Y);
+            // attribuzione degli indici di title
+            else
+            {
+                hoTrovatoNome = true;
+
+                ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoInformazioniPerTitoloDelMateriale(startingIndexTitle_Left_X, startingIndexTitle_Left_Y);
+
+                currentQuadrantConcentrations.TitlePos_X = startingIndexTitle_Left_X;
+                currentQuadrantConcentrations.TitlePos_Y = startingIndexTitle_Left_Y;
+            }
+
+            #endregion
+
+
+            // questa informazione mi serve per stabilire quale sia il limite sia per il quadrante di header che per quello delle concentrazioni
+            int colonnaFineLetturaHeader = 0;
+
+
+            #region VERIFICA HEADER
+
+            if (hoTrovatoNome)
+            {
+
+                do
+                {
+                    // incremento rispetto al title corrente    
+                    currentRowIndex++;
+
+                    hoTrovatoHeader = CheckHeadersConcentrations(ref currentExcelSheet, currentColIndex, currentRowIndex, out colonnaFineLetturaHeader);
+
+                    if (hoTrovatoHeader)
+                    {
+                        // attribuzione coordinate quadrante di header
+                        indexHeader_Left_X = currentRowIndex;
+                        indexHeader_Left_Y = currentColIndex;
+                        indexHeader_Right_X = currentRowIndex;
+                        indexHeader_Right_Y = colonnaFineLetturaHeader;
+
+                        ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoInformazioniHeaderPerQuadranteCorrente(currentColIndex, currentRowIndex);
+                        break;
+                    }
+
+                }
+                // mi fermo nel caso non abbia trovato nessuna posizione valida
+                while (currentRowIndex <= startingIndexTitle_Left_Y + LIMITROW_LETTURACONCENTRAZIONI);
+
+                // segnalazione di non aver trovato informazioni header per il quadrante corrente
+                if (!hoTrovatoHeader)
+                    ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazioniHeaderPerQuadranteCorrente(currentColIndex, currentRowIndex);
+
+            }
+
+            #endregion
+
+
+            #region VERIFICA CONCENTRAZIONI
+
+            if (hoTrovatoNome && hoTrovatoHeader)
+            {
+                int nextRowIndex = 0;
+                int numElementi = 0;
+
+
+                do
+                {
+                    // incremento rispetto al title corrente    
+                    currentRowIndex++;
+
+                    hoTrovatoConcentrazioni = CalculateLastRowConcentrationsValue(ref currentExcelSheet, currentColIndex, currentRowIndex, out nextRowIndex, out numElementi);
+
+                    if(hoTrovatoConcentrazioni)
+                    {
+                        index_Conc_Left_Start_X = currentColIndex;
+                        index_Conc_Left_Start_Y = currentRowIndex;
+
+                        index_Conc_Left_End_X = currentColIndex;
+                        index_Conc_Left_End_Y = nextRowIndex;
+
+                        index_Conc_Right_Start_X = colonnaFineLetturaHeader;
+                        index_Conc_Right_Start_Y = currentRowIndex;
+
+                        index_Conc_Right_End_X = colonnaFineLetturaHeader;
+                        index_Conc_Right_End_Y = nextRowIndex;
+
+                        break;
+                    }
+
+                }
+                while (currentRowIndex <= indexHeader_Left_Y + LIMITROW_LETTURACONCENTRAZIONI);
+
+
+                if(!hoTrovatoConcentrazioni)
+                {
+                    // TODO : inserire messaggio di non avvenuta lettura per le concentrazioni
+                }
+
+            }
+            #endregion
+
+
             return currentQuadrantConcentrations;
+        }
+
+
+        /// <summary>
+        /// Permette di capire se una certa linea in lettura contiene tutte le instestazioni relative all'header per 
+        /// le concentrazioni in lettura corrente per il quadrante
+        /// </summary>
+        /// <param name="currentExcelSheet"></param>
+        /// <param name="currentColIndex"></param>
+        /// <param name="currentRowIndex"></param>
+        /// <param name="nextColIndex"></param>
+        /// <returns></returns>
+        private bool CheckHeadersConcentrations(ref ExcelWorksheet currentExcelSheet, int currentColIndex, int currentRowIndex, out int nextColIndex)
+        {
+            nextColIndex = 0;
+
+            foreach(string currentHeaderConc in _concentrationsList)
+            {
+                if (currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value == null)
+                    return false;
+
+                if (currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value.ToString() != currentHeaderConc)
+                    return false;
+
+                currentColIndex++;
+            }
+
+            // indice di colonna di fine lettura header
+            nextColIndex = currentColIndex - 1;
+
+            return true;
+        }
+
+
+        /// <summary>
+        /// Mi permette di trovare l'ultima cella leggendo la prima colonna degli elementi per la quale ci si ritrova
+        /// ad avere ancora contenuto nullo (nei limiti dettati da row index)
+        /// </summary>
+        /// <param name="currentExcelSheet"></param>
+        /// <param name="currentColIndex"></param>
+        /// <param name="currentRowIndex"></param>
+        /// <param name="nextRowIndex"></param>
+        /// <param name="numElementi"></param>
+        /// <returns></returns>
+        private bool CalculateLastRowConcentrationsValue(ref ExcelWorksheet currentExcelSheet, int currentColIndex, int currentRowIndex, out int nextRowIndex, out int numElementi)
+        {
+            nextRowIndex = currentRowIndex;
+            numElementi = 0;
+
+            // iterazione sugli elementi che potrebbero esserci all'interno del quadrante
+            int elementsIterations = 0;
+
+            do
+            {
+                if (currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value == null)
+                {
+                    // non trovo nessun elemento da leggere per i materiale corrente
+                    if (elementsIterations == 0)
+                        return false;
+
+                    nextRowIndex = currentRowIndex;
+                    numElementi = elementsIterations;
+                    return true;
+                }
+
+
+                // leggo ogni volta un elemento se la cella contiene un valore 
+                if (currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value != null)
+                {
+                    elementsIterations++;
+                    continue;
+                }
+
+
+            }
+            // itero finche non arrivo al numero massimo di elementi per cui è possibile la lettura
+            while (elementsIterations <= Utils.Constants.CurrentListElementi.Count);
+
+            numElementi = elementsIterations;
+            nextRowIndex = currentRowIndex;
+
+            return false;
         }
 
         #endregion

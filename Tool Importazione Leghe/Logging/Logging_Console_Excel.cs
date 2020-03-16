@@ -179,6 +179,102 @@ namespace Tool_Importazione_Leghe.Logging
             LoggingService.LogInADocument(currentMessage, base._currentLogFile);
         }
 
+
+        /// <summary>
+        /// Segnalazione a console di avere trovato informazione relativa al name per la lega correntemente in analisi nella lettura delle concentrazioni
+        /// </summary>
+        /// <param name="currentCol"></param>
+        /// <param name="currentRow"></param>
+        public override void HoTrovatoInformazioniPerTitoloDelMateriale(int currentCol, int currentRow)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._hoTrovatoInformazionePerIlTitoloMatariale, currentCol, currentRow);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console di non avere trovato informazione relativa al name per la lega correntemente in analisi nella lettura delle concentrazioni
+        /// </summary>
+        /// <param name="currentCol"></param>
+        /// <param name="currentRow"></param>
+        public override void NonHoTrovatoInformazioniPerTitoloMateriale(int currentCol, int currentRow)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._nonHoTrovatoInformazionePerIlTitoloMateriale, currentCol, currentRow);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console e nel log di aver trovato le giuste informazioni di header concentrazioni per il quadrante corrente
+        /// </summary>
+        /// <param name="currentCol"></param>
+        /// <param name="currentRow"></param>
+        public override void HoTrovatoInformazioniHeaderPerQuadranteCorrente(int currentCol, int currentRow)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._hoTrovatoHeaderConcentrationsQuadranteCorrente, currentCol, currentRow);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console e nel log di non aver trovato le giuste informazioni di header concentrazioni per il quadrante corrente
+        /// </summary>
+        /// <param name="currentCol"></param>
+        /// <param name="currentRow"></param>
+        public override void NonHoTrovatoInformazioniHeaderPerQuadranteCorrente(int currentCol, int currentRow)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._nonHoTrovatoHeaderConcentrationsQuadranteCorrente, currentCol, currentRow);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console di aver trovato concentrazioni per il quadrante corrente
+        /// </summary>
+        /// <param name="numElementi"></param>
+        public override void HoTrovatoConcentrazioniPerIlQuadranteCorrente(int numElementi)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console di non aver trovato concentrazioni per il quadrante corrente
+        /// </summary>
+        public override void NonHoTrovatoConcentrazioniPerIlQuadranteCorrente()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console di aver trovato un numero di elementi maggiori rispetto a tutti quelli disponibili
+        /// </summary>
+        public override void HoTrovatoConcentrazioniPerUnNumeroMaggioreDiElementi()
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
 

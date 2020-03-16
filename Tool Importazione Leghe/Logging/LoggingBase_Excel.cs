@@ -68,7 +68,52 @@ namespace Tool_Importazione_Leghe.Logging
         /// Messaggio di riconoscimento di un determinato foglio excel contenuto nel file come portatore di informazioni di un certo tipo
         /// </summary>
         protected string _hoRiconosciutoFoglioExcelCome = "ho riconosciuto il seguente foglio excel '{0}' come '{1}'";
-        
+
+        #region RICONOSCIMENTO QUADRANTI CONCENTRAZIONI
+
+        /// <summary>
+        /// Messaggio relativo a nessun riconscimento del nome del materiale per il qualdrante delle concentrazioni
+        /// </summary>
+        protected string _nonHoTrovatoInformazionePerIlTitoloMateriale = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI col = {0}, row = {1}: non ho trovato nessuna informazione per il titolo del materiale";
+
+
+        /// <summary>
+        /// Messaggio relativo al riconoscimento del nome per il materiale per il quadrante delle concentrazioni
+        /// </summary>
+        protected string _hoTrovatoInformazionePerIlTitoloMatariale = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI col = {0}, row = {1}: ho trovato informazione valida per il titolo del materiale";
+
+
+        /// <summary>
+        /// Messaggio relativo alla segnalazione di aver trovato la giusta corrispondenza di header per le concentrazioni e per il quadrante corrente
+        /// </summary>
+        protected string _hoTrovatoHeaderConcentrationsQuadranteCorrente = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI col = {0}, row = {1}: ho trovato inforazione valida di header per le concentrazioni";
+
+
+        /// <summary>
+        /// Messaggio relativo alla segnalazione di non aver trovato la giusta corrispondenza di header per le concentrazioni e per il quadrante corrente
+        /// </summary>
+        protected string _nonHoTrovatoHeaderConcentrationsQuadranteCorrente = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI col = {0}, row = {1}: non ho trovato informazione valida di header per le concentrazioni";
+
+
+        /// <summary>
+        /// Messaggio di segnalazione di avvenuto riconoscimento corretto della lettura del quadrante di tutte le concentrazioni disponibili per il materiale corrente 
+        /// </summary>
+        protected string _hoTrovatoConcentrazioniPerQuadranteCorrente = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI: ho trovato le concentrazioni per il quadrante corrente, dovrò leggere {0} elemnti";
+
+
+        /// <summary>
+        /// Messaggio di segnalazione di riconoscimento scorretto del quadrante dove dovrebbero essere presenti le concentrazioni disponibili per il materiale corrente
+        /// </summary>
+        protected string _nonHoTrovatoConcentrazioniPerQuadranteCorrente = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI: non ho trovato concentrazioni per il quadrante corrente";
+
+
+        /// <summary>
+        /// Caso eccezionale: lo letto concentrazioni per elementi in un numero maggiore rispetto a tutti quelli consentiti
+        /// </summary>
+        protected string _hoTrovatoConcentrazioniPerNumElementiMaggiore = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI: ho trovato concentrazioni per un numero maggiore di elementi possibili per il quadrante corrente";
+
+        #endregion
+
         #endregion
 
 
@@ -164,7 +209,64 @@ namespace Tool_Importazione_Leghe.Logging
         /// <param name="currentFoglio"></param>
         /// <param name="currentTipologia"></param>
         public abstract void HoRiconosciutoSeguenteFoglioCome(string currentFoglio, Constants.TipologiaFoglioExcel currentTipologia);
-        
+
+
+        #region RICONOSCIMENTO QUADRANTE CONCENTRAZIONI
+
+        /// <summary>
+        /// Indicazione di trovo informazioni per il titolo del materiale corrente - la cella è correttamente mappata
+        /// </summary>
+        /// <param name="currentCol"></param>
+        /// <param name="currentRow"></param>
+        public abstract void HoTrovatoInformazioniPerTitoloDelMateriale(int currentCol, int currentRow);
+
+
+        /// <summary>
+        /// Indicazione di non trovo informazioni per il titolo del materiale corrente - la cella non è correttamente mappata
+        /// </summary>
+        /// <param name="currentCol"></param>
+        /// <param name="currentRow"></param>
+        public abstract void NonHoTrovatoInformazioniPerTitoloMateriale(int currentCol, int currentRow);
+
+
+        /// <summary>
+        /// Indicazione di aver trovato informazioni di header per il quadrante corrente delle concentrazioni
+        /// </summary>
+        /// <param name="currentCol"></param>
+        /// <param name="currentRow"></param>
+        public abstract void HoTrovatoInformazioniHeaderPerQuadranteCorrente(int currentCol, int currentRow);
+
+
+        /// <summary>
+        /// Indicazione di non aver trovato informazioni di header per il quadrante corrente delle concentrazioni
+        /// </summary>
+        /// <param name="currentCol"></param>
+        /// <param name="currentRow"></param>
+        public abstract void NonHoTrovatoInformazioniHeaderPerQuadranteCorrente(int currentCol, int currentRow);
+
+
+        /// <summary>
+        /// Indicazione di aver trovato concentrazioni valide per il quadrante corrente con indicazioni sul numero di elementi individuati 
+        /// nella lettura
+        /// </summary>
+        /// <param name="numElementi"></param>
+        public abstract void HoTrovatoConcentrazioniPerIlQuadranteCorrente(int numElementi);
+
+
+        /// <summary>
+        /// Indicazione di non aver trovato nessuna concentrazione valida per il quadrante corrente
+        /// </summary>
+        public abstract void NonHoTrovatoConcentrazioniPerIlQuadranteCorrente();
+
+
+        /// <summary>
+        /// Indicazione del caso eccezionale per il quale si trova un numero maggiore di elementi e quindi di concentrazioni da leggere 
+        /// per il materiale corrente
+        /// </summary>
+        public abstract void HoTrovatoConcentrazioniPerUnNumeroMaggioreDiElementi();
+
+        #endregion
+
         #endregion
 
 

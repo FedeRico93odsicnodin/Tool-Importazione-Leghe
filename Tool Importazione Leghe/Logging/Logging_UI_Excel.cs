@@ -36,7 +36,27 @@ namespace Tool_Importazione_Leghe.Logging
             throw new NotImplementedException();
         }
 
+        public override void HoTrovatoConcentrazioniPerIlQuadranteCorrente(int numElementi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void HoTrovatoConcentrazioniPerUnNumeroMaggioreDiElementi()
+        {
+            throw new NotImplementedException();
+        }
+
         public override void HoTrovatoIlSeguenteFoglioExcel(string currentFoglioExcelName, string currentFileExcel, XlsServices.CurrentModalitaExcel modalitaCorrente)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void HoTrovatoInformazioniHeaderPerQuadranteCorrente(int currentCol, int currentRow)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void HoTrovatoInformazioniPerTitoloDelMateriale(int currentCol, int currentRow)
         {
             throw new NotImplementedException();
         }
@@ -46,7 +66,22 @@ namespace Tool_Importazione_Leghe.Logging
             throw new NotImplementedException();
         }
 
+        public override void NonHoTrovatoConcentrazioniPerIlQuadranteCorrente()
+        {
+            throw new NotImplementedException();
+        }
+
         public override void NonHoTrovatoInformazionePerIlSeguenteMarker(string currentMarker, int currentCol, int currentRow)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void NonHoTrovatoInformazioniHeaderPerQuadranteCorrente(int currentCol, int currentRow)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void NonHoTrovatoInformazioniPerTitoloMateriale(int currentCol, int currentRow)
         {
             throw new NotImplementedException();
         }
