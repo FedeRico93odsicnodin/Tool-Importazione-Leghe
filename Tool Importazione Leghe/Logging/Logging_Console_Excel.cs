@@ -254,7 +254,13 @@ namespace Tool_Importazione_Leghe.Logging
         /// <param name="numElementi"></param>
         public override void HoTrovatoConcentrazioniPerIlQuadranteCorrente(int numElementi)
         {
-            throw new NotImplementedException();
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._hoTrovatoConcentrazioniPerQuadranteCorrente, numElementi);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
         }
 
 
@@ -263,7 +269,13 @@ namespace Tool_Importazione_Leghe.Logging
         /// </summary>
         public override void NonHoTrovatoConcentrazioniPerIlQuadranteCorrente()
         {
-            throw new NotImplementedException();
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._nonHoTrovatoConcentrazioniPerQuadranteCorrente);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
         }
 
 
@@ -272,7 +284,47 @@ namespace Tool_Importazione_Leghe.Logging
         /// </summary>
         public override void HoTrovatoConcentrazioniPerUnNumeroMaggioreDiElementi()
         {
-            throw new NotImplementedException();
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._hoTrovatoConcentrazioniPerNumElementiMaggiore);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione in console dell'individuazione di un determinato quadrante di lettura concentrazioni per un materiale 
+        /// e per il foglio excel che viene passato in input
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        public override void InserimentoQuadranteLetturaConcentrazioniPerFoglio(string currentFoglioExcel)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._hoAppenaInseritoUnQuadranteDiLettura, currentFoglioExcel);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione che non si è trovato nessun quadrante di lettura per il foglio passato in input che quindi non viene considerato 
+        /// come un foglio di concentrazioni materiali
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        public override void NonHoTrovatoNessunQuadranteConcentrazioniPerFoglio(string currentFoglioExcel)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._nonHoTrovatoNessunQuadranteDiLettura, currentFoglioExcel);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
         }
 
         #endregion

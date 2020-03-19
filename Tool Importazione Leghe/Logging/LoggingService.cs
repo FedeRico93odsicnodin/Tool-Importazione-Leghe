@@ -38,7 +38,13 @@ namespace Tool_Importazione_Leghe.Logging
         /// Messaggio di lettura corretta il file di configurazioni e che per avviare la procedura va premuto un tasto
         /// </summary>
         private static string messaggioPartenzaImportazione = "file di configurazioni corretto, premere un tasto per avviare la procedura di import";
-        
+
+
+        /// <summary>
+        /// Messaggio di load delle liste di partenza di import, tra queste liste di partenza è anche presente quella relativa agli elementi correnti
+        /// </summary>
+        private static string messaggioLoadInizialeListeDiPartenza = "sto facendo il load delle informazioni iniziali di import";
+
         #endregion
 
 
@@ -72,6 +78,12 @@ namespace Tool_Importazione_Leghe.Logging
         /// Servizio corrente per la gestione del log delle attività di import
         /// </summary>
         private LoggingBase_ImportActivity _loggingBaseImportActivity;
+
+
+        /// <summary>
+        /// Servizio corrente per il log per gli altri servizi diversi e di contorno rispetto all'imprtazione
+        /// </summary>
+        private LoggingBase_Others _loggingOthers;
 
 
         /// <summary>
@@ -218,6 +230,7 @@ namespace Tool_Importazione_Leghe.Logging
             this._loggingServiceExcel.LoggerFile = Constants.LoggerFolder + Constants.LoggerProcedure;
             this._loggingServiceXML.LoggerFile = Constants.LoggerFolder + Constants.LoggerProcedure;
             this._loggingBaseImportActivity.LoggerFile = Constants.LoggerFolder + Constants.LoggerProcedure;
+            this._loggingOthers.LoggerFile = Constants.LoggerFolder + Constants.LoggerProcedure;
         }
 
 
@@ -251,6 +264,7 @@ namespace Tool_Importazione_Leghe.Logging
                 _loggingServiceXML = new Logging_Console_XML(Constants.LoggerFolder + Constants.LoggerProcedure);
                 _loggingBaseConfigurations = new Logging_Console_Configurations(Constants.LoggerFolder + Constants.LoggerProcedure);
                 _loggingBaseImportActivity = new Logging_Console_ImportActivity(Constants.LoggerFolder + Constants.LoggerProcedure);
+                _loggingOthers = new Logging_Console_Others(Constants.LoggerFolder + Constants.LoggerProcedure);
 
 
             }
@@ -261,6 +275,7 @@ namespace Tool_Importazione_Leghe.Logging
                 _loggingServiceExcel = new Logging_UI_Excel(Constants.LoggerFolder + Constants.LoggerProcedure);
                 _loggingServiceXML = new Logging_UI_XML(Constants.LoggerFolder + Constants.LoggerProcedure);
                 _loggingBaseConfigurations = new Logging_UI_Configurations(Constants.LoggerFolder + Constants.LoggerProcedure);
+                // TODO: inserimento dell'eventuale implementazione della classe per gli altri servizi
             }
         }
 
@@ -358,6 +373,23 @@ namespace Tool_Importazione_Leghe.Logging
 
             LogInADocument(currentMessage, Constants.LoggerFolder + Constants.LoggerProcedure);
             
+        }
+
+
+        /// <summary>
+        /// Segnalazione di stare leggendo le liste di partenza dal database, queste liste sono 
+        /// indispensabili per l'esecuzione di tutta la procedura di import successiva
+        /// </summary>
+        public void StoLeggendoListeInizialiElementi()
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+
+            currentMessage += loggingIdentifier;
+            currentMessage += messaggioLoadInizialeListeDiPartenza;
+
+            Console.WriteLine(currentMessage);
+
+            LogInADocument(currentMessage, Constants.LoggerFolder + Constants.LoggerProcedure);
         }
 
         #endregion

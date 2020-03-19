@@ -15,10 +15,10 @@ namespace ImportazioneLeghe_Console
     {
         static void Main(string[] args)
         {
-            // inizializzazione del timer
+            // 1- inizializzazione del timer
             ServiceLocator.GetConfigurations.StartTimerOnProcedure();
 
-            // lettura delle configurazioni correnti
+            // 2- lettura delle configurazioni correnti
             ServiceLocator.GetConfigurations.ReadConfigFile();
 
             if(Constants.HoLettoTutteLeConfigurazioni)
@@ -26,12 +26,26 @@ namespace ImportazioneLeghe_Console
                 ServiceLocator.GetLoggingService.HoLettoConfigurazioniPremereUnTastoPerContinuare();
                 Console.ReadKey();
 
-                // avviamento import corrente
+                // 3- load liste iniziali
+                CaricaConfigurazioniIniziali();
+
+                // 4- avviamento import corrente
                 ImportActivity currentActivity = new ImportActivity(Constants.CurrentTipologiaImport);
                 currentActivity.Do_Import();
             }
 
 
+        }
+
+
+        /// <summary>
+        /// Permette di leggere tutte le configurazioni di lista iniziale contenute nel database corrente 
+        /// e che consentono la validazione - inserimento corretto di alcuni elementi
+        /// </summary>
+        private static void CaricaConfigurazioniIniziali()
+        {
+            // caricamento della lista di tutti gli elementi presenti
+            ServiceLocator.GetStartingLoad_Activity.LoadElements();
         }
     }
 }

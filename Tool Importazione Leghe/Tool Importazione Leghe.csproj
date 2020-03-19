@@ -115,12 +115,14 @@
     <Compile Include="Logging\LoggingBase_Database.cs" />
     <Compile Include="Logging\LoggingBase_Excel.cs" />
     <Compile Include="Logging\LoggingBase_ImportActivity.cs" />
+    <Compile Include="Logging\LoggingBase_Others.cs" />
     <Compile Include="Logging\LoggingBase_XML.cs" />
     <Compile Include="Logging\LoggingService.cs" />
     <Compile Include="Logging\Logging_Console_Configurations.cs" />
     <Compile Include="Logging\Logging_Console_Database.cs" />
     <Compile Include="Logging\Logging_Console_Excel.cs" />
     <Compile Include="Logging\Logging_Console_ImportActivity.cs" />
+    <Compile Include="Logging\Logging_Console_Others.cs" />
     <Compile Include="Logging\Logging_Console_XML.cs" />
     <Compile Include="Logging\Logging_UI_Configurations.cs" />
     <Compile Include="Logging\Logging_UI_Database.cs" />
@@ -140,6 +142,7 @@
     <Compile Include="Model\RowFoglio2Excel.cs" />
     <Compile Include="ModifiedElements\ExtendedStopWatch.cs" />
     <Compile Include="ServiceLocator.cs" />
+    <Compile Include="StartingLoad_Activity.cs" />
     <Compile Include="Utils\Configurations.cs" />
     <Compile Include="Utils\Constants.cs" />
     <Compile Include="Utils\GeneralUtilities.cs" />

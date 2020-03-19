@@ -170,8 +170,11 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 int currentRowInfo = 0;
 
                 int currentSheetPos = currentExcelSheet.PositionInExcelFile;
-
+                
                 ExcelWorksheet currentFoglio = _currentOpenedExcel.Workbook.Worksheets[currentSheetPos];
+
+                // eventuale informazioni quadranti concentrazioni per la lega corrente 
+                List<ExcelConcQuadrant> quadrantiConcentrazioniPerFoglioCorrente = null;
 
                 // controllo che il foglio sia di informazioni generali di lega
                 if (_currentReadHeadersServices.ReadFirstInformation_DatiPrimari(ref currentFoglio, Constants.TipologiaFoglioExcel.Informazioni_Lega, out currentColInfo, out currentRowInfo))
@@ -182,6 +185,15 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     currentExcelSheet.TipologiaRiconosciuta = Constants.TipologiaFoglioExcel.Informazioni_Lega;
                     currentExcelSheet.Info_Col = currentColInfo;
                     currentExcelSheet.Info_Row = currentRowInfo;
+                }
+                // controllo che il foglio corrente non sia un foglio di lettura delle concentrazioni per nomi appartenenti a una certa lega 
+                else if(_currentReadHeadersServices.ReadHeaders_Concentrazioni(ref currentFoglio, Constants.TipologiaFoglioExcel.Informazioni_Concentrazione, out quadrantiConcentrazioniPerFoglioCorrente))
+                {
+                    // riconscimento del foglio come contenitore di informazioni di concentraizioni su nomi per una certa lega
+                    ServiceLocator.GetLoggingService.GetLoggerExcel.HoRiconosciutoSeguenteFoglioCome(currentFoglio.Name, Constants.TipologiaFoglioExcel.Informazioni_Concentrazione);
+
+                    currentExcelSheet.TipologiaRiconosciuta = Constants.TipologiaFoglioExcel.Informazioni_Concentrazione;
+                    currentExcelSheet.Concentrations_Quadrants = quadrantiConcentrazioniPerFoglioCorrente;
                 }
 
 

@@ -112,6 +112,18 @@ namespace Tool_Importazione_Leghe.Logging
         /// </summary>
         protected string _hoTrovatoConcentrazioniPerNumElementiMaggiore = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI: ho trovato concentrazioni per un numero maggiore di elementi possibili per il quadrante corrente";
 
+
+        /// <summary>
+        /// Messaggio di segnalazione di inserimento di un quadrante di lettura concentrazioni per un certo materiale e per il foglio passato in input 
+        /// </summary>
+        protected string _hoAppenaInseritoUnQuadranteDiLettura = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI: ho appena inserito un quadrante da leggere per il foglio '{0}'";
+
+
+        /// <summary>
+        /// Messaggio di segnalazione che non è stato trovato nessun quadrante di lettura per il foglio passato in input
+        /// </summary>
+        protected string _nonHoTrovatoNessunQuadranteDiLettura = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI: non ho trovato nessun quadrante di lettura concentrazioni per il foglio '{0}'";
+        
         #endregion
 
         #endregion
@@ -264,6 +276,20 @@ namespace Tool_Importazione_Leghe.Logging
         /// per il materiale corrente
         /// </summary>
         public abstract void HoTrovatoConcentrazioniPerUnNumeroMaggioreDiElementi();
+
+
+        /// <summary>
+        /// Indicazione di trovato quadrante di lettura per il foglio excel passato in input
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        public abstract void InserimentoQuadranteLetturaConcentrazioniPerFoglio(string currentFoglioExcel);
+
+
+        /// <summary>
+        /// Indicazione di non aver trovato nessun quadrante di lettura per il foglio passato in input
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        public abstract void NonHoTrovatoNessunQuadranteConcentrazioniPerFoglio(string currentFoglioExcel);
 
         #endregion
 

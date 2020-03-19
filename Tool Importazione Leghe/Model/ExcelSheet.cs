@@ -56,5 +56,13 @@ namespace Tool_Importazione_Leghe.Model
         /// foglio excel
         /// </summary>
         public int Info_Row { get; set; }
+
+
+        /// <summary>
+        /// Quadranti di concentrazioni iniziali per il foglio correntemente in analisi.
+        /// Questa informazione viene valorizzata solamente nel caso in cui il foglio sia effettivamente riconosciuto
+        /// come un foglio contenente informazioni di concentrazioni per determinati materiali
+        /// </summary>
+        public List<ExcelConcQuadrant> Concentrations_Quadrants { get; set; }
     }
 }

@@ -43,6 +43,13 @@ namespace Tool_Importazione_Leghe
         /// </summary>
         private static Configurations _currentConfigurations;
 
+
+        /// <summary>
+        /// Servizio di attività iniziale correnti - queste attività iniziali vanno a popolare le diverse liste 
+        /// che poi risulteranno utili a tutta la procedura di import per le diverse validazioni e le diverse operazioni svolte
+        /// </summary>
+        private static StartingLoad_Activity _currentStartingLoadActivity;
+
         #endregion
 
 
@@ -107,6 +114,22 @@ namespace Tool_Importazione_Leghe
                     _currentConfigurations = new Configurations();
 
                 return _currentConfigurations;
+            }
+        }
+
+
+        /// <summary>
+        /// Getter per le impostazioni di inizio import da eseguire prima dell'import vero e proprio
+        /// </summary>
+        public static StartingLoad_Activity GetStartingLoad_Activity
+        {
+            get
+            {
+                if (_currentStartingLoadActivity == null)
+                    _currentStartingLoadActivity = new StartingLoad_Activity();
+
+
+                return _currentStartingLoadActivity;
             }
         }
 
