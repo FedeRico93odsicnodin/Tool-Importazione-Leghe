@@ -109,7 +109,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// e per quanto riguarda la linea (le colonne devono essere invece tutte attaccate)
         /// </summary>
         private const int LIMITBETWEENCONCENTRATIONSROWS = 5;
-
+        
         #endregion
 
 
@@ -217,10 +217,20 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
             // reset della lista sulla quale si andranno a inserire le eventuali posizioni utili trovate per la lettura delle concentrazioni
             detectedMaterials = new List<ExcelConcQuadrant>();
+            _currentPositionsConcentrations = new List<ExcelConcQuadrant>();
 
-            // recupero dei limiti di riga-colonna per il foglio excel corrente
+            // calcolo dei primi limiti di riga e colonna per i 2 valori "di confine" rispetto ai quali sta avvenendo la lettura 
             MaxExcelSheetPos_col = currentExcelSheet.Dimension.End.Column;
             MaxExcelSheetPos_row = currentExcelSheet.Dimension.End.Row;
+
+            if (currentExcelSheet.Dimension.End.Column > LIMITCOL_LETTURACONCENTRAZIONI)
+                MaxExcelSheetPos_col = LIMITCOL_LETTURACONCENTRAZIONI;
+
+            if (currentExcelSheet.Dimension.End.Row > LIMITROW_LETTURACONCENTRAZIONI)
+                MaxExcelSheetPos_row = LIMITROW_LETTURACONCENTRAZIONI;
+
+
+            
 
             // vado a riconoscere la prima posizione utile per la lettura delle concentrazioni
             RecognizeConcentrationsPosition(ref currentExcelSheet, Utils.Constants.TipologiaFoglioExcel.Informazioni_Concentrazione);
@@ -231,7 +241,8 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoNessunQuadranteConcentrazioniPerFoglio(currentExcelSheet.Name);
                 return false;
             }
-                
+
+            detectedMaterials = _currentPositionsConcentrations;
 
             return true;
             
@@ -444,8 +455,10 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
                     ExcelConcQuadrant currentReadInfoConcentration;
 
+                    bool isValid = FillMaterialConcentrationInfo(ref currentExcelSheet, _tracciaCurrentCol, _tracciaCurrentRow, out currentReadInfoConcentration);
+
                     // ho trovato una informazione
-                    if(FillMaterialConcentrationInfo(ref currentExcelSheet, _tracciaCurrentCol, _tracciaCurrentRow, out currentReadInfoConcentration))
+                    if (isValid)
                     {
                         // eventuale inizializzazione della lista dei quadranti per le concentrazioni correnti
                         if (_currentPositionsConcentrations == null)
@@ -456,19 +469,19 @@ namespace Tool_Importazione_Leghe.ExcelServices
                         ServiceLocator.GetLoggingService.GetLoggerExcel.InserimentoQuadranteLetturaConcentrazioniPerFoglio(currentExcelSheet.Name);
 
                         // reset dei parametri massimi di ricerca 
-                        MaxExcelSheetPos_col = _tracciaCurrentCol + MaxExcelSheetPos_col;
-                        MaxExcelSheetPos_row = _tracciaCurrentRow + MaxExcelSheetPos_col;
+                        MaxExcelSheetPos_col = _tracciaCurrentCol + LIMITCOL_LETTURACONCENTRAZIONI;
+                        MaxExcelSheetPos_row = _tracciaCurrentRow + LIMITROW_LETTURACONCENTRAZIONI;
                     }
 
                 }
-                while (_tracciaCurrentRow <= MaxExcelSheetPos_row);
+                while (_tracciaCurrentRow <= currentExcelSheet.Dimension.End.Row);
 
 
                 // ricalcolo posizione index per iterazione su colonne successive
                 _tracciaCurrentCol = RicalcolaPosizioneColonna(ref currentExcelSheet);
 
             }
-            while (_tracciaCurrentCol <= MaxExcelSheetPos_col);
+            while (_tracciaCurrentCol <= currentExcelSheet.Dimension.End.Column);
 
         }
 
@@ -507,7 +520,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
         private bool CheckLimitRowCurrentIteration(int currentColIndex, int currentRowIndex)
         {
             // non ho ancora inserito nessun elemento nella lista e ho superato i limiti di riga
-            if (_currentPositionsConcentrations == null && _tracciaCurrentRow < LIMITROW_LETTURACONCENTRAZIONI)
+            if (_currentPositionsConcentrations == null && _tracciaCurrentRow < MaxExcelSheetPos_row)
                 return true;
 
             // non ho ancora nessun elemento nella lista ma ho superato i limiti di lettura di riga 
@@ -516,12 +529,12 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
             
             // trovo l'indice di riga massimo letto per l'ultimo elemento su questa colonna 
-            int currentMaxRow = _currentPositionsConcentrations.Where(x => x.Conc_Start_Left_X == currentColIndex).Select(x => x.Conc_Start_Right_Y).Max();
+            int currentMaxRow = _currentPositionsConcentrations.Where(x => x.Conc_Start_Left_X == currentColIndex).Select(x => x.Conc_End_Left_Y).Max();
 
-            if (currentRowIndex > currentMaxRow + LIMITROW_LETTURACONCENTRAZIONI)
+            if (currentRowIndex > MaxExcelSheetPos_row)
                 return false;
 
-            return false;
+            return true;
         }
 
 
@@ -626,7 +639,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
                 }
                 // mi fermo nel caso non abbia trovato nessuna posizione valida
-                while (currentRowIndex <= startingIndexTitle_Left_Y + LIMITROW_LETTURACONCENTRAZIONI);
+                while (currentRowIndex <= startingIndexTitle_Left_X + LIMITBETWEENCONCENTRATIONSROWS);
 
                 // segnalazione di non aver trovato informazioni header per il quadrante corrente
                 if (!hoTrovatoHeader)
@@ -665,11 +678,11 @@ namespace Tool_Importazione_Leghe.ExcelServices
                         index_Conc_Left_End_X = currentColIndex;
                         index_Conc_Left_End_Y = nextRowIndex;
 
-                        index_Conc_Right_Start_X = colonnaFineLetturaHeader;
-                        index_Conc_Right_Start_Y = currentRowIndex;
+                        index_Conc_Right_Start_X = currentRowIndex;
+                        index_Conc_Right_Start_Y = colonnaFineLetturaHeader;
 
                         index_Conc_Right_End_X = colonnaFineLetturaHeader;
-                        index_Conc_Right_End_Y = nextRowIndex;
+                        index_Conc_Right_End_Y = nextRowIndex; 
 
                         ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoConcentrazioniPerIlQuadranteCorrente(numElementi);
 
@@ -677,7 +690,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     }
 
                 }
-                while (currentRowIndex <= indexHeader_Left_Y + LIMITROW_LETTURACONCENTRAZIONI);
+                while (currentRowIndex <= indexHeader_Left_X + LIMITBETWEENCONCENTRATIONSROWS);
 
 
                 if(!hoTrovatoConcentrazioni)
@@ -729,8 +742,10 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 currentQuadrantConcentrations.Conc_End_Right_Y = index_Conc_Right_End_Y;
 
                 // impostazione delle informazioni per la traccia di ripresa lettura corrente 
-                _tracciaCurrentCol = index_Conc_Right_Start_Y + 1;
-                _tracciaCurrentRow = index_Conc_Left_End_X;
+                _tracciaCurrentRow = index_Conc_Right_End_Y + 1;
+
+                // solo per questo caso esco positivamente trovando un quadrante
+                return true;
             }
 
             #endregion
@@ -797,7 +812,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     if (elementsIterations == 0)
                         return false;
 
-                    nextRowIndex = currentRowIndex;
+                    nextRowIndex = currentRowIndex - 1;
                     numElementi = elementsIterations;
                     return true;
                 }
@@ -806,6 +821,8 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 // leggo ogni volta un elemento se la cella contiene un valore 
                 if (currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value != null)
                 {
+                    // incremento indice di riga ad ogni iterazione oltre che l'elemento corrispondente
+                    currentRowIndex++;
                     elementsIterations++;
                     continue;
                 }
