@@ -235,8 +235,9 @@ namespace Tool_Importazione_Leghe.ExcelServices
             // vado a riconoscere la prima posizione utile per la lettura delle concentrazioni
             RecognizeConcentrationsPosition(ref currentExcelSheet, Utils.Constants.TipologiaFoglioExcel.Informazioni_Concentrazione);
             
+            
 
-            if (_currentPositionsConcentrations.Count == 0)
+            if (_currentPositionsConcentrations == null)
             {
                 ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoNessunQuadranteConcentrazioniPerFoglio(currentExcelSheet.Name);
                 return false;
@@ -504,7 +505,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 return _tracciaCurrentCol+1;
 
             // calcolo del massimo indice di colonna 
-            int newColIndex = _currentPositionsConcentrations.Select(x => x.Conc_Start_Right_X).Max() + 1;
+            int newColIndex = _currentPositionsConcentrations.Select(x => x.Get_Max_Col_Quadrante).Max() + 1;
 
             return newColIndex;
         }
@@ -529,7 +530,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
             
             // trovo l'indice di riga massimo letto per l'ultimo elemento su questa colonna 
-            int currentMaxRow = _currentPositionsConcentrations.Where(x => x.Conc_Start_Left_X == currentColIndex).Select(x => x.Conc_End_Left_Y).Max();
+            int currentMaxRow = _currentPositionsConcentrations.Where(x => x.Title_Col == currentColIndex).Select(x => x.Conc_Row_End).Max();
 
             if (currentRowIndex > MaxExcelSheetPos_row)
                 return false;
@@ -628,10 +629,10 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     if (hoTrovatoHeader)
                     {
                         // attribuzione coordinate quadrante di header
-                        indexHeader_Left_X = currentRowIndex;
-                        indexHeader_Left_Y = currentColIndex;
-                        indexHeader_Right_X = currentRowIndex;
-                        indexHeader_Right_Y = colonnaFineLetturaHeader;
+                        indexHeader_Left_X = currentColIndex;
+                         indexHeader_Left_Y = currentRowIndex;
+                        indexHeader_Right_X = colonnaFineLetturaHeader;
+                        indexHeader_Right_Y = currentRowIndex;
 
                         ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoInformazioniHeaderPerQuadranteCorrente(currentColIndex, currentRowIndex);
                         break;
@@ -678,8 +679,8 @@ namespace Tool_Importazione_Leghe.ExcelServices
                         index_Conc_Left_End_X = currentColIndex;
                         index_Conc_Left_End_Y = nextRowIndex;
 
-                        index_Conc_Right_Start_X = currentRowIndex;
-                        index_Conc_Right_Start_Y = colonnaFineLetturaHeader;
+                        index_Conc_Right_Start_X = colonnaFineLetturaHeader;
+                        index_Conc_Right_Start_Y = currentRowIndex;
 
                         index_Conc_Right_End_X = colonnaFineLetturaHeader;
                         index_Conc_Right_End_Y = nextRowIndex; 
@@ -719,27 +720,16 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
                 // valorizzazione per il quadrante 
                 // titolo
-                currentQuadrantConcentrations.TitlePos_X = startingIndexTitle_Left_X;
-                currentQuadrantConcentrations.TitlePos_Y = startingIndexTitle_Left_Y;
+                currentQuadrantConcentrations.Title_Col = startingIndexTitle_Left_X;
+                currentQuadrantConcentrations.Title_Row = startingIndexTitle_Left_Y;
 
                 // header
-                currentQuadrantConcentrations.HeaderPos_Start_X = indexHeader_Left_X;
-                currentQuadrantConcentrations.HeaderPos_Start_Y = indexHeader_Left_Y;
-                currentQuadrantConcentrations.HeaderPos_End_X = indexHeader_Right_X;
-                currentQuadrantConcentrations.HeaderPos_End_Y = indexHeader_Right_Y;
+                currentQuadrantConcentrations.Head_Col = indexHeader_Left_X;
+                currentQuadrantConcentrations.Head_Row = indexHeader_Left_Y;
 
                 // concentrazioni
-                currentQuadrantConcentrations.Conc_Start_Left_X = index_Conc_Left_Start_X;
-                currentQuadrantConcentrations.Conc_Start_Left_Y = index_Conc_Left_Start_Y;
-
-                currentQuadrantConcentrations.Conc_Start_Right_X = index_Conc_Right_Start_X;
-                currentQuadrantConcentrations.Conc_Start_Right_Y = index_Conc_Right_Start_Y;
-
-                currentQuadrantConcentrations.Conc_End_Left_X = index_Conc_Left_End_X;
-                currentQuadrantConcentrations.Conc_End_Left_Y = index_Conc_Left_End_Y;
-
-                currentQuadrantConcentrations.Conc_End_Right_X = index_Conc_Right_End_X;
-                currentQuadrantConcentrations.Conc_End_Right_Y = index_Conc_Right_End_Y;
+                currentQuadrantConcentrations.Conc_Row_Start = index_Conc_Left_Start_Y;
+                currentQuadrantConcentrations.Conc_Row_End = index_Conc_Left_End_Y;
 
                 // impostazione delle informazioni per la traccia di ripresa lettura corrente 
                 _tracciaCurrentRow = index_Conc_Right_End_Y + 1;

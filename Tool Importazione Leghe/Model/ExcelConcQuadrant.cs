@@ -1,4 +1,7 @@
-﻿namespace Tool_Importazione_Leghe.Model
+﻿using Tool_Importazione_Leghe.ExcelServices;
+using Tool_Importazione_Leghe.Utils;
+
+namespace Tool_Importazione_Leghe.Model
 {
     /// <summary>
     /// Oggetto di supporto alla lettura dell'header delle concentrazioni per individuare dove
@@ -7,99 +10,70 @@
     /// </summary>
     public class ExcelConcQuadrant
     {
-        #region POSIZIONI DI TITOLO
+        #region IDENTIFICATORI PER IL TITOLO MATERIALE
 
         /// <summary>
-        /// Mappatura index colonna per il titolo associato al materiale corrente
+        /// Idenficatore per la riga del titolo materiale all'interno del quadrante excel
         /// </summary>
-        public int TitlePos_X { get; set; }
+        public int Title_Row { get; set; }
 
 
         /// <summary>
-        /// Mappatura index riga per il titolo associato al materiale corrente
+        /// Identificatore per la colonna del titolo materiale all'interno del quadrante excel
         /// </summary>
-        public int TitlePos_Y { get; set; }
+        public int Title_Col { get; set; }
 
         #endregion
 
 
-        #region POSIZIONE DI HEADER INIZIALE 
+        #region IDENTIFICATORI HEADERS
 
         /// <summary>
-        /// Mappatura index INIZIALE di colonna per l'header concentrazioni per il materiale corrente
+        /// Identificatore per la riga dell'header materiale all'interno del quadrante excel
         /// </summary>
-        public int HeaderPos_Start_X { get; set; }
-
-
-        /// <summary>
-        /// Mappatura index INIZIALE di riga per l'header concentrazioni per il materiale corrente
-        /// </summary>
-        public int HeaderPos_Start_Y { get; set; }
-
-
-        /// <summary>
-        /// Mappatura index di riga FINALE per l'header concentrazioni per il materiale corrente
-        /// </summary>
-        public int HeaderPos_End_X { get; set; }
-
-
-        /// <summary>
-        /// Mappatura index di colonna FINALE per l'header concentrazioni per il materiale corrente
-        /// </summary>
-        public int HeaderPos_End_Y { get; set; }
-
-        #endregion
-
-
-        #region ZONA RELATIVA ALLE CONCENTRAZIONI
-
-        /// <summary>
-        /// Mappatura indice di riga SINISTRO DI PARTENZA per la tabella relativa alle concentrazioni
-        /// </summary>
-        public int Conc_Start_Left_X { get; set; }
+        public int Head_Row { get; set; }
         
 
         /// <summary>
-        /// Mappatura indice di colonna SINISTRO DI PARTENZA per la tabella relativa alle concentrazioni
+        /// Identificazione della colonna di partenza di header
+        /// NB: tutte le colonne relative all'header sono identificate partendo da questo valore
         /// </summary>
-        public int Conc_Start_Left_Y { get; set; }
+        public int Head_Col{ get; set; }
+        
+        #endregion
+
+
+        #region DELIMITATORI ROWS CONCENTRAZIONI
+
+        /// <summary>
+        /// Identificazione della riga di partenza dal quale individuare le concentrazioni per il materiale corrente
+        /// </summary>
+        public int Conc_Row_Start { get; set; }
 
 
         /// <summary>
-        /// Mappatura indice di riga DESTRO DI PARTENZA per la tabella relativa alle concentrazioni
+        /// Indentificazione della riga di fine per il quale viene individuata la fine di lettura delle concentrazioni per il materiale corrente
         /// </summary>
-        public int Conc_Start_Right_X { get; set; }
-
-
-        /// <summary>
-        /// Mappatura indice di colonna DESTRO DI PARTENZA per la tabella relativa alle concentrazioni
-        /// </summary>
-        public int Conc_Start_Right_Y { get; set; }
-
-
-        /// <summary>
-        /// Mappatura indice di riga DESTRO DI FINE per la tabella relativa alle concentrazioni
-        /// </summary>
-        public int Conc_End_Left_X { get; set; }
-
-
-        /// <summary>
-        /// Mappatura indice di colonna DESTRO DI FINE per la tabella relativa alle concentrazioni
-        /// </summary>
-        public int Conc_End_Left_Y { get; set; }
-
-
-        /// <summary>
-        /// Mappatura indice di riga DESTRO DI FINE per la tabella relativa alle concentrazioni
-        /// </summary>
-        public int Conc_End_Right_X { get; set; }
-
-
-        /// <summary>
-        /// Mappatura indice di riga DESTRO DI FINE per la tabella relativa alle concentrazioni
-        /// </summary>
-        public int Conc_End_Right_Y { get; set; }
+        public int Conc_Row_End { get; set; }
 
         #endregion
+
+
+        #region CALCOLO DEI PARAMETRI INDISPENSABILI AL RICONOSCIMENTO OGGETTO EXCEL CORRENTE
+
+        /// <summary>
+        /// Calcolo in automatico la posizione massima per la nuova colonna in base agli headers sui quali viene 
+        /// fatta la lettura corrente
+        /// </summary>
+        public int Get_Max_Col_Quadrante
+        {
+            get
+            {
+                return this.Head_Col + (ExcelMarkers.GetAllColumnHeadersForConcentrationsInfoSheet().Count - 1);
+            }
+        }
+
+        #endregion
+
     }
 }
