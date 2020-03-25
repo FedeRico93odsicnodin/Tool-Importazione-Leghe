@@ -68,6 +68,32 @@ namespace Tool_Importazione_Leghe.ExcelServices
         #endregion
 
 
+        #region PARAMETRI AUSILIARI CHE E' POSSIBILE AVERE NEL FOGLIO DELLE INFORMAZIONI
+
+        /// <summary>
+        /// Stringa relativa alla designazione alternativa che è possible riscontrare come parametro opzionale 
+        /// all'interno dell'excel
+        /// </summary>
+        public const string DESIGNAZIONE_ALTERNATIVA = "Designazione Alternativa";
+
+
+        /// <summary>
+        /// Permette di ottenere la lista di tutte le proprietà opzionali che è possibile riscontrare all'interno
+        /// del foglio excel riguardante le informazioni generali di lega
+        /// </summary>
+        /// <returns></returns>
+        public static List<string> GetAdditionalPropertiesGeneralInfoSheet()
+        {
+            List<string> currentAdditionalProperties = new List<string>();
+
+            currentAdditionalProperties.Add(DESIGNAZIONE_ALTERNATIVA);
+
+            return currentAdditionalProperties;
+        }
+
+        #endregion
+
+
         #region FOGLIO CONCENTRAZIONI
 
         /// <summary>

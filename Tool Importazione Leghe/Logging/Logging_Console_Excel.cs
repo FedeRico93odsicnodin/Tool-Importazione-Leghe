@@ -327,6 +327,40 @@ namespace Tool_Importazione_Leghe.Logging
             LoggingService.LogInADocument(currentMessage, base._currentLogFile);
         }
 
+
+        /// <summary>
+        /// Segnalazione a console di aver gia trovato una informazione a carattere generale per la lettura degli headers per il foglio excel 
+        /// correntemente in analisi
+        /// </summary>
+        /// <param name="currentProprietaLettura"></param>
+        public override void HoGiaTrovatoInformazioneACarattereGenerale(string currentProprietaLettura)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._hoGiaTrovatoLaProprietaHeaderInfoCorrente, currentProprietaLettura);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console che l'informazione letta per una determinata proprieta non corrisponde a quelle di carattere generale per la lettura delle proprieta 
+        /// obbligatorie per una determinata lega 
+        /// </summary>
+        /// <param name="currentProprietaLettura"></param>
+        public override void InformazioneGeneraleNonContenutaNelleDefinizioniObbligatorie(string currentProprietaLettura)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._informazioneNonContenutaTraLeDefinizioniInformazioniGenerali, currentProprietaLettura);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
         #endregion
 
 

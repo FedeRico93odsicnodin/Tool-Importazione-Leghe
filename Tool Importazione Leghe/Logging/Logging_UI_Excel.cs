@@ -31,6 +31,11 @@ namespace Tool_Importazione_Leghe.Logging
             throw new NotImplementedException();
         }
 
+        public override void HoGiaTrovatoInformazioneACarattereGenerale(string currentProprietaLettura)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void HoRiconosciutoSeguenteFoglioCome(string currentFoglio, Constants.TipologiaFoglioExcel currentTipologia)
         {
             throw new NotImplementedException();
@@ -62,6 +67,11 @@ namespace Tool_Importazione_Leghe.Logging
         }
 
         public override void HoTrovatoTuttiIMarker(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologia)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void InformazioneGeneraleNonContenutaNelleDefinizioniObbligatorie(string currentProprietaLettura)
         {
             throw new NotImplementedException();
         }

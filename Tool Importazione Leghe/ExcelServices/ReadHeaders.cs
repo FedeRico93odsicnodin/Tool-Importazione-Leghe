@@ -109,6 +109,21 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// e per quanto riguarda la linea (le colonne devono essere invece tutte attaccate)
         /// </summary>
         private const int LIMITBETWEENCONCENTRATIONSROWS = 5;
+
+
+        /// <summary>
+        /// Questa lista contiene tutti gli headers che sono obbligatori quando si legge le informazioni di carattere generale per una determinata lega
+        /// se anche solo una di queste proprietà manca all'interno del foglio excel questo non viene riconosciuto come contenitore delle informazioni generali 
+        /// per la lega in lettura
+        /// </summary>
+        private List<string> _mandatoryHeadersForGeneralInfo;
+
+
+        /// <summary>
+        /// Questa lista contiene tutte le proprietà addizionali che è possibile comunque leggere all'interno degli header per le informazioni a carattere generale 
+        /// su una certa lega 
+        /// </summary>
+        private List<string> _additionalHeadersForGeneralInfo;
         
         #endregion
 
@@ -120,7 +135,17 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// </summary>
         public ReadHeaders()
         {
+            // inizializzazione degli headers per le informazioni a carattere generale obbligatorie individuabili su 
+            // un foglio excel per le informazioni generali di lega 
+            _mandatoryHeadersForGeneralInfo = ExcelMarkers.GetAllColumnHeadersForGeneralInfoSheet();
+
+            // inizializzazione della lista con tutte le proprieta addizionali inerenti una determinata lega 
+            _additionalHeadersForGeneralInfo = ExcelMarkers.GetAdditionalPropertiesGeneralInfoSheet();
+
+
+            // inizializzazione della lsita contenente gli headers per le concentrazioni in lettura 
             _concentrationsList = ExcelMarkers.GetAllColumnHeadersForConcentrationsInfoSheet();
+            
         }
 
         #endregion
@@ -401,6 +426,69 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
             currentInfoCol = 0;
             currentInfoRow = 0;
+
+            return false;
+        }
+
+
+        /// <summary>
+        /// Permette il riconoscimento di una proprieta obbligatoria per quanto riguarda il foglio contenente le informazioni 
+        /// generali per la lega corrente. Se l'elemento corrente è riconosciuto come presente nella lista relativa a tutte le proprietà obbligatorie
+        /// e non era già stato letto precendentemente allora viene ritornato true altrimenti viene ritornato false
+        /// </summary>
+        /// <param name="currentRecognizedProperties"></param>
+        /// <param name="currentProperty"></param>
+        /// <param name="newRecognizedProperties"></param>
+        /// <returns></returns>
+        private bool RecognizeMandatoryInfoPropertyPresence(List<string> currentRecognizedProperties, string currentProperty, out List<string> newRecognizedProperties)
+        {
+           
+            if (currentRecognizedProperties.Contains(currentProperty.ToLower()))
+            {
+                // ho gia letto questa informazione per gli headers correnti
+                ServiceLocator.GetLoggingService.GetLoggerExcel.HoGiaTrovatoInformazioneACarattereGenerale(currentProperty);
+
+                newRecognizedProperties = currentRecognizedProperties;
+
+                return false;
+            }
+
+
+            if(!_mandatoryHeadersForGeneralInfo.Contains(currentProperty.ToLower()))
+            {
+                // l'informazione non è contenuta nelle definizioni delle proprieta obbligatorie per la lettura delle informazioni generali per la lega corrente 
+                ServiceLocator.GetLoggingService.GetLoggerExcel.InformazioneGeneraleNonContenutaNelleDefinizioniObbligatorie(currentProperty);
+
+                newRecognizedProperties = currentRecognizedProperties;
+
+                return false;
+            }
+
+
+            // se passo tutte le altre condizioni significa che la proprietà rispetta i vincoli dati di informazioni generali obbligatorie
+            // quindi l'aggiungo a tutte le proprieta lette per la lega corrente 
+            currentRecognizedProperties.Add(currentProperty);
+
+            newRecognizedProperties = currentRecognizedProperties;
+            
+            return true;
+                
+        }
+
+
+        /// <summary>
+        /// Permette di riconoscere la presenza di eventuali altre proprietà addizionali contenute nel foglio corrente e relativo alle informazioni generali
+        /// per la lega in analisi. Se anche per questa lista di proprietà non c'è un vero e proprio riconoscimento effettivo allora il foglio non 
+        /// puo essere riconosciuto come contenitore di informazioni generali per la determinata lega 
+        /// </summary>
+        /// <param name="currentRecognizedProperties"></param>
+        /// <param name="currentProperty"></param>
+        /// <param name="newRecognizedProperties"></param>
+        /// <returns></returns>
+        private bool RecognizeAdditionalInfoPropertiesPresence(List<string> currentRecognizedProperties, string currentProperty, out List<string> newRecognizedProperties)
+        {
+            // TODO: implementazione della dinamica di riconscimento delle proprieta opzionali per il caso di lettura delle informazioni generali in lettura per il foglio corrente
+            newRecognizedProperties = currentRecognizedProperties;
 
             return false;
         }

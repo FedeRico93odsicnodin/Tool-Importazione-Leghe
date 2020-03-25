@@ -123,6 +123,18 @@ namespace Tool_Importazione_Leghe.Logging
         /// Messaggio di segnalazione che non è stato trovato nessun quadrante di lettura per il foglio passato in input
         /// </summary>
         protected string _nonHoTrovatoNessunQuadranteDiLettura = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI: non ho trovato nessun quadrante di lettura concentrazioni per il foglio '{0}'";
+
+
+        /// <summary>
+        /// Messsaggio di già trovata proprietà letta per le informazioni generali all'interno del foglio excel
+        /// </summary>
+        protected string _hoGiaTrovatoLaProprietaHeaderInfoCorrente = "RICONOSCIMENTO QUADRANTE INFORMAZIONI: ho già trovato la proprietà '{0}', questa non viene inserita nella lettura";
+
+
+        /// <summary>
+        /// Messaggio relativo al fatto che la proprieta in lettura corrente non appartiene alle definizioni date per le informazioni obbligatorie nella lettura delle informazioni di lega 
+        /// </summary>
+        protected string _informazioneNonContenutaTraLeDefinizioniInformazioniGenerali = "RICONOSCIMENTO QUADRANTE INFORMAZIONI: la proprieta '{0}' non appartiene alle definizioni date per le informazioni obbligatorie";
         
         #endregion
 
@@ -290,6 +302,21 @@ namespace Tool_Importazione_Leghe.Logging
         /// </summary>
         /// <param name="currentFoglioExcel"></param>
         public abstract void NonHoTrovatoNessunQuadranteConcentrazioniPerFoglio(string currentFoglioExcel);
+
+
+        /// <summary>
+        /// Indicazione sul fatto di aver gia trovato una proprieta di carattere generale per il foglio sulle informazioni di lega in lettura
+        /// </summary>
+        /// <param name="currentProprietaLettura"></param>
+        public abstract void HoGiaTrovatoInformazioneACarattereGenerale(string currentProprietaLettura);
+
+
+        /// <summary>
+        /// Indicazione che la proprieta in lettura corrente non appartiene alle definizioni date come obbligatorie per la lettura delle informazioni 
+        /// generali di lega 
+        /// </summary>
+        /// <param name="currentProprietaLettura"></param>
+        public abstract void InformazioneGeneraleNonContenutaNelleDefinizioniObbligatorie(string currentProprietaLettura);
 
         #endregion
 
