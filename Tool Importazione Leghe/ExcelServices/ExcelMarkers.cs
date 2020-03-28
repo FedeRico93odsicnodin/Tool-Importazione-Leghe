@@ -74,7 +74,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// Stringa relativa alla designazione alternativa che è possible riscontrare come parametro opzionale 
         /// all'interno dell'excel
         /// </summary>
-        public const string DESIGNAZIONE_ALTERNATIVA = "Designazione Alternativa";
+        public const string DESIGNAZIONE_ALTERNATIVA = "DESIGNAZIONE ALTERNATIVA";
 
 
         /// <summary>

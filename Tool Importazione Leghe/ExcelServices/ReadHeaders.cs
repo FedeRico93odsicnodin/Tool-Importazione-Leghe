@@ -58,10 +58,15 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
 
         /// <summary>
-        /// Indice che viene settato con la posizione di colonna per il primo marker per la restituzione corretta delle prime informazioni 
-        /// utili relative al foglio corrente e da cui partire con la lettura effettiva dei dati
+        /// Inizializzazione con la dimensione di riga massima per il foglio excel corrente
         /// </summary>
-        private int _posizioneColonnaPrimoMarker = 0;
+        private int MaxExcelSheetPos_row = 0;
+
+
+        /// <summary>
+        /// Inizializzazione con la dimensione di colonna massima per il foglio excle corrente
+        /// </summary>
+        private int MaxExcelSheetPos_col = 0;
 
 
         /// <summary>
@@ -69,18 +74,6 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// per le concentrazioni
         /// </summary>
         private List<ExcelConcQuadrant> _currentPositionsConcentrations;
-
-
-        /// <summary>
-        /// Indicazione del massimo indice per la colonna sul foglio excel corrente
-        /// </summary>
-        private int MaxExcelSheetPos_col = 0;
-
-
-        /// <summary>
-        /// Indicazione del massimo indice di riga sul foglio excel corrente
-        /// </summary>
-        private int MaxExcelSheetPos_row = 0;
 
 
         /// <summary>
@@ -151,76 +144,129 @@ namespace Tool_Importazione_Leghe.ExcelServices
         #endregion
 
 
-        #region METODI PUBBLICI - MI DICONO QUALE SIA IL FOGLIO EXCEL CORRNTE
-
+        #region LETTURA E RICONOSCIMENTO FOGLIO COME FOGLIO CON INFORMAZIONI DI CARATTERE GENERALE PER LA LEGA 
+        
         /// <summary>
-        /// Trova l'eventuale header per la prima tipologia di foglio excel riguardante tutte le informazioni di base per poter
-        /// individuare la concentrazione corrente
-        /// Una volta trovato l'header corrispondente qualora ci fosse, vengono anche restituiti gli indici di colonna e di riga per 
-        /// la prima posizione di riga dalla quale andare a ricavare le informazioni da inserire per le diverse tabelle coinvolte 
-        /// da questo foglio
+        /// Remake del metodo per la lettura corretta delle informazioni contenute all'interno del foglio delle informazioni primarie di lega
+        /// Viene passato in input il foglio in analisi corrente e se corrisponde alla lettura delle informazioni relative alla lega corrente viene restituito vero
+        /// e la lista degli headers da cui iniziare effettivamente la lettura 
         /// </summary>
         /// <param name="currentExcelSheet"></param>
-        /// <param name="firstUtilCol"></param>
-        /// <param name="firstUtilRow"></param>
+        /// <param name="generalInfoHeaders"></param>
         /// <returns></returns>
-        internal bool ReadFirstInformation_DatiPrimari(ref ExcelWorksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaFoglio, out int firstUtilCol, out int firstUtilRow)
+        internal bool ReadInformation_GeneralInfoLega(ref ExcelWorksheet currentExcelSheet, out List<HeadersInfoLega_Excel> generalInfoHeaders)
         {
-            // reset attributi di lettura corrente
+            // azzeramento dei parametri relativi alla lettura della colonna e della riga correnti
             _tracciaCurrentCol = 1;
             _tracciaCurrentRow = 1;
-            _currentMarker = String.Empty;
+
+
+            // inizializzazione delle 2 liste per la lettura degli headers correnti
+            List<HeadersInfoLega_Excel> readMandatoryInfo = new List<HeadersInfoLega_Excel>();
+            List<HeadersInfoLega_Excel> readAdditionalInfo = new List<HeadersInfoLega_Excel>();
             
-            try
+            // indicazione di lettura complessiva di tutte le proprieta 
+            bool hoLettoTutteLeProprieta = false;
+
+
+            do
             {
-                // vado a leggere l'header per il foglio excel corrente
-                bool hoLettoHeader = ReadHeader_DatiLega(ref currentExcelSheet, currentTipologiaFoglio);
-
-                // non ho letto le informazioni utili di header
-                if (!hoLettoHeader)
+                do
                 {
+                    // iterazione su riga finche non trovo una informazione utile alla lettura effettiva 
+                    if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value == null)
+                    {
+                        _tracciaCurrentRow++;
+                        continue;
+                    }
+                    
+                    
+                    // inizio la lettura delle colonne 
+                    do
+                    {
+                        // iterazione su colonne finche non trovo una informazione utile alla lettura effettiva 
+                        if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value == null)
+                        {
+                            _tracciaCurrentCol++;
+                            continue;
+                        }
 
-                    // attribuzione del valore di default per la riga e la colonna in uscita
-                    firstUtilCol = _tracciaCurrentCol;
-                    firstUtilRow = _tracciaCurrentRow;
-                    return false;
-                }
-                
-                // calcolo la prima informazione utile per il foglio excel corrente
-                bool esisteContenuto = CalculateFirstInformation(ref currentExcelSheet, currentTipologiaFoglio, out _tracciaCurrentCol, out _tracciaCurrentRow);
+                        // trovo una proprieta obbligatoria
+                        if (RecognizeMandatoryInfoPropertyPresence(readMandatoryInfo, currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString(), out readMandatoryInfo))
+                        {
+                            // segnalazione di trovata proprieta obbligatoria per il foglio excel corrente 
+                            ServiceLocator.GetLoggingService.GetLoggerExcel.TrovataInformazioneObbligatoriaLetturaInformazioniGenerali(currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString(), _tracciaCurrentRow, _tracciaCurrentCol);
 
-                if(!esisteContenuto)
-                {
-                    // attribuzione del valore di default per la riga e la colonna in uscita
-                    firstUtilCol = _tracciaCurrentCol;
-                    firstUtilRow = _tracciaCurrentRow;
-                    return false;
-                }
+                            _tracciaCurrentCol++;
 
-                // l'unico modo per riconoscere il foglio nella modalita corrente è avere headers e informazioni
-                if(hoLettoHeader && esisteContenuto)
-                {
-                    // attribuzione del valore di default per la riga e la colonna in uscita
-                    firstUtilCol = _tracciaCurrentCol;
-                    firstUtilRow = _tracciaCurrentRow;
-                    return true;
+                            continue;
+                        }
+
+                        // trovo una proprieta opzionale
+                        if(RecognizeAdditionalInfoPropertiesPresence(readAdditionalInfo, currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString(), out readAdditionalInfo))
+                        {
+                            // segnalazione di trovata proprieta addizionale per il foglio excel corrente 
+                            ServiceLocator.GetLoggingService.GetLoggerExcel.TrovataInformazioneAddizionaleLetturaInformazioniGenerali(currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString(), _tracciaCurrentRow, _tracciaCurrentCol);
+
+                            _tracciaCurrentCol++;
+
+                            continue;
+                        }
+                        else 
+                            _tracciaCurrentCol++;
+
+                    }
+                    // mi fermo se non rispetto correttamente i vincoli imposti sullo spazio
+                    while (_tracciaCurrentCol <= currentExcelSheet.Dimension.End.Column);
+
+                    // indico che ho finito con il tentativo di lettura per le proprieta correnti - nel caso in cui la lista delle proprieta obbligatorie sia piena
+                    if(readMandatoryInfo.Count() > 0)
+                        hoLettoTutteLeProprieta = true;
+                    
+
+
+                    // se sono riuscito a leggere tutte le proprieta posso uscire dal ciclo
+                    if (hoLettoTutteLeProprieta)
+                        break;
+
+
+                    // se sono arrivato qui è perché devo incrementare indice di riga
+                    _tracciaCurrentRow++;
                 }
+                while (_tracciaCurrentRow <= currentExcelSheet.Dimension.End.Row);
+
+
+                // se leggo tutte le proprieta esco dal ciclo
+                if (hoLettoTutteLeProprieta)
+                    break;
+
+                // se sono arrivato fino a qui è perché devo incrementare indice di colonna 
+                _tracciaCurrentRow = 1;
+                _tracciaCurrentCol++;
+
             }
-            catch (Exception e)
+            while (_tracciaCurrentCol <= currentExcelSheet.Dimension.End.Column);
+
+            // segnalazione di fine lettura per tutte le informazioni di carattere generale sulla lega corrente 
+            ServiceLocator.GetLoggingService.GetLoggerExcel.FineProcessamentoGeneralInfoPerFoglioExcel(currentExcelSheet.Name);
+
+            
+            // ho letto almeno tutte le proprieta obbligatorie
+            if(readMandatoryInfo.Count() == _mandatoryHeadersForGeneralInfo.Count())
             {
-                string currentExceptionMessage = String.Format(ExceptionMessages.HOTROVATOECCEZIONELETTURAHEADER, currentExcelSheet.Name, _currentMarker, _tracciaCurrentCol, _tracciaCurrentRow);
-                currentExceptionMessage += "\n" + e.Message;
-                throw new Exception(currentExceptionMessage);
+                // se trovo un valore maggiore di 0 per le proprieta opzionali eventualmente lette allora unisco le 2 liste e torno true
+                if (readAdditionalInfo.Count() > 0)
+                    generalInfoHeaders = readMandatoryInfo.Union(readAdditionalInfo).ToList();
+                else
+                    generalInfoHeaders = readMandatoryInfo;
+
+                return true;
             }
-
-            // attribuzione del valore di default per la riga e la colonna in uscita
-            firstUtilCol = _tracciaCurrentCol;
-            firstUtilRow = _tracciaCurrentRow;
-
+            
+            // non ho trovato tutte le proprieta obbligatorie per il foglio corrispondente 
+            generalInfoHeaders = null;
 
             return false;
-
-            
         }
 
 
@@ -240,21 +286,14 @@ namespace Tool_Importazione_Leghe.ExcelServices
             _tracciaCurrentRow = 1;
             _currentMarker = String.Empty;
 
+            // inizializzazione con le posizioni di fine lettura per l'indice di riga e quello di colonna 
+            MaxExcelSheetPos_row = currentExcelSheet.Dimension.End.Row;
+            MaxExcelSheetPos_col = currentExcelSheet.Dimension.End.Column;
+
             // reset della lista sulla quale si andranno a inserire le eventuali posizioni utili trovate per la lettura delle concentrazioni
             detectedMaterials = new List<ExcelConcQuadrant>();
             _currentPositionsConcentrations = new List<ExcelConcQuadrant>();
-
-            // calcolo dei primi limiti di riga e colonna per i 2 valori "di confine" rispetto ai quali sta avvenendo la lettura 
-            MaxExcelSheetPos_col = currentExcelSheet.Dimension.End.Column;
-            MaxExcelSheetPos_row = currentExcelSheet.Dimension.End.Row;
-
-            if (currentExcelSheet.Dimension.End.Column > LIMITCOL_LETTURACONCENTRAZIONI)
-                MaxExcelSheetPos_col = LIMITCOL_LETTURACONCENTRAZIONI;
-
-            if (currentExcelSheet.Dimension.End.Row > LIMITROW_LETTURACONCENTRAZIONI)
-                MaxExcelSheetPos_row = LIMITROW_LETTURACONCENTRAZIONI;
-
-
+            
             
 
             // vado a riconoscere la prima posizione utile per la lettura delle concentrazioni
@@ -276,159 +315,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
         
         #endregion
 
-
-        #region METODI PUBBLICI DI RICONOSCIMENTO HEADER E LETTURA PRIMA INFORMAZIONE
         
-        /// <summary>
-        /// Permette di leggere un determinato header all'interno del foglio excel
-        /// con una certa convenzione adottata sul limite di riga e di colonna per l'esecuzione della lettura
-        /// </summary>
-        /// <param name="currentExcelSheet"></param>
-        /// <param name="currentTipologiaFoglio"></param>
-        /// <returns></returns>
-        private bool ReadHeader_DatiLega(ref ExcelWorksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaFoglio)
-        {
-            // recupero degli header per la certa tipologia di foglio excel
-            List<string> currentHeaderFoglio = new List<string>();
-
-
-            if (currentTipologiaFoglio == Utils.Constants.TipologiaFoglioExcel.Informazioni_Lega)
-                currentHeaderFoglio = ExcelMarkers.GetAllColumnHeadersForGeneralInfoSheet();
-
-            // non ho trovato nessuna informazione utile di header per il foglio corrente
-            if (currentHeaderFoglio.Count() == 0)
-            {
-                ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoNessunaInformazioneDiMarker(currentExcelSheet.Name);
-                return false;
-            }
-
-            // indicazione sul fatto che trovo la prima informazione di colonna 
-            bool trovato = false;
-            
-
-            foreach(string currentMarkerHeader in currentHeaderFoglio)
-            {
-                // attribuisco il marker per l'analisi corrente
-                _currentMarker = currentMarkerHeader;
-
-                // individuazione di riga per il riconoscimento dell'header corrente 
-                if(_currentMarker == currentHeaderFoglio[0])
-                {
-                    // iterazione per la riga corrente 
-                    while(_tracciaCurrentRow <= LIMITROW)
-                    {
-
-                        // iterazione per la colonna corrente
-                        while(_tracciaCurrentCol <= LIMITCOL)
-                        {
-                            // cella nulla, continuo nella ricerca
-                            if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value == null)
-                            {
-                                _tracciaCurrentCol++;
-                                continue;
-                            }
-                                
-
-                            if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString() == _currentMarker)
-                            {
-                                _posizioneColonnaPrimoMarker = _tracciaCurrentCol;
-                                trovato = true;
-                                break;
-                            }
-                            else
-                                _tracciaCurrentCol++;
-                                
-                        }
-
-                        if (trovato)
-                            break;
-                        else
-                        {
-                            _tracciaCurrentCol = 1;
-                            _tracciaCurrentRow++;
-                            continue;
-                        }
-                            
-                    }
-                }
-                else
-                {
-                    // se non trovo nessuna informazione per il primo header allora ritorno false
-                    if(!trovato)
-                    {
-                        ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazionePerIlSeguenteMarker(_currentMarker, _tracciaCurrentCol, _tracciaCurrentRow);
-                        return false;
-                    }
-                    else
-                    {
-                        // incrementazione del marker successivo su colonna 
-                        _tracciaCurrentCol++;
-                        _currentMarker = currentMarkerHeader;
-
-                        // cella nulla
-                        if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value == null)
-                        {
-                            ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazionePerIlSeguenteMarker(_currentMarker, _tracciaCurrentCol, _tracciaCurrentRow);
-                            return false;
-                        }
-
-
-                        // riconoscimento di tutte le altre colonne successive alla prima - se non ritrovo lo stesso marker ritorno false
-                        if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString() != _currentMarker)
-                        {
-                            ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazionePerIlSeguenteMarker(_currentMarker, _tracciaCurrentCol, _tracciaCurrentRow);
-                            return false;
-                        }
-
-                    }
-                }
-            }
-
-            ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoTuttiIMarker(currentExcelSheet.Name, currentTipologiaFoglio);
-
-            return true;
-        }
-
-
-        /// <summary>
-        /// Una volta individuata la tipologia per il foglio excel corrente individuo la prima informazione utile per poter 
-        /// poi leggere i dati contenuti nel foglio
-        /// </summary>
-        /// <param name="currentExcelSheet"></param>
-        /// <param name=""></param>
-        /// <param name="currentInfoCol"></param>
-        /// <param name="currentInfoRow"></param>
-        private bool CalculateFirstInformation(ref ExcelWorksheet currentExcelSheet, Utils.Constants.TipologiaFoglioExcel currentTipologiaExcel, out int currentInfoCol, out int currentInfoRow)
-        {
-
-            // impostazione della colonna sulla quale inizio a leggere le prime informazioni utili per il foglio corrente
-            _tracciaCurrentCol = _posizioneColonnaPrimoMarker;
-
-            // itero sull'indice di riga finche non trovo un valore utile da cui iniziare la lettura delle informazioni per gli steps successivi
-            do
-            {
-                _tracciaCurrentRow++;
-
-                if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value == null)
-                    continue;
-
-                currentInfoCol = _tracciaCurrentCol;
-                currentInfoRow = _tracciaCurrentRow;
-
-                ServiceLocator.GetLoggingService.GetLoggerExcel.SegnalazioneTrovatoContenutoUtile(currentExcelSheet.Name, currentTipologiaExcel, _tracciaCurrentCol, _tracciaCurrentRow);
-
-                return true;
-            }
-            while (_tracciaCurrentRow <= LIMITINFOROW);
-
-
-            ServiceLocator.GetLoggingService.GetLoggerExcel.SegnalazioneFoglioContenutoNullo(currentExcelSheet.Name, currentTipologiaExcel);
-
-            currentInfoCol = 0;
-            currentInfoRow = 0;
-
-            return false;
-        }
 
 
         /// <summary>
@@ -440,10 +327,11 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <param name="currentProperty"></param>
         /// <param name="newRecognizedProperties"></param>
         /// <returns></returns>
-        private bool RecognizeMandatoryInfoPropertyPresence(List<string> currentRecognizedProperties, string currentProperty, out List<string> newRecognizedProperties)
+        private bool RecognizeMandatoryInfoPropertyPresence(List<HeadersInfoLega_Excel> currentRecognizedProperties, string currentProperty, out List<HeadersInfoLega_Excel> newRecognizedProperties)
         {
-           
-            if (currentRecognizedProperties.Contains(currentProperty.ToLower()))
+
+
+            if (currentRecognizedProperties.Where(x => x.NomeProprietà == currentProperty).ToList().Count() > 0)
             {
                 // ho gia letto questa informazione per gli headers correnti
                 ServiceLocator.GetLoggingService.GetLoggerExcel.HoGiaTrovatoInformazioneACarattereGenerale(currentProperty);
@@ -454,7 +342,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
             }
 
 
-            if(!_mandatoryHeadersForGeneralInfo.Contains(currentProperty.ToLower()))
+            if(!_mandatoryHeadersForGeneralInfo.Contains(currentProperty.ToUpper()))
             {
                 // l'informazione non è contenuta nelle definizioni delle proprieta obbligatorie per la lettura delle informazioni generali per la lega corrente 
                 ServiceLocator.GetLoggingService.GetLoggerExcel.InformazioneGeneraleNonContenutaNelleDefinizioniObbligatorie(currentProperty);
@@ -467,7 +355,16 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
             // se passo tutte le altre condizioni significa che la proprietà rispetta i vincoli dati di informazioni generali obbligatorie
             // quindi l'aggiungo a tutte le proprieta lette per la lega corrente 
-            currentRecognizedProperties.Add(currentProperty);
+
+            // inizializzazione per l'elemento corrente
+            HeadersInfoLega_Excel readProperty = new HeadersInfoLega_Excel()
+            {
+                NomeProprietà = currentProperty,
+                Starting_Col = _tracciaCurrentCol,
+                Starting_Row = _tracciaCurrentRow,
+            };
+
+            currentRecognizedProperties.Add(readProperty);
 
             newRecognizedProperties = currentRecognizedProperties;
             
@@ -485,14 +382,54 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <param name="currentProperty"></param>
         /// <param name="newRecognizedProperties"></param>
         /// <returns></returns>
-        private bool RecognizeAdditionalInfoPropertiesPresence(List<string> currentRecognizedProperties, string currentProperty, out List<string> newRecognizedProperties)
+        private bool RecognizeAdditionalInfoPropertiesPresence(List<HeadersInfoLega_Excel> currentRecognizedProperties, string currentProperty, out List<HeadersInfoLega_Excel> newRecognizedProperties)
         {
             // TODO: implementazione della dinamica di riconscimento delle proprieta opzionali per il caso di lettura delle informazioni generali in lettura per il foglio corrente
             newRecognizedProperties = currentRecognizedProperties;
 
-            return false;
+
+            if(currentRecognizedProperties.Where(x => x.NomeProprietà == currentProperty).ToList().Count() > 0)
+            {
+                // ho gia letto questa informazione per gli headers correnti
+                ServiceLocator.GetLoggingService.GetLoggerExcel.HoGiaTrovatoInformazioneACarattereGenerale(currentProperty);
+
+                newRecognizedProperties = currentRecognizedProperties;
+
+                return false;
+            }
+
+
+            if(!_mandatoryHeadersForGeneralInfo.Contains(currentProperty.ToUpper()))
+            {
+                // l'informazione non è contenuta nelle definizioni delle proprieta addizionali per la lettura delle informazioni generali per la lega corrente 
+                ServiceLocator.GetLoggingService.GetLoggerExcel.InformazioneGeneraleNonContenutaNelleDefinizioniAddizionali(currentProperty);
+
+                newRecognizedProperties = currentRecognizedProperties;
+
+                return false;
+            }
+
+            // se passo tutte le altre condizioni significa che la proprietà rispetta i vincoli dati di informazioni generali obbligatorie
+            // quindi l'aggiungo a tutte le proprieta lette per la lega corrente 
+
+            // inizializzazione per l'elemento corrente
+            HeadersInfoLega_Excel readProperty = new HeadersInfoLega_Excel()
+            {
+                NomeProprietà = currentProperty,
+                Starting_Col = _tracciaCurrentCol,
+                Starting_Row = _tracciaCurrentRow,
+            };
+
+            currentRecognizedProperties.Add(readProperty);
+
+            newRecognizedProperties = currentRecognizedProperties;
+
+            return true;
         }
 
+
+
+        #region METODI PER IL RICONOSCIMENTO DEL FOGLIO COME FOGLIO CONTENENTE CONCENTRAZIONI PER DETERMINATI MATERIALI
 
         /// <summary>
         /// Ritorna le coordinate per una determinata posizione di lettura delle diverse concentrazioni per una determinata lega
@@ -515,7 +452,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
             // non ho trovato nessuna informazione utile di header per il foglio corrente
             if (currentHeaderFoglio.Count() == 0)
             {
-                ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoNessunaInformazioneDiMarker(currentExcelSheet.Name);
+                //ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoNessunaInformazioneDiMarker(currentExcelSheet.Name);
                 return;
             }
 
@@ -556,10 +493,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                         _currentPositionsConcentrations.Add(currentReadInfoConcentration);
 
                         ServiceLocator.GetLoggingService.GetLoggerExcel.InserimentoQuadranteLetturaConcentrazioniPerFoglio(currentExcelSheet.Name);
-
-                        // reset dei parametri massimi di ricerca 
-                        MaxExcelSheetPos_col = _tracciaCurrentCol + LIMITCOL_LETTURACONCENTRAZIONI;
-                        MaxExcelSheetPos_row = _tracciaCurrentRow + LIMITROW_LETTURACONCENTRAZIONI;
+                        
                     }
 
                 }
@@ -917,6 +851,6 @@ namespace Tool_Importazione_Leghe.ExcelServices
         }
 
         #endregion
-
+        
     }
 }

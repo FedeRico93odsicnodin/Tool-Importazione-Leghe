@@ -19,80 +19,87 @@ namespace Tool_Importazione_Leghe.Logging
         /// Gestione della variabile contenente il path per il log corrente database
         /// </summary>
         protected string _currentLogFile;
-        
+
+        #region APERTURA FOGLIO EXCEL CORRENTE 
 
         /// <summary>
         /// Messaggio di apertura corretta per il file excel letto dalle configurazioni
         /// </summary>
-        protected string _aperturaFileExcelSuccesso = "il file excel '{0}' è stato aperto correttamente";
+        protected string _aperturaFileExcelSuccesso = "APERTURA FOGLIO EXCEL il file excel '{0}' è stato aperto correttamente";
 
 
         /// <summary>
         /// Messaggio di segnalazione di aver trovato un determinato foglio excel per il file in apertura corrente
         /// </summary>
-        protected string _hoTrovatoSeguenteFoglioExcel = "ho trovato il foglio excel '{0}' per il file '{1}'";
+        protected string _hoTrovatoSeguenteFoglioExcel = "APERTURA FOGLIO EXCEL ho trovato il foglio excel '{0}' per il file '{1}'";
+
+        #endregion
+
+
+        #region RICONOSCIMENTO HEADER PER LE INFORMAZIONI GENERALI SULLA LEGA IN LETTURA 
+
+        /// <summary>
+        /// Messsaggio di già trovata proprietà letta per le informazioni generali all'interno del foglio excel
+        /// </summary>
+        protected string _hoGiaTrovatoLaProprietaHeaderInfoCorrente = "RICONOSCIMENTO QUADRANTE INFORMAZIONI: ho già trovato la proprietà '{0}', questa non viene inserita nella lettura";
 
 
         /// <summary>
-        /// Messaggio di segnalazione di nessun marker trovato per il foglio excel del nome che viene passato in input
+        /// Messaggio relativo al fatto che la proprieta in lettura corrente non appartiene alle definizioni date per le informazioni obbligatorie nella lettura delle informazioni di lega 
         /// </summary>
-        protected string _nonHoTrovatoMarkerPerIlFoglioExcel = "non ho trovato nessuna informazione di marker per il folgio excel '{0}'";
+        protected string _informazioneNonContenutaTraLeDefinizioniInformazioniGenerali = "RICONOSCIMENTO QUADRANTE INFORMAZIONI: la proprieta '{0}' non appartiene alle definizioni date per le informazioni obbligatorie";
 
 
         /// <summary>
-        /// Messaggio di segnalazione di non aver trovato nessuna informazione utile corrispondente per un determinato marker all'interno del foglio excel
+        /// Messaggio relativo alla segnalazione che l'informazione corrente non appartiene alla definizione data per le informazioni a carattere addizionale che è possibile leggere per la lega 
         /// </summary>
-        protected string _nonHoTrovatoInformazionePerIlSeguenteMarker = "non ho trovato una corrispondenza per il seguente marker: '{0}', col {1}, row {2}";
+        protected string _informazioneNoNContenutaTraLeDefinizioniAddizionaliGenerali = "RICONOSCIMENTO QUADRANTE INFORMAZIONI: la proprieta '{0}' non appartiene alle definizioni date per le informazioni addizionali";
 
 
         /// <summary>
-        /// Messaggio segnalazione di aver trovato tutti i marker per un determinato foglio excel che viene identificato per una certa lettura
+        /// Messaggio relativo alla lettura dell'informazione obbligatoria per le informazioni di lega in lettura corrente 
         /// </summary>
-        protected string _hoTrovatoTuttiMarker = "ho trovato tutti i marker per il seguente foglio '{0}', identificato come '{1}'";
+        protected string _segnalazioneLetturaProprietaObbligatoriaLega = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI: row {0} col {1}: ho appena letto la seguente proprieta a carattere obbligatorio '{2}'";
 
 
         /// <summary>
-        /// Segnalazione di aver trovato del contenuto utile per il foglio excel riconosciuto di una certa tipologia
+        /// Messaggio relativo alla lettura dell'informazione addizionale per le informazioni di lega in lettura corrente 
         /// </summary>
-        protected string _hoTrovatoContenutoPerIlFoglio = "ho trovato contenuto in col = {0}, row = {1} per il foglio '{2}' riconosciuto come '{3}', la lettura del contenuto comincerà da qui";
+        protected string _segnalazioneLetturaProprietaAddizionaleLega = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI: row {0} col {1}: ho appena letto la seguente proprieta a carattere opzionale '{2}'";
 
 
         /// <summary>
-        /// Messaggio di indicazione che benche il foglio sia stato riconosciuto effettivamente come foglio di informazione di leghe 
-        /// non si è trovata nessuna informazione utile per questo foglio, quindi viene inserito come foglio a contenuto nullo
+        /// Messaggio relativo a fine process per il foglio excel corrente e in merito alla lettura  di tutti gli headers per il riconoscimento delle informazioni a carattere generale
         /// </summary>
-        protected string _nonHoTrovatoInformazioniUtiliDiLega = "non ho trovato nessuna informazione per il foglio '{0}' riconosciuto come '{1}', il foglio è sconosciuto";
+        protected string _fineProcessamentoGeneralInfoFoglioExcel = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI: ho appena finito di processare il seguente foglio excel '{0}'";
 
+        #endregion
 
-        /// <summary>
-        /// Messaggio di riconoscimento di un determinato foglio excel contenuto nel file come portatore di informazioni di un certo tipo
-        /// </summary>
-        protected string _hoRiconosciutoFoglioExcelCome = "ho riconosciuto il seguente foglio excel '{0}' come '{1}'";
 
         #region RICONOSCIMENTO QUADRANTI CONCENTRAZIONI
 
         /// <summary>
         /// Messaggio relativo a nessun riconscimento del nome del materiale per il qualdrante delle concentrazioni
         /// </summary>
-        protected string _nonHoTrovatoInformazionePerIlTitoloMateriale = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI col = {0}, row = {1}: non ho trovato nessuna informazione per il titolo del materiale";
+        protected string _nonHoTrovatoInformazionePerIlTitoloMateriale = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI row = {1}, col = {0}: non ho trovato nessuna informazione per il titolo del materiale";
 
 
         /// <summary>
         /// Messaggio relativo al riconoscimento del nome per il materiale per il quadrante delle concentrazioni
         /// </summary>
-        protected string _hoTrovatoInformazionePerIlTitoloMatariale = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI col = {0}, row = {1}: ho trovato informazione valida per il titolo del materiale";
+        protected string _hoTrovatoInformazionePerIlTitoloMatariale = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI row = {1}, col = {0}: ho trovato informazione valida per il titolo del materiale";
 
 
         /// <summary>
         /// Messaggio relativo alla segnalazione di aver trovato la giusta corrispondenza di header per le concentrazioni e per il quadrante corrente
         /// </summary>
-        protected string _hoTrovatoHeaderConcentrationsQuadranteCorrente = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI col = {0}, row = {1}: ho trovato inforazione valida di header per le concentrazioni";
+        protected string _hoTrovatoHeaderConcentrationsQuadranteCorrente = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI row = {1}, col = {0}: ho trovato inforazione valida di header per le concentrazioni";
 
 
         /// <summary>
         /// Messaggio relativo alla segnalazione di non aver trovato la giusta corrispondenza di header per le concentrazioni e per il quadrante corrente
         /// </summary>
-        protected string _nonHoTrovatoHeaderConcentrationsQuadranteCorrente = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI col = {0}, row = {1}: non ho trovato informazione valida di header per le concentrazioni";
+        protected string _nonHoTrovatoHeaderConcentrationsQuadranteCorrente = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI row = {1}, col = {0}: non ho trovato informazione valida di header per le concentrazioni";
 
 
         /// <summary>
@@ -124,18 +131,22 @@ namespace Tool_Importazione_Leghe.Logging
         /// </summary>
         protected string _nonHoTrovatoNessunQuadranteDiLettura = "RICONOSCIMENTO QUADRANTE CONCENTRAZIONI: non ho trovato nessun quadrante di lettura concentrazioni per il foglio '{0}'";
 
+        #endregion
+
+
+        #region RICONOSCIMENTO DEI FOGLI EXCEL PER INFORMAZIONI DI BASE O CONCENTRAZIONI
 
         /// <summary>
-        /// Messsaggio di già trovata proprietà letta per le informazioni generali all'interno del foglio excel
+        /// Messaggio di segnalazione individuazione del foglio excel corrente come di informazioni di base per la determinata lega 
         /// </summary>
-        protected string _hoGiaTrovatoLaProprietaHeaderInfoCorrente = "RICONOSCIMENTO QUADRANTE INFORMAZIONI: ho già trovato la proprietà '{0}', questa non viene inserita nella lettura";
+        protected string _readExcel_foglioRiconosciutoComeDiInfoBase = "\n****\nLETTURA EXCEL: il foglio '{0}' contiene delle informazioni di base per le leghe";
 
 
         /// <summary>
-        /// Messaggio relativo al fatto che la proprieta in lettura corrente non appartiene alle definizioni date per le informazioni obbligatorie nella lettura delle informazioni di lega 
+        /// Messaggio di segnalazione individuazione del foglio excel corrente come di informazioni relative alle concentrazioni materiali di una determinata lega 
         /// </summary>
-        protected string _informazioneNonContenutaTraLeDefinizioniInformazioniGenerali = "RICONOSCIMENTO QUADRANTE INFORMAZIONI: la proprieta '{0}' non appartiene alle definizioni date per le informazioni obbligatorie";
-        
+        protected string _readExcel_foglioRiconosciutoComeInfoConcentrazioni = "\n****\nLETTURA EXCEL: il foglio '{0}' contiene delle informazioni relative alle concentrazioni per i materiali";
+
         #endregion
 
         #endregion
@@ -157,7 +168,9 @@ namespace Tool_Importazione_Leghe.Logging
 
 
         #region METODI PUBBLICI 
-        
+
+        #region APERTURA FOGLIO EXCEL --> READ EXCEL DI BASE
+
         /// <summary>
         /// Permette la segnalazione di una determinata eccezione nata nell'analisi 
         /// delle diverse parti del file excel in questione
@@ -182,60 +195,66 @@ namespace Tool_Importazione_Leghe.Logging
         /// <param name="modalitaCorrente"></param>
         public abstract void HoTrovatoIlSeguenteFoglioExcel(string currentFoglioExcelName, string currentFileExcel, CurrentModalitaExcel modalitaCorrente);
 
+        #endregion
 
-        /// <summary>
-        /// Non ho trovato nessuna informazione di marker per il foglio excel passato in input
-        /// </summary>
-        /// <param name="currentFoglioExcel"></param>
-        public abstract void NonHoTrovatoNessunaInformazioneDiMarker(string currentFoglioExcel);
+
+        #region STEP 1: RICONOSCIMENTO HEADER PER INFORMAZIONI GENERALI LEGA --> READ HEADERS
 
 
         /// <summary>
-        /// Indicazione di non aver trovato informazione utile per un determinato marker
+        /// Indicazione sul fatto di aver gia trovato una proprieta di carattere generale per il foglio sulle informazioni di lega in lettura
         /// </summary>
-        /// <param name="currentMarker"></param>
-        /// <param name="currentCol"></param>
+        /// <param name="currentProprietaLettura"></param>
+        public abstract void HoGiaTrovatoInformazioneACarattereGenerale(string currentProprietaLettura);
+
+
+        /// <summary>
+        /// Indicazione che la proprieta in lettura corrente non appartiene alle definizioni date come obbligatorie per la lettura delle informazioni 
+        /// generali di lega 
+        /// </summary>
+        /// <param name="currentProprietaLettura"></param>
+        public abstract void InformazioneGeneraleNonContenutaNelleDefinizioniObbligatorie(string currentProprietaLettura);
+
+
+        /// <summary>
+        /// Dichiarazione del log per la segnalazione che l'informazione addizionale non si trova nelle definizioni date per tutte le informazioni 
+        /// addizionali e generali per le leghe correnti
+        /// </summary>
+        /// <param name="currentProprietaLettura"></param>
+        public abstract void InformazioneGeneraleNonContenutaNelleDefinizioniAddizionali(string currentProprietaLettura);
+
+
+        /// <summary>
+        /// Dichiarazione del log per la segnalazione che l'informazione obbligatoria a carattere generale è stata correttamente letta a partire dal
+        /// foglio excel corrente 
+        /// </summary>
+        /// <param name="currentProprietaLettura"></param>
         /// <param name="currentRow"></param>
-        public abstract void NonHoTrovatoInformazionePerIlSeguenteMarker(string currentMarker, int currentCol, int currentRow);
+        /// <param name="currentCol"></param>
+        public abstract void TrovataInformazioneObbligatoriaLetturaInformazioniGenerali(string currentProprietaLettura, int currentRow, int currentCol);
 
 
         /// <summary>
-        /// Indicazione di aver trovato tutti i marker, il determinato foglio excel è stato riconosciuto come 
-        /// contenente informazioni per una certa categoria tra leghe e concentrazioni
+        /// Dichiarazione del log per la segnalazione di lettura corretta per una proprieta addizionale a carattere generale per la lega letta 
+        /// all'interno del foglio excel corrente 
         /// </summary>
-        /// <param name="currentFoglioExcel"></param>
-        /// <param name="currentTipologia"></param>
-        public abstract void HoTrovatoTuttiIMarker(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologia);
+        /// <param name="currentProprietaLettura"></param>
+        /// <param name="currentRow"></param>
+        /// <param name="currentCol"></param>
+        public abstract void TrovataInformazioneAddizionaleLetturaInformazioniGenerali(string currentProprietaLettura, int currentRow, int currentCol);
 
 
         /// <summary>
-        /// Indicazione di aver trovato del contenuto per il determinato foglio excel in lettura corrente
-        /// la lettura effettiva del contenuto avverrà dall'indice indicato
+        /// Dichiarazione implementazione log in merito alla fine della procedura per il processamento degli headers delle informazioni 
+        /// a carattere generale per il foglio excel corrente 
         /// </summary>
-        /// <param name="currentFoglioExcel"></param>
-        /// <param name="currentTipologia"></param>
-        public abstract void SegnalazioneTrovatoContenutoUtile(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologia, int currentCol, int currentRow);
+        /// <param name="excelSheetName"></param>
+        public abstract void FineProcessamentoGeneralInfoPerFoglioExcel(string excelSheetName);
+
+        #endregion
 
 
-
-        /// <summary>
-        /// Indicazione che non si è trovata nessuna informazione utile per un determinato foglio excel riconosciuto come 
-        /// un certo contenitore per dati su lega / concentrazioni
-        /// </summary>
-        /// <param name="currentFoglio"></param>
-        /// <param name="currentTipologia"></param>
-        public abstract void SegnalazioneFoglioContenutoNullo(string currentFoglio, Constants.TipologiaFoglioExcel currentTipologia);
-
-
-        /// <summary>
-        /// Indicazione che il foglio excel è stato riconosciuto come una certa tipologia
-        /// </summary>
-        /// <param name="currentFoglio"></param>
-        /// <param name="currentTipologia"></param>
-        public abstract void HoRiconosciutoSeguenteFoglioCome(string currentFoglio, Constants.TipologiaFoglioExcel currentTipologia);
-
-
-        #region RICONOSCIMENTO QUADRANTE CONCENTRAZIONI
+        #region STEP 1: RICONOSCIMENTO QUADRANTE CONCENTRAZIONI --> READ HEADERS
 
         /// <summary>
         /// Indicazione di trovo informazioni per il titolo del materiale corrente - la cella è correttamente mappata
@@ -304,19 +323,24 @@ namespace Tool_Importazione_Leghe.Logging
         public abstract void NonHoTrovatoNessunQuadranteConcentrazioniPerFoglio(string currentFoglioExcel);
 
 
+        #endregion
+
+
+        #region FINE RICONOSCIMENTO TIPOLOGIA FOGLIO --> READ EXCEL DI BASE
+
         /// <summary>
-        /// Indicazione sul fatto di aver gia trovato una proprieta di carattere generale per il foglio sulle informazioni di lega in lettura
+        /// Indicazione riconoscimento del foglio come contenente delle informazioni di carattere generale per la determinata 
+        /// lega in lettura corrente
         /// </summary>
-        /// <param name="currentProprietaLettura"></param>
-        public abstract void HoGiaTrovatoInformazioneACarattereGenerale(string currentProprietaLettura);
+        /// <param name="currentExcelSheet"></param>
+        public abstract void HoRiconosciutoIlFoglioComeContenenteInformazioniGeneraliLega(string currentExcelSheet);
 
 
         /// <summary>
-        /// Indicazione che la proprieta in lettura corrente non appartiene alle definizioni date come obbligatorie per la lettura delle informazioni 
-        /// generali di lega 
+        /// Indicazione riconoscimento del foglio come contenente delle informazioni di concentrazione per i materiali di una certa lega 
         /// </summary>
-        /// <param name="currentProprietaLettura"></param>
-        public abstract void InformazioneGeneraleNonContenutaNelleDefinizioniObbligatorie(string currentProprietaLettura);
+        /// <param name="currentExcelSheet"></param>
+        public abstract void HoRiconosciutoIlFoglioComeContenenteConcentrazioniMateriali(string currentExcelSheet);
 
         #endregion
 

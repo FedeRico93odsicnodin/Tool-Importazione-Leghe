@@ -35,7 +35,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <summary>
         /// Insieme di tutti i fogli excel presenti nel file excel correntemente aperto
         /// </summary>
-        private List<ExcelSheet> _currentSheetsExcel;
+        private List<ExcelSheetWithUtilInfo> _currentSheetsExcel;
 
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
             int currentSheetPosition = 0;
 
             // inizializzazione della lista relativa ai fogli excel in lettura corrente
-            _currentSheetsExcel = new List<ExcelSheet>();
+            _currentSheetsExcel = new List<ExcelSheetWithUtilInfo>();
 
             foreach(ExcelWorksheet currentWorksheet in _currentOpenedExcel.Workbook.Worksheets)
             {
@@ -132,7 +132,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
                 ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoIlSeguenteFoglioExcel(currentSheetName, _currentExcelName, CurrentModalita);
 
-                ExcelSheet currentSheetInfo = new ExcelSheet();
+                ExcelSheetWithUtilInfo currentSheetInfo = new ExcelSheetWithUtilInfo();
 
                 currentSheetInfo.SheetName = currentSheetName;
                 currentSheetInfo.ExcelFile = _currentExcelName;
@@ -140,9 +140,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 currentSheetInfo.Letto = false;
                 currentSheetInfo.TipologiaRiconosciuta = Utils.Constants.TipologiaFoglioExcel.Unknown;
                 currentSheetInfo.Letto = false;
-                currentSheetInfo.Info_Col = 0;
-                currentSheetInfo.Info_Row = 0;
-
+                
                 _currentSheetsExcel.Add(currentSheetInfo);
 
                 currentSheetPosition++;
@@ -164,35 +162,39 @@ namespace Tool_Importazione_Leghe.ExcelServices
             if (_currentSheetsExcel.Count == 0)
                 throw new Exception(ExceptionMessages.NESSUNFOGLIOCONTENUTOINEXCEL);
 
-            foreach(ExcelSheet currentExcelSheet in _currentSheetsExcel)
+            foreach(ExcelSheetWithUtilInfo currentExcelSheet in _currentSheetsExcel)
             {
-                int currentColInfo = 0;
-                int currentRowInfo = 0;
-
                 int currentSheetPos = currentExcelSheet.PositionInExcelFile;
                 
                 ExcelWorksheet currentFoglio = _currentOpenedExcel.Workbook.Worksheets[currentSheetPos];
 
+                // eventuale informazioni header per la lettura delle informazioni generali di lega 
+                List<HeadersInfoLega_Excel> headersInformazioniGeneraliFoglioCorrente = null;
+            
                 // eventuale informazioni quadranti concentrazioni per la lega corrente 
                 List<ExcelConcQuadrant> quadrantiConcentrazioniPerFoglioCorrente = null;
+                
 
                 // controllo che il foglio sia di informazioni generali di lega
-                if (_currentReadHeadersServices.ReadFirstInformation_DatiPrimari(ref currentFoglio, Constants.TipologiaFoglioExcel.Informazioni_Lega, out currentColInfo, out currentRowInfo))
+                if (_currentReadHeadersServices.ReadInformation_GeneralInfoLega(ref currentFoglio, out headersInformazioniGeneraliFoglioCorrente))
                 {
-                    // riconscimento del foglio come contenitore di informazioni generali di lega
-                    ServiceLocator.GetLoggingService.GetLoggerExcel.HoRiconosciutoSeguenteFoglioCome(currentFoglio.Name, Constants.TipologiaFoglioExcel.Informazioni_Lega);
-
                     currentExcelSheet.TipologiaRiconosciuta = Constants.TipologiaFoglioExcel.Informazioni_Lega;
-                    currentExcelSheet.Info_Col = currentColInfo;
-                    currentExcelSheet.Info_Row = currentRowInfo;
+
+                    // segnalazione a console riconoscimento foglio a carattere generale per la lega 
+                    ServiceLocator.GetLoggingService.GetLoggerExcel.HoRiconosciutoIlFoglioComeContenenteInformazioniGeneraliLega(currentFoglio.Name);
+
+                    // inserimento delle informazioni lette per gli headers per la lettura delle informazioni generali per la lega corrente
+                    currentExcelSheet.GeneralInfo_Lega = headersInformazioniGeneraliFoglioCorrente;
                 }
                 // controllo che il foglio corrente non sia un foglio di lettura delle concentrazioni per nomi appartenenti a una certa lega 
                 else if(_currentReadHeadersServices.ReadHeaders_Concentrazioni(ref currentFoglio, Constants.TipologiaFoglioExcel.Informazioni_Concentrazione, out quadrantiConcentrazioniPerFoglioCorrente))
                 {
-                    // riconscimento del foglio come contenitore di informazioni di concentraizioni su nomi per una certa lega
-                    ServiceLocator.GetLoggingService.GetLoggerExcel.HoRiconosciutoSeguenteFoglioCome(currentFoglio.Name, Constants.TipologiaFoglioExcel.Informazioni_Concentrazione);
-
                     currentExcelSheet.TipologiaRiconosciuta = Constants.TipologiaFoglioExcel.Informazioni_Concentrazione;
+
+                    // segnalazione a console riconoscimento foglio come foglio delle concentrazioni di materiali per una determinata lega 
+                    ServiceLocator.GetLoggingService.GetLoggerExcel.HoRiconosciutoIlFoglioComeContenenteConcentrazioniMateriali(currentFoglio.Name);
+
+                    // inserimento delle informazioni lette per i quadranti delle concentrazioni per la lega corrente 
                     currentExcelSheet.Concentrations_Quadrants = quadrantiConcentrazioniPerFoglioCorrente;
                 }
 

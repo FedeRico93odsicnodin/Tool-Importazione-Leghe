@@ -11,9 +11,11 @@ namespace Tool_Importazione_Leghe.Model
     /// Oggetto che mi mappa le proprietà principale del foglio excel corrente per poterne 
     /// poi fare il riconoscimento e la lettura successiva
     /// </summary>
-    public class ExcelSheet
+    public class ExcelSheetWithUtilInfo
     {
-        
+
+        #region INFORMAZIONI DI CARATTERE GENERALE FOGLIO
+
         /// <summary>
         /// Nome per il foglio excel in analisi corrente
         /// </summary>
@@ -25,7 +27,7 @@ namespace Tool_Importazione_Leghe.Model
         /// </summary>
         public string ExcelFile { get; set; }
 
-
+        
         /// <summary>
         /// Ottenimento della posizione per il foglio excel corrente
         /// </summary>
@@ -43,19 +45,16 @@ namespace Tool_Importazione_Leghe.Model
         /// </summary>
         public bool Letto { get; set; }
 
+        #endregion
+
+
+        #region HEADERS E QUADRANTI PER IL FOGLIO EXCEL
 
         /// <summary>
-        /// Permette di posizionarsi sulla prima colonna utile per le informazioni da leggere su questo 
-        /// foglio excel
+        /// Questa proprieta è valida se il foglio excel corrente viene letto come foglio excel di carattere 
+        /// generale per la lega corrente, le informazioni vengono quindi valorizzate successivamente 
         /// </summary>
-        public int Info_Col { get; set; }
-
-
-        /// <summary>
-        /// Permette di posizionarsi sulla prima riga utile per le informazioni da leggere su questo 
-        /// foglio excel
-        /// </summary>
-        public int Info_Row { get; set; }
+        public List<HeadersInfoLega_Excel> GeneralInfo_Lega { get; set; }
 
 
         /// <summary>
@@ -64,5 +63,14 @@ namespace Tool_Importazione_Leghe.Model
         /// come un foglio contenente informazioni di concentrazioni per determinati materiali
         /// </summary>
         public List<ExcelConcQuadrant> Concentrations_Quadrants { get; set; }
+
+        #endregion
+
+
+        #region INFORMAZIONI LETTE EFFETTIVAMETE SU FOGLIO 
+
+        // TODO : inserire qui le informazioni a carattere generale che vengono lette con il dovuto scarto rispetto alle informazioni gia contenute nel database
+
+        #endregion
     }
 }

@@ -31,12 +31,22 @@ namespace Tool_Importazione_Leghe.Logging
             throw new NotImplementedException();
         }
 
+        public override void FineProcessamentoGeneralInfoPerFoglioExcel(string excelSheetName)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void HoGiaTrovatoInformazioneACarattereGenerale(string currentProprietaLettura)
         {
             throw new NotImplementedException();
         }
 
-        public override void HoRiconosciutoSeguenteFoglioCome(string currentFoglio, Constants.TipologiaFoglioExcel currentTipologia)
+        public override void HoRiconosciutoIlFoglioComeContenenteConcentrazioniMateriali(string currentExcelSheet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void HoRiconosciutoIlFoglioComeContenenteInformazioniGeneraliLega(string currentExcelSheet)
         {
             throw new NotImplementedException();
         }
@@ -66,7 +76,7 @@ namespace Tool_Importazione_Leghe.Logging
             throw new NotImplementedException();
         }
 
-        public override void HoTrovatoTuttiIMarker(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologia)
+        public override void InformazioneGeneraleNonContenutaNelleDefinizioniAddizionali(string currentProprietaLettura)
         {
             throw new NotImplementedException();
         }
@@ -85,11 +95,7 @@ namespace Tool_Importazione_Leghe.Logging
         {
             throw new NotImplementedException();
         }
-
-        public override void NonHoTrovatoInformazionePerIlSeguenteMarker(string currentMarker, int currentCol, int currentRow)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public override void NonHoTrovatoInformazioniHeaderPerQuadranteCorrente(int currentCol, int currentRow)
         {
@@ -100,11 +106,7 @@ namespace Tool_Importazione_Leghe.Logging
         {
             throw new NotImplementedException();
         }
-
-        public override void NonHoTrovatoNessunaInformazioneDiMarker(string currentFoglioExcel)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public override void NonHoTrovatoNessunQuadranteConcentrazioniPerFoglio(string currentFoglioExcel)
         {
@@ -116,15 +118,16 @@ namespace Tool_Importazione_Leghe.Logging
             throw new NotImplementedException();
         }
 
-        public override void SegnalazioneFoglioContenutoNullo(string currentFoglio, Constants.TipologiaFoglioExcel currentTipologia)
+        public override void TrovataInformazioneAddizionaleLetturaInformazioniGenerali(string currentProprietaLettura, int currentRow, int currentCol)
         {
             throw new NotImplementedException();
         }
 
-        public override void SegnalazioneTrovatoContenutoUtile(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologia, int currentCol, int currentRow)
+        public override void TrovataInformazioneObbligatoriaLetturaInformazioniGenerali(string currentProprietaLettura, int currentRow, int currentCol)
         {
             throw new NotImplementedException();
         }
+
 
         #endregion
     }

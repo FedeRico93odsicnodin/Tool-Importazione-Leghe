@@ -75,112 +75,6 @@ namespace Tool_Importazione_Leghe.Logging
 
 
         /// <summary>
-        /// Implementazione a console della mancanza dei marker per l'individuazione del tipo per il foglio excel correntemente in lettura
-        /// </summary>
-        /// <param name="currentFoglioExcel"></param>
-        public override void NonHoTrovatoNessunaInformazioneDiMarker(string currentFoglioExcel)
-        {
-            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
-            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
-            currentMessage += String.Format(base._nonHoTrovatoMarkerPerIlFoglioExcel, currentFoglioExcel);
-
-            Console.WriteLine(currentMessage);
-
-            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
-        }
-
-
-        /// <summary>
-        /// Segnalazione a console di non aver trovato nessuna informazione utile per il riconoscimento di un determinato 
-        /// header di colonna 
-        /// </summary>
-        /// <param name="currentMarker"></param>
-        /// <param name="currentCol"></param>
-        /// <param name="currentRow"></param>
-        public override void NonHoTrovatoInformazionePerIlSeguenteMarker(string currentMarker, int currentCol, int currentRow)
-        {
-            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
-            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
-            currentMessage += String.Format(base._nonHoTrovatoInformazionePerIlSeguenteMarker, currentMarker, currentCol, currentRow);
-
-            Console.WriteLine(currentMessage);
-
-            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
-        }
-
-
-        /// <summary>
-        /// Segnalazione a console di aver trovato tutti i marker, il foglio excel è stato correttamente identificato 
-        /// per la lettura di certe informazioni tra leghe e concentrazioni
-        /// </summary>
-        /// <param name="currentFoglioExcel"></param>
-        /// <param name="currentTipologia"></param>
-        public override void HoTrovatoTuttiIMarker(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologia)
-        {
-            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
-            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
-            currentMessage += String.Format(base._hoTrovatoTuttiMarker, currentFoglioExcel, currentTipologia);
-
-            Console.WriteLine(currentMessage);
-
-            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
-        }
-
-
-        /// <summary>
-        /// Segnalazione a console non aver trovato informazioni utili per il foglio in analisi corrente
-        /// </summary>
-        /// <param name="currentFoglio"></param>
-        /// <param name="currentTipologia"></param>
-        public override void SegnalazioneFoglioContenutoNullo(string currentFoglio, Constants.TipologiaFoglioExcel currentTipologia)
-        {
-            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
-            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
-            currentMessage += String.Format(base._nonHoTrovatoInformazioniUtiliDiLega, currentFoglio, currentTipologia.ToString());
-
-            Console.WriteLine(currentMessage);
-
-            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
-        }
-
-
-        /// <summary>
-        /// Display a console dell'informazione utile trovata per il determinato foglio excel corrente
-        /// </summary>
-        /// <param name="currentFoglioExcel"></param>
-        /// <param name="currentTipologia"></param>
-        /// <param name="currentCol"></param>
-        /// <param name="currentRow"></param>
-        public override void SegnalazioneTrovatoContenutoUtile(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologia, int currentCol, int currentRow)
-        {
-            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
-            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
-            currentMessage += String.Format(base._hoTrovatoContenutoPerIlFoglio, currentCol, currentRow, currentFoglioExcel, currentTipologia.ToString());
-
-            Console.WriteLine(currentMessage);
-
-            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
-        }
-
-
-        /// <summary>
-        /// Segnalazione a console e nel log che il foglio excel è stato riconosciuto come di una certa tipologia
-        /// </summary>
-        /// <param name="currentFoglio"></param>
-        /// <param name="currentTipologia"></param>
-        public override void HoRiconosciutoSeguenteFoglioCome(string currentFoglio, Constants.TipologiaFoglioExcel currentTipologia)
-        {
-            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
-            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
-            currentMessage += String.Format(base._hoRiconosciutoFoglioExcelCome, currentFoglio, currentTipologia.ToString());
-
-            Console.WriteLine(currentMessage);
-
-            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
-        }
-
-
-        /// <summary>
         /// Segnalazione a console di avere trovato informazione relativa al name per la lega correntemente in analisi nella lettura delle concentrazioni
         /// </summary>
         /// <param name="currentCol"></param>
@@ -355,6 +249,108 @@ namespace Tool_Importazione_Leghe.Logging
             string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
             currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
             currentMessage += String.Format(base._informazioneNonContenutaTraLeDefinizioniInformazioniGenerali, currentProprietaLettura);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Implementazione a console della messaggistica relativa alla segnalazione che l'informazione addizionale non si trova all'interno delle definizioni date per gli headers 
+        /// che è possible avere in lettura corrente per la lega 
+        /// </summary>
+        /// <param name="currentProprietaLettura"></param>
+        public override void InformazioneGeneraleNonContenutaNelleDefinizioniAddizionali(string currentProprietaLettura)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._informazioneNoNContenutaTraLeDefinizioniAddizionaliGenerali, currentProprietaLettura);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Implementazione a console della messaggistica relativa alla lettura di una certa proprieta obbligatoria per le informazioni di carattere generale contenute nel foglio 
+        /// excel per una certa lega in lettura 
+        /// </summary>
+        /// <param name="currentProprietaLettura"></param>
+        /// <param name="currentRow"></param>
+        /// <param name="currentCol"></param>
+        public override void TrovataInformazioneObbligatoriaLetturaInformazioniGenerali(string currentProprietaLettura, int currentRow, int currentCol)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._segnalazioneLetturaProprietaObbligatoriaLega, currentRow, currentCol, currentProprietaLettura);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Implementazione a console del messaggio di trovata proprieta addizionale per le informazioni generali in lettura sul foglio e per la lega corrente
+        /// </summary>
+        /// <param name="currentProprietaLettura"></param>
+        /// <param name="currentRow"></param>
+        /// <param name="currentCol"></param>
+        public override void TrovataInformazioneAddizionaleLetturaInformazioniGenerali(string currentProprietaLettura, int currentRow, int currentCol)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._segnalazioneLetturaProprietaAddizionaleLega, currentRow, currentCol, currentProprietaLettura);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Implementazione a console del messaggio di fine processamento per le informazioni generali del foglio excel che viene passato in input
+        /// </summary>
+        /// <param name="excelSheetName"></param>
+        public override void FineProcessamentoGeneralInfoPerFoglioExcel(string excelSheetName)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._fineProcessamentoGeneralInfoFoglioExcel, excelSheetName);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console riconoscimento del foglio excel come contenitore di informazioni a carattere generale per la determinata lega
+        /// </summary>
+        /// <param name="currentExcelSheet"></param>
+        public override void HoRiconosciutoIlFoglioComeContenenteInformazioniGeneraliLega(string currentExcelSheet)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._readExcel_foglioRiconosciutoComeDiInfoBase, currentExcelSheet);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console riconoscimento del foglio excel come contenitore di informazioni per le concentrazioni dei materiali di una determinata lega 
+        /// </summary>
+        /// <param name="currentExcelSheet"></param>
+        public override void HoRiconosciutoIlFoglioComeContenenteConcentrazioniMateriali(string currentExcelSheet)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._readExcel_foglioRiconosciutoComeInfoConcentrazioni, currentExcelSheet);
 
             Console.WriteLine(currentMessage);
 
