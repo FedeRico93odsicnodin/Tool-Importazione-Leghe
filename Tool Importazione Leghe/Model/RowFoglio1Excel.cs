@@ -3,33 +3,193 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tool_Importazione_Leghe.ExcelServices;
 
 namespace Tool_Importazione_Leghe.Model
 {
     /// <summary>
-    /// OGGETTO per la mappatura di partenza delle righe trovate per il primo foglio excel
-    /// questa riga si appoggia sulle tabelle relative a 
-    /// Normative, Leghe, Categorie_Leghe e Basi (indirettamente, facendo un check su FK, se non presente è da inserire
+    /// OGGETTO CONTENTENTE le righe in lettura per le leghe correnti dal foglio excel di partenza
+    /// questo oggetto è valorizzato con tutti i possibili valori contenuti sia per la lista delle proprieta obbligatorie che per la lista delle proprieta
+    /// addizionali in merito all'inserimento di una delle righe corrispondenti
     /// </summary>
     public class RowFoglio1Excel
     {
-        /// <summary>
-        /// Mappatura della colonna normativa corrispondente --> DA CONFRONTARE CON QUESTO PARAMETRO
-        /// </summary>
-        public string NormativaCorrispondente { get; set; }
-
+        #region ATTRIBUTI PRIVATI
         
         /// <summary>
-        /// Indica il nome della lega corrispondente per questo caso --> DA CONFRONTARE CON QUESTO PARAMETRO
+        /// Dizionario delle proprietà obbligatorie per la riga corrente 
         /// </summary>
-        public string NomeLegaCorrispondente { get; set; }
+        private Dictionary<string, string> _mandatoryProperties_Info;
 
 
         /// <summary>
-        /// Indica un set di categorie leghe che viene direttamente recuperato dal documento di partenza --> DA CONFRONTARE CON QUESTO PARAMETRO
+        /// Dizionario delle proprietà addizionali per la riga corrente 
         /// </summary>
-        public List<string> CategorieLegheCorrispondenti { get; set; }
+        private Dictionary<string, string> _additionalProperties_Info;
 
-        
+
+        /// <summary>
+        /// Questo valore e preso rispetto ai valori per le proprieta obbligatorie del foglio excel 
+        /// e per le informazioni a carattere generale preso direttamente dalle costanti
+        /// </summary>
+        private List<string> _currentMandatoryProperties;
+
+
+        /// <summary>
+        /// Questo valore è preso rispetto ai valori addizionali, sempre contenuti nelle costanti e 
+        /// per le informazioni di carattere generale di lega
+        /// </summary>
+        private List<string> _currentAdditionalProperties;
+
+        #endregion
+
+
+        #region COSTRUTTORE: INIZIALIZZAZIONE DELLE LISTE DELLE PROPRIETA OBBLIGATORIE E ADDIZIONALI CON I VALORI PRESENTI NELLE COSTANTI
+
+        /// <summary>
+        /// Inizializzazione delle 2 liste con i valori di chiave presenti all'interno delle costanti
+        /// </summary>
+        public RowFoglio1Excel()
+        {
+            // 1. inizializzazione dei valori per le proprieta obbligatorie
+            FillMandatoryProperties();
+
+            // 2. inizializzazione dei valori per le proprieta opzionali
+            FillAdditionalProperty();
+        }
+
+        #endregion
+
+
+        #region METODI PRIVATI
+
+        /// <summary>
+        /// Al momento dell'inizializzazione mi permette di andare a inserire una entry nel dizionario delle proprieta obbligatorie
+        /// per ogni prorpieta obbligatoria effettivamente contenuta nella definizione data nelle costanti
+        /// </summary>
+        private void FillMandatoryProperties()
+        {
+            _currentMandatoryProperties = ExcelMarkers.GetAllColumnHeadersForGeneralInfoSheet();
+
+            foreach(string currentMandatoryProperty in _currentMandatoryProperties)
+            {
+                // inizializzazione con il valore a stringa vuota 
+                _mandatoryProperties_Info.Add(currentMandatoryProperty, String.Empty);
+            }
+        }
+
+
+        /// <summary>
+        /// Analogo del metodo creato sopra ma per le proprieta opzionali relativi al materiale corrente 
+        /// </summary>
+        private void FillAdditionalProperty()
+        {
+            _currentAdditionalProperties = ExcelMarkers.GetAdditionalPropertiesGeneralInfoSheet();
+
+            foreach(string currentAdditionalProperty in _currentAdditionalProperties)
+            {
+                // inizializzazione con il valore a stringa vuota 
+                _additionalProperties_Info.Add(currentAdditionalProperty, String.Empty);
+            }
+        }
+
+        #endregion
+
+
+        #region METODI PUBBLICI
+
+        /// <summary>
+        /// Permette di ottenere il valore della proprieta passata in input
+        /// </summary>
+        /// <param name="currentProperty"></param>
+        /// <returns></returns>
+        public string GetValue(string currentProperty)
+        {
+            // controllo che la chiave passata in input sia nelle proprieta obbligatorie
+            if (_mandatoryProperties_Info.ContainsKey(currentProperty))
+                return _mandatoryProperties_Info[currentProperty];
+
+            // controllo che la chiave passata in input sia nelle proprieta opzionali
+            if (_additionalProperties_Info.ContainsKey(currentProperty))
+                return _additionalProperties_Info[currentProperty];
+
+
+            // errore: ritorno stringa vuota 
+            return String.Empty;
+        }
+
+
+        /// <summary>
+        /// Permette di settare il valore della proprieta passati in input
+        /// </summary>
+        /// <param name="currentProperty"></param>
+        /// <param name="currentValue"></param>
+        /// <returns></returns>
+        public void SetValue(string currentProperty, string currentValue)
+        {
+            // provo con le proprieta obbligatorie
+            if (_mandatoryProperties_Info.ContainsKey(currentProperty))
+            {
+                _mandatoryProperties_Info[currentProperty] = currentValue;
+                return;
+            }
+                
+            // provo con le proprieta opzionali
+            if(_additionalProperties_Info.ContainsKey(currentProperty))
+            {
+                _additionalProperties_Info[currentProperty] = currentValue;
+                return;
+            }
+        }
+
+
+        /// <summary>
+        /// Mi permette di verificare che la determinata proprieta passata in input contiene effettivamente 
+        /// ubn valore 
+        /// </summary>
+        /// <returns></returns>
+        public bool ContainsValue(string currentProperty)
+        {
+            if (_mandatoryProperties_Info.ContainsKey(currentProperty))
+                if (_mandatoryProperties_Info[currentProperty] != String.Empty)
+                    return true;
+
+            if (_additionalProperties_Info.ContainsKey(currentProperty))
+                if (_additionalProperties_Info[currentProperty] != String.Empty)
+                    return true;
+
+
+            return false;
+        }
+
+
+        /// <summary>
+        /// Mi dice se l'oggetto corrente è empty, in questo caso posso eliminarlo dalla lista di tutti gli oggetti 
+        /// appena inseriti per il foglio excel e le proprieta di headers correnti
+        /// </summary>
+        /// <returns></returns>
+        public bool IsEmpty()
+        {
+            bool isEmptyMandatory = false;
+            bool isEmptyAdditional = false;
+
+            if (_mandatoryProperties_Info.Where(x => x.Value != String.Empty).Select(x => x.Key).ToList().Count() == 0)
+                isEmptyMandatory = true;
+
+            if (_additionalProperties_Info.Where(x => x.Value != String.Empty).Select(x => x.Key).ToList().Count() == 0)
+                isEmptyAdditional = true;
+
+            return (isEmptyMandatory || isEmptyAdditional);
+        }
+
+
+        /// <summary>
+        /// Informazione di riga corrente per il foglio excel
+        /// E' sufficiente per il riconoscimento nel foglio excel in quanto le informazioni di colonna potrebbero essere calcolate 
+        /// facendo un match per il rispettivo header letto
+        /// </summary>
+        public int Excel_CurrentRow { get; set; }
+
+        #endregion
     }
 }

@@ -148,6 +148,8 @@ namespace Tool_Importazione_Leghe.ExcelServices
         }
 
 
+        #region STEP 1: READER EXCEL
+
         /// <summary>
         /// Permette la lettura corretta degli headers e quindi la distinzione di tutti i fogli per i quali 
         /// sono presenti delle informazioni di lega che dovranno poi essere mappate dalle diverse concentrazioni 
@@ -210,6 +212,56 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
             }
         }
+
+        #endregion
+
+
+        #region STEP 2: ANALISI SINTASSI EXCEL (PRE DATABASE)
+
+        /// <summary>
+        /// Permette l'analisi della sintassi del foglio excel per il quale al momento sono stati letti sono i quadranti e gli headers relativi 
+        /// alle informazioni di lega e di concentrazioni materiali.
+        /// Questa analisi viene fatta prima di eseguire il compare delle informazioni database vere e proprie
+        /// </summary>
+        /// <param name="currentModalita"></param>
+        public void AnalyzeExcelSheetsSyntax(CurrentModalitaExcel currentModalita)
+        {
+
+        }
+
+
+        /// <summary>
+        /// Permette di leggere l'effettivo contenuto di tutte le informazioni contenute nel file excel di partenza 
+        /// prima della vera e propria validazione delle informazioni contenute al suo interno
+        /// </summary>
+        /// <param name="currentModalita"></param>
+        private void ReadExcelUtilInformation(CurrentModalitaExcel currentModalita)
+        {
+
+        }
+
+
+        /// <summary>
+        /// Permette l'analis di sintassi del foglio excel corrente nei fogli per i quali è stato inserito contenuto
+        /// </summary>
+        /// <param name="currentModalita"></param>
+        private void AnalyzeExcelSyntax(CurrentModalitaExcel currentModalita)
+        {
+
+        }
+
+
+        /// <summary>
+        /// Permette l'esecuzione del match delle informazioni contenute nel foglio excel per la successiva (ancora ipotetica)
+        /// persistenza all'interno della detinazione 
+        /// </summary>
+        /// <param name="currentModalita"></param>
+        public void MatchInformationForDestination(CurrentModalitaExcel currentModalita)
+        {
+
+        }
+
+        #endregion
 
         #endregion
     }

@@ -152,8 +152,7 @@ namespace Tool_Importazione_Leghe
             ServiceLocator.GetLoggingService.GetLoggerImportActivity.EndingCurrentStep_ExcelToDatabase(Constants.TipologiaImport_ExcelToDatabase.ANALISI_MARKERS_EXCEL);
 
             Console.ReadKey();
-
-
+            
             #endregion
 
 

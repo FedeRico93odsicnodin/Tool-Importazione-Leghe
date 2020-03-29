@@ -149,6 +149,22 @@ namespace Tool_Importazione_Leghe.Logging
 
         #endregion
 
+
+        #region LETTURA + VALIDAZIONE INFORMAZIONI ALL'INTERNO DEL FOGLIO DELLE INFORMAZIONI GENERALI DI LEGA 
+
+        /// <summary>
+        /// Messaggio di segnalazione di lettura di una riga di valori per il numero di riga passato in input e per il determinato foglio excel del quale viene passato il nome
+        /// </summary>
+        protected string _stoAggiungendoInfoRigaGeneralInRow = "LETTURA INFORMAZIONI GENERALI LEGA: foglio '{0}' sto leggendo una riga di valori per la riga {1}";
+
+
+        /// <summary>
+        /// Messaggio di segnalazione di fine lettura di tutti i valori per gli header di carattere generale per la lega correntemente in lettura dal foglio excel
+        /// </summary>
+        protected string _hoAppenaFinitoLetturaValoriInformazioniGenerali = "LETTURA INFORMAZINI GENERALI LEGA: ho appena finito la lettura di tutti i valori di lega contenuti per il foglio '{0}'";
+
+        #endregion
+
         #endregion
 
 
@@ -341,6 +357,26 @@ namespace Tool_Importazione_Leghe.Logging
         /// </summary>
         /// <param name="currentExcelSheet"></param>
         public abstract void HoRiconosciutoIlFoglioComeContenenteConcentrazioniMateriali(string currentExcelSheet);
+
+        #endregion
+
+
+        #region MESSAGGISTICA RELATIVA ALLA LETTURA + VALIDAZIONE DELLE INFORMAZIONI GENERALI DI LEGA 
+
+        /// <summary>
+        /// Indicazione di una lettura di una riga di infomrazione per il determinato foglio excel e per la riga che vengono passati in input
+        /// questa lettura riguarda le informazioni generali per la lega corrente 
+        /// </summary>
+        /// <param name="currentRow"></param>
+        /// <param name="currentFoglioExcel"></param>
+        public abstract void HoLettoUnaRigaDiValoriGeneralPerFoglioExcelInRiga(int currentRow, string currentFoglioExcel);
+
+
+        /// <summary>
+        /// Indicazione di fine lettura di tutti i valori a carattere generale per la lega in lettura dal foglio excel correntemente in analisi
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        public abstract void HoAppenaFinitoDiLeggereTuttiIValoriGeneralInfoLega(string currentFoglioExcel);
 
         #endregion
 

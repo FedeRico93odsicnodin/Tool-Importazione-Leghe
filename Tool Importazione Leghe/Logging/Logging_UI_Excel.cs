@@ -36,7 +36,17 @@ namespace Tool_Importazione_Leghe.Logging
             throw new NotImplementedException();
         }
 
+        public override void HoAppenaFinitoDiLeggereTuttiIValoriGeneralInfoLega(string currentFoglioExcel)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void HoGiaTrovatoInformazioneACarattereGenerale(string currentProprietaLettura)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void HoLettoUnaRigaDiValoriGeneralPerFoglioExcelInRiga(int currentRow, string currentFoglioExcel)
         {
             throw new NotImplementedException();
         }

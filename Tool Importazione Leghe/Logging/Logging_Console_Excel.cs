@@ -357,6 +357,48 @@ namespace Tool_Importazione_Leghe.Logging
             LoggingService.LogInADocument(currentMessage, base._currentLogFile);
         }
 
+
+        #region MESSAGGI A CONSOLE DI LETTURA E VALIDAZIONE DEL FOGLIO EXCEL PER LE INFORMAZIONI GENERALI DI LEGA 
+
+        /// <summary>
+        /// Segnalazione a console della lettura di una riga di informazioni generali per il foglio excel che viene passato in input e 
+        /// per la riga di cell
+        /// </summary>
+        /// <param name="currentRow"></param>
+        /// <param name="currentFoglioExcel"></param>
+        public override void HoLettoUnaRigaDiValoriGeneralPerFoglioExcelInRiga(int currentRow, string currentFoglioExcel)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._stoAggiungendoInfoRigaGeneralInRow, currentFoglioExcel, currentRow);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console di fine lettura per tutte le informazioni a carattere generale per la lega corrente 
+        /// Oltre a cio viene preso un po di tempo sulla stessa console
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        public override void HoAppenaFinitoDiLeggereTuttiIValoriGeneralInfoLega(string currentFoglioExcel)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._hoAppenaFinitoLetturaValoriInformazioniGenerali, currentFoglioExcel);
+
+            Console.WriteLine(currentMessage);
+            
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+
+            // prendo un po di tempo sulla console 
+            LoggingService.GetSomeTimeOnConsole();
+        }
+
+        #endregion
+
         #endregion
 
 

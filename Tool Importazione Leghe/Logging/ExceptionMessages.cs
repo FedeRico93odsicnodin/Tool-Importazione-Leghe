@@ -105,7 +105,23 @@ namespace Tool_Importazione_Leghe.Logging
         /// Indicazione di verifica di una eccezione nel tentativo di lettura del secondo foglio delle concentrazioni
         /// </summary>
         public static string HOTROVATOLASEGUENTEECCEZIONENELLEGGEREINFOFOGLIO2 = "durante la lettura del foglio 2 si è verificata la seguente eccezione {0}";
+
+
+        #region VALIDAZIONE FOGLIO EXCEL
+
+        /// <summary>
+        /// Segnalazione di mancanza di alcuna informazione di header passata in input al validatore per il foglio excel corrente 
+        /// </summary>
+        public static string LISTAHEADERNULLAOVUOTA = "non posso continuare la lettura del folgio '{0}' perché non è stato valorizzato alcun header";
+
+
+        /// <summary>
+        /// Segnalazione di disallineamento delle celle di headers per il foglio excel corrente 
+        /// </summary>
+        public static string DISALLINEAMENTOHEADERSNELFOGLIO = "non posso continuare la lettura di '{0}' perché gli headers letti sono disallineati";
         
+        #endregion
+
         #endregion
     }
 }

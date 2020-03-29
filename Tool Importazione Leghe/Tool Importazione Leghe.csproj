@@ -106,8 +106,10 @@
     <Compile Include="DatabaseServices\NormativeDBServices.cs" />
     <Compile Include="ExcelServices\ExcelMarkers.cs" />
     <Compile Include="ExcelServices\ExcelServices.cs" />
+    <Compile Include="ExcelServices\ExcelSheetValidators.cs" />
     <Compile Include="ExcelServices\FoglioConcentrazioniServices.cs" />
     <Compile Include="ExcelServices\FoglioGeneralInfoServices.cs" />
+    <Compile Include="ExcelServices\ReadAndValidateExcelInfo.cs" />
     <Compile Include="ExcelServices\ReadHeaders.cs" />
     <Compile Include="ImportActivity.cs" />
     <Compile Include="Logging\ExceptionMessages.cs" />
