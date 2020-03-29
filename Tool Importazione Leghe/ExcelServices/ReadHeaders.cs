@@ -463,6 +463,9 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 // reset indice di riga per ripartire al conteggio
                 _tracciaCurrentRow = 1;
 
+                // indicazione di lettura di almeno un materiale per la riga corrente 
+                bool hoLettoMateriale = false;
+
                 do
                 {
                     // passo alla riga successiva se non ho ancora incontrato informazioni utili
@@ -481,11 +484,14 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
                     ExcelConcQuadrant currentReadInfoConcentration;
 
-                    bool isValid = FillMaterialConcentrationInfo(ref currentExcelSheet, _tracciaCurrentCol, _tracciaCurrentRow, out currentReadInfoConcentration);
+                    bool isValid = FillMaterialConcentrationInfo(ref currentExcelSheet, out currentReadInfoConcentration);
 
                     // ho trovato una informazione
                     if (isValid)
                     {
+                        // indico di aver almeno letto un materiale per l'iterazione sulla riga corrente 
+                        hoLettoMateriale = true;
+
                         // eventuale inizializzazione della lista dei quadranti per le concentrazioni correnti
                         if (_currentPositionsConcentrations == null)
                             _currentPositionsConcentrations = new List<ExcelConcQuadrant>();
@@ -493,15 +499,17 @@ namespace Tool_Importazione_Leghe.ExcelServices
                         _currentPositionsConcentrations.Add(currentReadInfoConcentration);
 
                         ServiceLocator.GetLoggingService.GetLoggerExcel.InserimentoQuadranteLetturaConcentrazioniPerFoglio(currentExcelSheet.Name);
-                        
+
                     }
+                    else
+                        _tracciaCurrentRow++;
 
                 }
                 while (_tracciaCurrentRow <= currentExcelSheet.Dimension.End.Row);
 
 
                 // ricalcolo posizione index per iterazione su colonne successive
-                _tracciaCurrentCol = RicalcolaPosizioneColonna(ref currentExcelSheet);
+                _tracciaCurrentCol = RicalcolaPosizioneColonna(ref currentExcelSheet, hoLettoMateriale);
 
             }
             while (_tracciaCurrentCol <= currentExcelSheet.Dimension.End.Column);
@@ -512,24 +520,34 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <summary>
         /// Mi permette di ricalcolare la posizione della nuova colonna quando si completa il riconoscimento dei quadranti 
         /// "in verticale"
+        /// Se non ho letto materiale sulla riga corrente allora ritorno semplicemente l'indice di colonna incrementato di una posizione 
+        /// per l'eventuale lettura successiva 
         /// </summary>
         /// <param name="currentExcelSheet"></param>
+        /// <param name="readMaterialOnCurrentRow"></param>
         /// <returns></returns>
-        private int RicalcolaPosizioneColonna(ref ExcelWorksheet currentExcelSheet)
+        private int RicalcolaPosizioneColonna(ref ExcelWorksheet currentExcelSheet, bool readMaterialOnCurrentRow)
         {
-            // se non è presente nessun elemento nella lista dei possibili elementi incontrati allora sposto l'indice di colonna di una sola posizione
+            // se la lista dei quadranti in lettura è vuota, allora ritorno semplicemente l'indice di colonna incrementato di una posizione
+            // per passare eventualmente alla lettura successiva 
             if (_currentPositionsConcentrations == null)
-                return _tracciaCurrentCol+1;
+                return _tracciaCurrentCol + 1;
+            
 
-
-            // se non è presente nessun elemento nella lista dei possibili elementi incontrati allora sposto l'indice di colonna di una sola posizione
-            if (_currentPositionsConcentrations.Count == 0)
-                return _tracciaCurrentCol+1;
-
-            // calcolo del massimo indice di colonna 
+            // calcolo del massimo indice di colonna sulle ultime letture fatte per i materiali
             int newColIndex = _currentPositionsConcentrations.Select(x => x.Get_Max_Col_Quadrante).Max() + 1;
 
-            return newColIndex;
+            // confronto l'indice di colonna con la traccia per la colonna corrente, se ho un valore minore per la traccia 
+            // allora imposto la traccia all'indice massimo di lettura per la colonna sull'ultima iterazione utile 
+            if (_tracciaCurrentCol <= newColIndex)
+                _tracciaCurrentCol = newColIndex;
+
+            // contronto l'ultima lettura letta fatta sulla riga: se non ho letto nessun quadrante di concentrazioni
+            // per tutte le righe sulle quali ho iterato per la colonna corrente, allora incremento l'indice di traccia di una posizione
+            if (!readMaterialOnCurrentRow)
+                _tracciaCurrentCol++;
+
+            return _tracciaCurrentCol;
         }
 
 
@@ -552,7 +570,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
             
             // trovo l'indice di riga massimo letto per l'ultimo elemento su questa colonna 
-            int currentMaxRow = _currentPositionsConcentrations.Where(x => x.Title_Col == currentColIndex).Select(x => x.Conc_Row_End).Max();
+            int currentMaxRow = _currentPositionsConcentrations.Where(x => x.Title_Col <= currentColIndex).Select(x => x.Conc_Row_End).Max();
 
             if (currentRowIndex > MaxExcelSheetPos_row)
                 return false;
@@ -567,57 +585,41 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// alla lettura che ne viene fatta
         /// </summary>
         /// <param name="currentExcelSheet"></param>
-        /// <param name="currentColIndex"></param>
-        /// <param name="currentRowIndex"></param>
+        /// <param name="currentQuadrantConcentrations"></param>
         /// <returns></returns>
-        private bool FillMaterialConcentrationInfo(ref ExcelWorksheet currentExcelSheet, int currentColIndex, int currentRowIndex, out ExcelConcQuadrant currentQuadrantConcentrations)
+        private bool FillMaterialConcentrationInfo(ref ExcelWorksheet currentExcelSheet, out ExcelConcQuadrant currentQuadrantConcentrations)
         {
             // indicazione su aver trovato o meno tutti gli elementi
             bool hoTrovatoNome = false;
             bool hoTrovatoHeader = false;
             bool hoTrovatoConcentrazioni = false;
-
-            _tracciaCurrentCol = currentColIndex;
-            _tracciaCurrentRow = currentRowIndex + 1;
-
-            // validità per il quadrante corrente
-            bool isValid = false;
-
-
-            // tengo in memoria gli indici da cui inizio a individuare la tabella
-            int startingIndexTitle_Left_X = currentRowIndex;
-            int startingIndexTitle_Left_Y = currentColIndex;
-
-            // tengo in memoria gli indici da cui inizio a individuare la riga degli headers
-            int indexHeader_Left_X = 0;
-            int indexHeader_Left_Y = 0;
-            int indexHeader_Right_X = 0;
-            int indexHeader_Right_Y = 0;
-
-            // tengo in memoria gli indici del quadrante relativo alle concentrazioni
-            int index_Conc_Left_Start_X = 0;
-            int index_Conc_Left_Start_Y = 0;
-
-            int index_Conc_Left_End_X = 0;
-            int index_Conc_Left_End_Y = 0;
-
-            int index_Conc_Right_Start_X = 0;
-            int index_Conc_Right_Start_Y = 0;
-
-            int index_Conc_Right_End_X = 0;
-            int index_Conc_Right_End_Y = 0;
+            
 
             // inizializzazione oggetto contenente gli indici
             currentQuadrantConcentrations = null;
 
+            // Valori primari per current row e current col: questi valori mi servono nel caso in cui non trovo nessun valore e devo reimpostarli
+            int startingCurrentRow = _tracciaCurrentRow;
+
+            // valore di partenza del titolo
+            int startingRowTitle = 0;
+
+            // valore di partenza riga headers
+            int startingRowHeaders = 0;
+
+            // valore di partenza riga concentrazioni
+            int startingRowConcentrations = 0;
+
 
             #region VERIFICA NOME
 
-            
 
-            if(currentExcelSheet.Cells[startingIndexTitle_Left_X, startingIndexTitle_Left_Y].Value == null)
+
+            if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value == null)
             {
-                ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazioniPerTitoloMateriale(startingIndexTitle_Left_X, startingIndexTitle_Left_Y);
+                ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazioniPerTitoloMateriale(_tracciaCurrentCol, _tracciaCurrentRow);
+
+                _tracciaCurrentRow = startingCurrentRow;
                 return false;
             }
                 
@@ -625,7 +627,9 @@ namespace Tool_Importazione_Leghe.ExcelServices
             else
             {
                 hoTrovatoNome = true;
-                ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoInformazioniPerTitoloDelMateriale(startingIndexTitle_Left_X, startingIndexTitle_Left_Y);
+                startingRowTitle = _tracciaCurrentRow;
+
+                ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoInformazioniPerTitoloDelMateriale(_tracciaCurrentCol, _tracciaCurrentRow);
                 
             }
 
@@ -644,31 +648,27 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 do
                 {
                     // incremento rispetto al title corrente    
-                    currentRowIndex++;
+                    _tracciaCurrentRow++;
 
-                    hoTrovatoHeader = CheckHeadersConcentrations(ref currentExcelSheet, currentColIndex, currentRowIndex, out colonnaFineLetturaHeader);
+                    hoTrovatoHeader = CheckHeadersConcentrations(ref currentExcelSheet, _tracciaCurrentCol, _tracciaCurrentRow, out colonnaFineLetturaHeader);
 
                     if (hoTrovatoHeader)
                     {
-                        // attribuzione coordinate quadrante di header
-                        indexHeader_Left_X = currentColIndex;
-                         indexHeader_Left_Y = currentRowIndex;
-                        indexHeader_Right_X = colonnaFineLetturaHeader;
-                        indexHeader_Right_Y = currentRowIndex;
+                        startingRowHeaders = _tracciaCurrentRow;
 
-                        ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoInformazioniHeaderPerQuadranteCorrente(currentColIndex, currentRowIndex);
+                        ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoInformazioniHeaderPerQuadranteCorrente(_tracciaCurrentCol, _tracciaCurrentRow);
                         break;
                     }
 
                 }
                 // mi fermo nel caso non abbia trovato nessuna posizione valida
-                while (currentRowIndex <= startingIndexTitle_Left_X + LIMITBETWEENCONCENTRATIONSROWS);
+                while (_tracciaCurrentRow <= startingRowTitle + LIMITBETWEENCONCENTRATIONSROWS);
 
                 // segnalazione di non aver trovato informazioni header per il quadrante corrente
                 if (!hoTrovatoHeader)
                 {
-                    ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazioniHeaderPerQuadranteCorrente(currentColIndex, currentRowIndex);
-                    
+                    ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazioniHeaderPerQuadranteCorrente(_tracciaCurrentCol, _tracciaCurrentRow);
+                    _tracciaCurrentRow = startingCurrentRow;
                     return false;
                 }
                     
@@ -680,32 +680,25 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
             #region VERIFICA CONCENTRAZIONI
 
+            int concentrationsEnding = 0;
+
+
             if (hoTrovatoNome && hoTrovatoHeader)
             {
-                int nextRowIndex = 0;
+                
                 int numElementi = 0;
 
 
                 do
                 {
                     // incremento rispetto al title corrente    
-                    currentRowIndex++;
+                    _tracciaCurrentRow++;
 
-                    hoTrovatoConcentrazioni = CalculateLastRowConcentrationsValue(ref currentExcelSheet, currentColIndex, currentRowIndex, out nextRowIndex, out numElementi);
+                    hoTrovatoConcentrazioni = CalculateLastRowConcentrationsValue(ref currentExcelSheet, _tracciaCurrentCol, _tracciaCurrentRow, out concentrationsEnding, out numElementi);
 
                     if(hoTrovatoConcentrazioni)
                     {
-                        index_Conc_Left_Start_X = currentColIndex;
-                        index_Conc_Left_Start_Y = currentRowIndex;
-
-                        index_Conc_Left_End_X = currentColIndex;
-                        index_Conc_Left_End_Y = nextRowIndex;
-
-                        index_Conc_Right_Start_X = colonnaFineLetturaHeader;
-                        index_Conc_Right_Start_Y = currentRowIndex;
-
-                        index_Conc_Right_End_X = colonnaFineLetturaHeader;
-                        index_Conc_Right_End_Y = nextRowIndex; 
+                        startingRowConcentrations = _tracciaCurrentRow;
 
                         ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoConcentrazioniPerIlQuadranteCorrente(numElementi);
 
@@ -713,7 +706,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     }
 
                 }
-                while (currentRowIndex <= indexHeader_Left_X + LIMITBETWEENCONCENTRATIONSROWS);
+                while (_tracciaCurrentRow <= startingRowHeaders + LIMITBETWEENCONCENTRATIONSROWS);
 
 
                 if(!hoTrovatoConcentrazioni)
@@ -723,7 +716,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     else
                         ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoConcentrazioniPerIlQuadranteCorrente();
 
-                    
+                    _tracciaCurrentRow = startingCurrentRow;
                     return false;
 
                 }
@@ -742,28 +735,28 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
                 // valorizzazione per il quadrante 
                 // titolo
-                currentQuadrantConcentrations.Title_Col = startingIndexTitle_Left_X;
-                currentQuadrantConcentrations.Title_Row = startingIndexTitle_Left_Y;
+                currentQuadrantConcentrations.Title_Col = _tracciaCurrentCol;
+                currentQuadrantConcentrations.Title_Row = startingRowTitle;
 
                 // header
-                currentQuadrantConcentrations.Head_Col = indexHeader_Left_X;
-                currentQuadrantConcentrations.Head_Row = indexHeader_Left_Y;
+                currentQuadrantConcentrations.Head_Col = _tracciaCurrentCol;
+                currentQuadrantConcentrations.Head_Row = startingRowHeaders;
 
                 // concentrazioni
-                currentQuadrantConcentrations.Conc_Row_Start = index_Conc_Left_Start_Y;
-                currentQuadrantConcentrations.Conc_Row_End = index_Conc_Left_End_Y;
+                currentQuadrantConcentrations.Conc_Row_Start = startingRowConcentrations;
+                currentQuadrantConcentrations.Conc_Row_End = concentrationsEnding;
 
                 // impostazione delle informazioni per la traccia di ripresa lettura corrente 
-                _tracciaCurrentRow = index_Conc_Right_End_Y + 1;
+                _tracciaCurrentRow = concentrationsEnding + 1;
 
                 // solo per questo caso esco positivamente trovando un quadrante
                 return true;
             }
 
             #endregion
-            
 
-            return isValid;
+            _tracciaCurrentRow = startingCurrentRow;
+            return false;
         }
 
 
@@ -833,10 +826,24 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 // leggo ogni volta un elemento se la cella contiene un valore 
                 if (currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value != null)
                 {
-                    // incremento indice di riga ad ogni iterazione oltre che l'elemento corrispondente
-                    currentRowIndex++;
-                    elementsIterations++;
-                    continue;
+                    if(Utils.Constants.CurrentListElementi.Contains(currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value.ToString()))
+                    {
+                        // incremento indice di riga ad ogni iterazione oltre che l'elemento corrispondente
+                        currentRowIndex++;
+                        elementsIterations++;
+                        continue;
+                    }
+
+                    // stesso controllo fatto su, nel caso in cui in una cella non trovo piu contenuto conforme alla definizione di un elemento
+                    // finisco l'iterazione cosi
+                    if (elementsIterations > 0)
+                    {
+                        nextRowIndex = currentRowIndex - 1;
+                        numElementi = elementsIterations;
+                        return true;
+                    }
+                    
+                    return false;
                 }
 
 
