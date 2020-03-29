@@ -180,6 +180,8 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 {
                     currentExcelSheet.TipologiaRiconosciuta = Constants.TipologiaFoglioExcel.Informazioni_Lega;
 
+                    ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorInternalActivity();
+
                     // segnalazione a console riconoscimento foglio a carattere generale per la lega 
                     ServiceLocator.GetLoggingService.GetLoggerExcel.HoRiconosciutoIlFoglioComeContenenteInformazioniGeneraliLega(currentFoglio.Name);
 
@@ -191,6 +193,8 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 {
                     currentExcelSheet.TipologiaRiconosciuta = Constants.TipologiaFoglioExcel.Informazioni_Concentrazione;
 
+                    ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorInternalActivity();
+
                     // segnalazione a console riconoscimento foglio come foglio delle concentrazioni di materiali per una determinata lega 
                     ServiceLocator.GetLoggingService.GetLoggerExcel.HoRiconosciutoIlFoglioComeContenenteConcentrazioniMateriali(currentFoglio.Name);
 
@@ -201,6 +205,8 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
                 // separazione delle attività
                 ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorInternalActivity();
+
+                LoggingService.GetSomeTimeOnConsole();
 
             }
         }

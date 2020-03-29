@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tool_Importazione_Leghe.Utils;
 
 namespace Tool_Importazione_Leghe.Logging
 {
@@ -50,7 +51,7 @@ namespace Tool_Importazione_Leghe.Logging
         /// </summary>
         public override void GetSeparatorActivity()
         {
-            string currentLogMessage = "\n" + base.separatorActivity + "\n";
+            string currentLogMessage = base.separatorActivity;
 
             Console.WriteLine(currentLogMessage);
 
@@ -70,6 +71,37 @@ namespace Tool_Importazione_Leghe.Logging
             LoggingService.LogInADocument(currentLogMessage, base._currentLogFile);
         }
 
+
+        #region MESSAGING IMPORT ACTIVITY EXCEL -> DATABASE
+        
+        /// <summary>
+        /// Segnalazione a console dell'inizio dello step corrente per la procedura di import dal file excel al database di destinazione 
+        /// </summary>
+        /// <param name="currentStepImportExcelToDatabase"></param>
+        public override void BeginningCurrentStep_ExcelToDatabase(Constants.TipologiaImport_ExcelToDatabase currentStepImportExcelToDatabase)
+        {
+            string currentLogMessage = String.Format(base._inizioStep, Constants.GetNameTipologiaImport(Constants.TipologiaImport.excel_to_database.ToString()), (int)currentStepImportExcelToDatabase, Constants.GetCurrentNameStepProcedura(Constants.TipologiaImport.excel_to_database.ToString()));
+
+            Console.WriteLine(currentLogMessage);
+
+            LoggingService.LogInADocument(currentLogMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console per la fine dello step corrente legato alla procedura corrente 
+        /// </summary>
+        /// <param name="currentStepImportExcelToDatabase"></param>
+        public override void EndingCurrentStep_ExcelToDatabase(Constants.TipologiaImport_ExcelToDatabase currentStepImportExcelToDatabase)
+        {
+            string currentLogMessage = String.Format(base._fineProceduraCorrente, Constants.GetNameTipologiaImport(Constants.TipologiaImport.excel_to_database.ToString()), (int)currentStepImportExcelToDatabase, Constants.GetCurrentNameStepProcedura(Constants.TipologiaImport.excel_to_database.ToString()));
+
+            Console.WriteLine(currentLogMessage);
+
+            LoggingService.LogInADocument(currentLogMessage, base._currentLogFile);
+        }
+
+        #endregion
 
         #endregion
     }

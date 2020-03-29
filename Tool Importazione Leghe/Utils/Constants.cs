@@ -53,6 +53,21 @@ namespace Tool_Importazione_Leghe.Utils
 
 
         /// <summary>
+        /// Formattazione in output per la tipologia in import corrente 
+        /// </summary>
+        /// <param name="currentTipologiaImport"></param>
+        /// <returns></returns>
+        public static string GetNameTipologiaImport(string currentTipologiaImport)
+        {
+            currentTipologiaImport = currentTipologiaImport.ToUpper();
+
+            currentTipologiaImport = currentTipologiaImport.Replace("_to_", " -> ");
+
+            return currentTipologiaImport;
+        }
+
+
+        /// <summary>
         /// Indicazione sulla tipologia di import corrente in base agli altri parametri letti
         /// all'interno del file di configurazioni
         /// </summary>
@@ -182,5 +197,32 @@ namespace Tool_Importazione_Leghe.Utils
 
         #endregion
 
+
+        #region STEPS DIVERSE PROCEDURE 
+
+        /// <summary>
+        /// Indicazione di tutti gli steps da seguire per la tipologia di import che coinvolge l'importazione da un file excel all'interno di un database di destinazione
+        /// </summary>
+        public enum TipologiaImport_ExcelToDatabase
+        {
+            ANALISI_MARKERS_EXCEL = 1,
+            ANALISI_VALIDITA_INFORMAZIONI_EXCEL = 2,
+            ANALISI_VALIDITA_RISPETTO_DATABASE = 3
+        }
+
+
+        /// <summary>
+        /// ritorna il nome per lo step della procedura correntemente passata in input come stringa 
+        /// </summary>
+        /// <param name="stepProcedura"></param>
+        /// <returns></returns>
+        public static string GetCurrentNameStepProcedura(string stepProcedura)
+        {
+            stepProcedura = stepProcedura.Replace("_", " ");
+
+            return stepProcedura;
+        }
+        
+        #endregion
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tool_Importazione_Leghe.Logging;
 using Tool_Importazione_Leghe.Utils;
 using static Tool_Importazione_Leghe.ExcelServices.XlsServices;
 
@@ -45,9 +46,6 @@ namespace Tool_Importazione_Leghe
         /// </summary>
         public void Do_Import()
         {
-            // separazione contesto attività
-            ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorActivity();
-
             switch(_currentActivity)
             {
                 case Constants.TipologiaImport.excel_to_database:
@@ -114,10 +112,7 @@ namespace Tool_Importazione_Leghe
                         break;
                     }
             }
-
-            // separazione contesto attività
-            ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorActivity();
-
+            
         }
 
 
@@ -126,7 +121,16 @@ namespace Tool_Importazione_Leghe
         /// </summary>
         private void Do_Import_ExcelToDatabase()
         {
-            #region LETTURA INFORMAZIONI FILE EXCEL
+            #region STEP 1: VALIDAZIONE CONTENUTO PRIMARIO FILE EXCEL: INDIVIDUAZIONE DI HEADERS E QUADRANTI PER I DIVERSI FOGLI E LORO IDENTIFICAZIONE
+
+            Console.Write("\n");
+
+            // segnalazione avviamento dello step 1
+            ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorActivity();
+            ServiceLocator.GetLoggingService.GetLoggerImportActivity.BeginningCurrentStep_ExcelToDatabase(Constants.TipologiaImport_ExcelToDatabase.ANALISI_MARKERS_EXCEL);
+            ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorActivity();
+
+            Console.ReadKey();
 
             // inizio lettura file excel corrente
             ServiceLocator.GetExcelServices.OpenExcelFile();
@@ -142,6 +146,10 @@ namespace Tool_Importazione_Leghe
 
             // riconoscimento dei fogli nei quali ci sono le informazioni di lega
             ServiceLocator.GetExcelServices.ReadHeaderLeghe(CurrentModalitaExcel.EXCELREADER);
+
+            // segnalazione di fine lettura per il riconoscimento degli headers e dei quadranti
+            // segnalazione che se si vuole vedere quale sia stato l'esito è possibile la consultazione del log
+            ServiceLocator.GetLoggingService.GetLoggerImportActivity.EndingCurrentStep_ExcelToDatabase(Constants.TipologiaImport_ExcelToDatabase.ANALISI_MARKERS_EXCEL);
 
             Console.ReadKey();
 

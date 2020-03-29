@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tool_Importazione_Leghe.Utils;
 
 namespace Tool_Importazione_Leghe.Logging
 {
@@ -35,20 +36,34 @@ namespace Tool_Importazione_Leghe.Logging
         /// <summary>
         /// Separatore di una attività con un'altra
         /// </summary>
-        protected string separatorActivity = "**************************************************";
+        protected string separatorActivity = "****************************************************************************************************";
 
 
         /// <summary>
         /// Mi serve per separare i diversi processi in avvenimento corrente e per una particolare procedura  
         /// </summary>
-        protected string separatorInternalProcesses = "--";
+        protected string separatorInternalProcesses = "----------------------------------------------------------------------------------------------------";
 
 
         /// <summary>
         /// Messaggio relativo alla procedura di import in avvio corrente
         /// </summary>
         protected string avviamentoDiUnaCertaOperazione = "si sta avviando la seguente procedura di import: {0}";
+        
 
+        /// <summary>
+        /// Messaggio di inizio analisi primaria del foglio excel utilizzato come sorgente
+        /// In questa fase vengono analizzati gli headers per il recupero delle eventuali informazioni legate alla lega a livello generale 
+        /// e le informazioni legate alle concentrazioni dei diversi materiali che sono inseriti per la lega 
+        /// </summary>
+        protected string _inizioStep = "IMPORT ACTIVITY ({0}): STEP {1} '{2}'";
+
+
+        /// <summary>
+        /// Segnalazione di fine step, per avere maggiori informazioni ci si riporta all'apertura del file di log inserito nelle configurazioni
+        /// </summary>
+        protected string _fineProceduraCorrente = "IMPORT ACTIVITITY ({0}) fine dello STEP {1} '{2}', per avere maggiori informazioni consultare il log inserito nelle configurazioni";
+        
 
         /// <summary>
         /// Permette di formattare la stringa relativa alla procedura di import corrente 
@@ -84,6 +99,27 @@ namespace Tool_Importazione_Leghe.Logging
         /// Mi permette di ottenere un separatore per l'attività interna rispetto a una attività primaria
         /// </summary>
         public abstract void GetSeparatorInternalActivity();
+
+
+        #region MESSAGGISTICA LEGATA ALLO STEP PER L'ATTIVITA CORRENTE - EXCEL -> DATABASE
+
+
+        /// <summary>
+        /// Segnalazione dello step corrente per la procedura di import dal file excel al database di destinazione
+        /// </summary>
+        /// <param name="currentStepImportExcelToDatabase"></param>
+        public abstract void BeginningCurrentStep_ExcelToDatabase(Constants.TipologiaImport_ExcelToDatabase currentStepImportExcelToDatabase);
+
+
+        /// <summary>
+        /// Indicazione di fine di un certo step per la procedura corrente, insieme a questo viene data anche indicazione del log nel quale 
+        /// andare a verificare le informazioni relative all'analisi per il documento excel corrente 
+        /// </summary>
+        /// <param name="currentStepImportExcelToDatabase"></param>
+        public abstract void EndingCurrentStep_ExcelToDatabase(Constants.TipologiaImport_ExcelToDatabase currentStepImportExcelToDatabase);
+
+
+        #endregion
 
         #endregion
 

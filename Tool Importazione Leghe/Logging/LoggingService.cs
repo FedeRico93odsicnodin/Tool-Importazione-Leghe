@@ -151,7 +151,7 @@ namespace Tool_Importazione_Leghe.Logging
 
             for (int i = 0; i < 3; i++)
             {
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
                 Console.Write(".");
             }
 
