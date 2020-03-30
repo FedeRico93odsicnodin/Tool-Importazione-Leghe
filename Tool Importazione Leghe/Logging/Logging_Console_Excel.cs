@@ -397,6 +397,24 @@ namespace Tool_Importazione_Leghe.Logging
             LoggingService.GetSomeTimeOnConsole();
         }
 
+
+        /// <summary>
+        /// Segnalazione di non aver trovato nessuna informazione generale di riga per il foglio che viene passato in input 
+        /// questa segnalazione riguarda la messaggistica a console 
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        /// <param name="currentRiga"></param>
+        public override void NonHoTrovatoInformazioniGeneraliLegaPerRiga(string currentFoglioExcel, int currentRiga)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._nonHoTrovatoInformazioniGeneraliPerRow, currentFoglioExcel, currentRiga);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
         #endregion
 
         #endregion

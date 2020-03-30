@@ -56,10 +56,9 @@ namespace Tool_Importazione_Leghe.ExcelServices
             List<string> currentInfo = new List<string>();
 
             // inserimenti di tutte le informazioni utili per poter distinguere il primo foglio excel
-            currentInfo.Add(ROWNUMBER);
+            // NB le seguenti informazioni non devono assolutamente mancare per la lettura di riga 
             currentInfo.Add(MATERIALE_CELL);
             currentInfo.Add(NORMATIVA_CELL);
-            currentInfo.Add(PAESEPRODUTTORE_CELL);
             currentInfo.Add(TIPO_CELL);
 
             return currentInfo;
@@ -87,6 +86,10 @@ namespace Tool_Importazione_Leghe.ExcelServices
             List<string> currentAdditionalProperties = new List<string>();
 
             currentAdditionalProperties.Add(DESIGNAZIONE_ALTERNATIVA);
+
+            // informazioni che possono essere considerate provvisorie 
+            currentAdditionalProperties.Add(PAESEPRODUTTORE_CELL);
+            currentAdditionalProperties.Add(ROWNUMBER);
 
             return currentAdditionalProperties;
         }
@@ -136,10 +139,27 @@ namespace Tool_Importazione_Leghe.ExcelServices
         {
             List<string> currentInfo = new List<string>();
 
+            // devo leggere sicuramente queste informazioni per poter inserire e validare correttamente il materiale corrente 
+            // e le sue concentrazioni
             currentInfo.Add(CRITERI_CELL);
             currentInfo.Add(MIN_CELL);
             currentInfo.Add(MAX_CELL);
             currentInfo.Add(APPROSSIMAZIONE_CELL);
+            
+
+            return currentInfo;
+        }
+
+
+        /// <summary>
+        /// Informazioni di carattere addizionale che è possibile leggere inerentemente le concentrazioni 
+        /// del quadrnate per un certo materiale 
+        /// </summary>
+        /// <returns></returns>
+        public static List<string> GetAllColumnAdditionalHeadersForConcentrations()
+        {
+            List<string> currentInfo = new List<string>();
+
             currentInfo.Add(COMMENTO_CELL);
 
             return currentInfo;

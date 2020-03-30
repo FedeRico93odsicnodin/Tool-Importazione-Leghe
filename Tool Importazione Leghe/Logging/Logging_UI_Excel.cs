@@ -105,7 +105,11 @@ namespace Tool_Importazione_Leghe.Logging
         {
             throw new NotImplementedException();
         }
-        
+
+        public override void NonHoTrovatoInformazioniGeneraliLegaPerRiga(string currentFoglioExcel, int currentRiga)
+        {
+            throw new NotImplementedException();
+        }
 
         public override void NonHoTrovatoInformazioniHeaderPerQuadranteCorrente(int currentCol, int currentRow)
         {

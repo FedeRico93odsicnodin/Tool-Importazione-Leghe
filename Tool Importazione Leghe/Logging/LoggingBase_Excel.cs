@@ -159,9 +159,15 @@ namespace Tool_Importazione_Leghe.Logging
 
 
         /// <summary>
+        /// Messaggio di segnalazione di non aver trovato nessuna informazione generale nella lettura del foglio e per la riga passata in input
+        /// </summary>
+        protected string _nonHoTrovatoInformazioniGeneraliPerRow = "LETTURA INFORMAZIONI GENERALI LEGA: foglio '{0}' non ho trovato informazioni per la riga {1}";
+
+
+        /// <summary>
         /// Messaggio di segnalazione di fine lettura di tutti i valori per gli header di carattere generale per la lega correntemente in lettura dal foglio excel
         /// </summary>
-        protected string _hoAppenaFinitoLetturaValoriInformazioniGenerali = "LETTURA INFORMAZINI GENERALI LEGA: ho appena finito la lettura di tutti i valori di lega contenuti per il foglio '{0}'";
+        protected string _hoAppenaFinitoLetturaValoriInformazioniGenerali = "EXCEL SERVICES: ho appena finito la lettura di tutti i valori di lega contenuti per il foglio '{0}'";
 
         #endregion
 
@@ -377,6 +383,14 @@ namespace Tool_Importazione_Leghe.Logging
         /// </summary>
         /// <param name="currentFoglioExcel"></param>
         public abstract void HoAppenaFinitoDiLeggereTuttiIValoriGeneralInfoLega(string currentFoglioExcel);
+
+
+        /// <summary>
+        /// Indazione di non aver trovato nessuna informazione provando a leggere la riga excel per il foglio passati in input
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        /// <param name="currentRiga"></param>
+        public abstract void NonHoTrovatoInformazioniGeneraliLegaPerRiga(string currentFoglioExcel, int currentRiga);
 
         #endregion
 

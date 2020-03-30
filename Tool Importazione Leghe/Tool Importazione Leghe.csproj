@@ -140,6 +140,7 @@
     <Compile Include="Model\HeadersInfoLega_Excel.cs" />
     <Compile Include="Model\LabEntities.cs" />
     <Compile Include="Model\LegheDB.cs" />
+    <Compile Include="Model\MaterialConcentrationsObject.cs" />
     <Compile Include="Model\NormativeDB.cs" />
     <Compile Include="Model\RowFoglio1Excel.cs" />
     <Compile Include="Model\RowFoglio2Excel.cs" />

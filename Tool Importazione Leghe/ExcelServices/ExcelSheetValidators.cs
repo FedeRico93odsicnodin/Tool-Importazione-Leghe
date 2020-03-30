@@ -33,8 +33,10 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
 
         /// <summary>
-        /// Peremtte di ritornare le celle per le quali non è stato inserito valore nel foglio excel di valori 
-        /// per le informazioni generali di lega correnti
+        /// Controllo che per l'informazione recuperata per la riga di excel ci siano le proprieta indispensabili 
+        /// che possano permette anche la persistenza durante la scrittura su una destinazione per la riga corrente 
+        /// STEP1: questo metodo di validazione è molto importante perché se cosi non fosse la riga viene segnalata come invalida 
+        /// e non passando il primo controllo viene scartata a priori
         /// </summary>
         /// <param name="readInfo"></param>
         /// <returns></returns>
@@ -42,7 +44,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
         {
             List<string> currentNullPropertiesPerRiga = new List<string>();
 
-            List<string> allPossibleProperties = ExcelMarkers.GetAdditionalPropertiesGeneralInfoSheet().Union(ExcelMarkers.GetAllColumnHeadersForGeneralInfoSheet()).ToList();
+            List<string> allPossibleProperties = ExcelMarkers.GetAllColumnHeadersForGeneralInfoSheet().ToList();
 
             foreach(string property in allPossibleProperties)
             {

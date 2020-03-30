@@ -190,6 +190,13 @@ namespace Tool_Importazione_Leghe.Model
         /// </summary>
         public int Excel_CurrentRow { get; set; }
 
+
+        /// <summary>
+        /// Indicazione dalla validazione di riga se si tratta di una informazione valida, che puo essere inserita a database da 
+        /// una prima analisi per il foglio excel corrente 
+        /// </summary>
+        public bool IsValidInfo_STEP1 { get; set; }
+
         #endregion
     }
 }

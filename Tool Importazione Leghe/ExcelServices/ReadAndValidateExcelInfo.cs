@@ -32,7 +32,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
         #endregion
 
 
-        #region METODI PER IL RECUPERO DELLE INFORMAZIONI UTILI PER I DIVERSI FOGLI EXCEL 
+        #region METODI PER IL RECUPERO DELLE INFORMAZIONI UTILI PER I DIVERSI FOGLI EXCEL (CONCENTRAZIONI E INFORMAZIONI GENERALI DI LEGA)
 
         /// <summary>
         /// Permette di ottenere la lista con tutte le informazioni per ciascuna delle righe utili per le informazioni generali di lega 
@@ -61,6 +61,17 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
             do
             {
+                // separazione delle righe in lettura 
+                ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorActivity();
+
+                if (CheckNullRow(ref currentExcelSheet, currentInfoHeaders, _tracciaCurrentRow))
+                {
+                    // segnalazione di non aver trovato nessuna informazione per la lettura della riga corrente 
+                    ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazioniGeneraliLegaPerRiga(currentExcelSheet.Name, _tracciaCurrentRow);
+                    
+                    continue;
+                }
+
 
                 // creo il nuovo oggetto di riga per le informazioni generali
                 RowFoglio1Excel currentRowInfo = new RowFoglio1Excel();
@@ -89,11 +100,49 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 ServiceLocator.GetLoggingService.GetLoggerExcel.HoLettoUnaRigaDiValoriGeneralPerFoglioExcelInRiga(_tracciaCurrentRow, currentExcelSheet.Name);
             }
             while (_tracciaCurrentRow <= currentExcelSheet.Dimension.End.Row); 
-
-
-
-
+            
+            
             return false;
+        }
+
+
+        /// <summary>
+        /// Permette di recuperare il concenuto di un quadrante excel partendo dalle informazioni di perimetro del quadrante. Queste informazioni vengono restituite sottoforma di 
+        /// oggetto di transizione sul quale verrà eseguita una analisi di validita delle informazioni recuperate sia dal punto di vista sintattico (quindi proprio rispetto al foglio excel)
+        /// sia rispetto alla persistenza a database
+        /// </summary>
+        /// <param name="currentExcelSheet"></param>
+        /// <param name="currentContrationsQuadrants"></param>
+        /// <param name="concentrationsObjects"></param>
+        /// <returns></returns>
+        public bool GetAllConcentrationsFromExcel(ref ExcelWorksheet currentExcelSheet, List<ExcelConcQuadrant> currentContrationsQuadrants, out List<MaterialConcentrationsObject> concentrationsObjects)
+        {
+            // TODO: implementazione del metodo di recupero delle informazioni di quadrante e inserimento nell'oggetto raffigurante il foglio corrente
+
+            concentrationsObjects = new List<MaterialConcentrationsObject>();
+            return false;
+        }
+
+
+        /// <summary>
+        /// Permette di verificare se l'informazione di riga corrente contiene tutti i valori nulli.
+        /// Se cosi fosse non è necessaria l'iterazione per il recupero delle informazioni generali di lega
+        /// </summary>
+        /// <param name="currentExcelSheet"></param>
+        /// <param name="currentInfoHeaders"></param>
+        /// <param name="currentRowIndex"></param>
+        /// <returns></returns>
+        private bool CheckNullRow(ref ExcelWorksheet currentExcelSheet, List<HeadersInfoLega_Excel> currentInfoHeaders, int currentRowIndex)
+        {
+            bool nonHoTrovatoInfo = true;
+
+            foreach(HeadersInfoLega_Excel currentHeaderInfo in currentInfoHeaders)
+            {
+                if (currentExcelSheet.Cells[currentRowIndex, currentHeaderInfo.Starting_Col].Value != null)
+                    nonHoTrovatoInfo = false;
+            }
+
+            return nonHoTrovatoInfo;
         }
         
         #endregion

@@ -19,6 +19,13 @@ namespace Tool_Importazione_Leghe.Model
     public class RowFoglio2Excel
     {
         /// <summary>
+        /// Informazione rispetto alla riga excel di partenza dal quale viene letto il set di informazioni 
+        /// (la cella vera e propria si puo fare con il match delle informazioni per il quadrante delle concentrazioni)
+        /// </summary>
+        public int CurrentRowExcel { get; set; }
+
+
+        /// <summary>
         /// Corrispondenza con l'elemento
         /// </summary>
         public string Criterio { get; set; }
