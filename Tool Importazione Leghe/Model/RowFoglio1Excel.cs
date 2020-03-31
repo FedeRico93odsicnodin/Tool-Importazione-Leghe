@@ -12,7 +12,7 @@ namespace Tool_Importazione_Leghe.Model
     /// questo oggetto è valorizzato con tutti i possibili valori contenuti sia per la lista delle proprieta obbligatorie che per la lista delle proprieta
     /// addizionali in merito all'inserimento di una delle righe corrispondenti
     /// </summary>
-    public class RowFoglio1Excel
+    public class RowFoglioExcel
     {
         #region ATTRIBUTI PRIVATI
         
@@ -49,13 +49,13 @@ namespace Tool_Importazione_Leghe.Model
         /// <summary>
         /// Inizializzazione delle 2 liste con i valori di chiave presenti all'interno delle costanti
         /// </summary>
-        public RowFoglio1Excel()
+        public RowFoglioExcel()
         {
             // 1. inizializzazione dei valori per le proprieta obbligatorie
-            FillMandatoryProperties();
+            FillMandatoryProperties_InfoLega();
 
             // 2. inizializzazione dei valori per le proprieta opzionali
-            FillAdditionalProperty();
+            FillAdditionalProperties_InfoLega();
         }
 
         #endregion
@@ -63,11 +63,13 @@ namespace Tool_Importazione_Leghe.Model
 
         #region METODI PRIVATI
 
+        /////////////////////////////////////// INIZIALIZZAZIONE DELLE LISTE PROPRIETA NEL CASO IN CUI STO LEGGENDO INFORMAZIONI GENERALI DI LEGA ///////////////////////////////////////
+
         /// <summary>
         /// Al momento dell'inizializzazione mi permette di andare a inserire una entry nel dizionario delle proprieta obbligatorie
         /// per ogni prorpieta obbligatoria effettivamente contenuta nella definizione data nelle costanti
         /// </summary>
-        private void FillMandatoryProperties()
+        private void FillMandatoryProperties_InfoLega()
         {
             _currentMandatoryProperties = ExcelMarkers.GetAllColumnHeadersForGeneralInfoSheet();
 
@@ -82,7 +84,7 @@ namespace Tool_Importazione_Leghe.Model
         /// <summary>
         /// Analogo del metodo creato sopra ma per le proprieta opzionali relativi al materiale corrente 
         /// </summary>
-        private void FillAdditionalProperty()
+        private void FillAdditionalProperties_InfoLega()
         {
             _currentAdditionalProperties = ExcelMarkers.GetAdditionalPropertiesGeneralInfoSheet();
 
@@ -91,6 +93,25 @@ namespace Tool_Importazione_Leghe.Model
                 // inizializzazione con il valore a stringa vuota 
                 _additionalProperties_Info.Add(currentAdditionalProperty, String.Empty);
             }
+        }
+
+        /////////////////////////////////////// INIZIALIZZAZIONE DELLE LISTE PROPRIETA NEL CASO IN CUI STIA LEGGENDO LE CONCENTRAZIONI ///////////////////////////////////////
+
+        /// <summary>
+        /// Inizializzazione della lista delle proprieta che devo obbligatoriamente leggere per poter inserire correttamente le concentrazioni
+        /// </summary>
+        private void FillMandatoryProperties_Concentrations()
+        {
+            // TODO: implementazione delle liste e della lettura "DINAMICA" delle informazioni obbligatorie per le concentrazioni
+        }
+        
+
+        /// <summary>
+        /// Inizializzazione della lista delle proprieta che posso addizionalmente leggere per poter inserire correttamente le concentrazioni
+        /// </summary>
+        private void FillAdditionalProperties_Concentrations()
+        {
+            // TODO: refactoring come sopra 
         }
 
         #endregion

@@ -29,6 +29,11 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// </summary>
         private int _tracciaCurrentCol = 1;
 
+        #region MARKER CHE POTREBBERO ESSERE INCONTRATI
+
+
+        #endregion
+
         #endregion
 
 
@@ -42,9 +47,9 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <param name="currentInfoHeaders"></param>
         /// <param name="currentListRowsInfoLega"></param>
         /// <returns></returns>
-        public bool GetAllGeneralInfoFromExcel(ref ExcelWorksheet currentExcelSheet, List<HeadersInfoLega_Excel> currentInfoHeaders, out List<RowFoglio1Excel> currentListRowsInfoLega)
+        public bool GetAllGeneralInfoFromExcel(ref ExcelWorksheet currentExcelSheet, List<HeadersInfoLega_Excel> currentInfoHeaders, out List<RowFoglioExcel> currentListRowsInfoLega)
         {
-            currentListRowsInfoLega = new List<RowFoglio1Excel>();
+            currentListRowsInfoLega = new List<RowFoglioExcel>();
 
             // primo check: se la lista è = 0 allora non posso continuare lettura 
             if (currentInfoHeaders == null)
@@ -74,7 +79,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
 
                 // creo il nuovo oggetto di riga per le informazioni generali
-                RowFoglio1Excel currentRowInfo = new RowFoglio1Excel();
+                RowFoglioExcel currentRowInfo = new RowFoglioExcel();
 
                 // inserisco la riga corrente come identificatrice dell'oggetto di valori
                 currentRowInfo.Excel_CurrentRow = _tracciaCurrentRow;
@@ -117,9 +122,55 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <returns></returns>
         public bool GetAllConcentrationsFromExcel(ref ExcelWorksheet currentExcelSheet, List<ExcelConcQuadrant> currentContrationsQuadrants, out List<MaterialConcentrationsObject> concentrationsObjects)
         {
-            // TODO: implementazione del metodo di recupero delle informazioni di quadrante e inserimento nell'oggetto raffigurante il foglio corrente
-
             concentrationsObjects = new List<MaterialConcentrationsObject>();
+
+            // primo check: se la lista è = 0 allora non posso continuare lettura 
+            if (currentContrationsQuadrants == null)
+                throw new Exception(String.Format(ExceptionMessages.LISTAHEADERNULLAOVUOTA, currentExcelSheet.Name));
+
+            if (currentContrationsQuadrants.Count == 0)
+                throw new Exception(String.Format(ExceptionMessages.LISTAHEADERNULLAOVUOTA, currentExcelSheet.Name));
+
+
+            foreach(ExcelConcQuadrant currentConcQuadrant in currentContrationsQuadrants)
+            {
+
+                // mi dice se il quadrante corrente ha passato tutte le validazioni o meno
+                bool letturaCorretta = true;
+
+
+                try
+                {
+                    // prima validazione: relativa alla formattazione del quadrante - tutte le validazioni sul contenuto sono riportate allo step successivo
+                    if(ExcelSheetValidators.CheckAllineamentoHeadersForCurrentConcQuadrant(currentConcQuadrant))
+                    {
+                        string materialIdentificationTitle = String.Empty;
+
+                        if (currentExcelSheet.Cells[currentConcQuadrant.Title_Row, currentConcQuadrant.Title_Col].Value != null)
+                            materialIdentificationTitle = currentExcelSheet.Cells[currentConcQuadrant.Title_Row, currentConcQuadrant.Title_Col].Value.ToString();
+                        else
+                            throw new Exception(ExceptionMessages.CONCENTRATIONSQUADRANT_TITLEMATERIALNULL);
+
+                        // inizio con riempire le righe per le concentrazioni in lettura corrente 
+                        List<RowFoglio2Excel> currentLetturaConcentrazioni = FillConcentrationsRow(ref currentExcelSheet, currentConcQuadrant);
+
+                        // se non trovo alcuna informazione di lista segnalo l'eccezione (almento una informazione dovrà essere contenuta per il quadrante
+                        if (currentLetturaConcentrazioni.Count == 0)
+                            throw new Exception(ExceptionMessages.CONCENTRATIONSQUADRANT_NESSUNACONCENTRAZIONETROVATA);
+
+                    }
+                }
+                // cattura dell'eccezione eventualmente generata dalla validazione su quadrante corrente 
+                catch(Exception e)
+                {
+                    ServiceLocator.GetLoggingService.GetLoggerExcel.NonPossoContinuareLetturaQuadranteConcentrazioni(currentConcQuadrant.EnumerationQuadrant, currentExcelSheet.Name);
+                    ServiceLocator.GetLoggingService.GetLoggerExcel.SegnalazioneEccezione(e.Message);
+
+                    letturaCorretta = false;
+                }
+            }
+
+
             return false;
         }
 
@@ -143,6 +194,40 @@ namespace Tool_Importazione_Leghe.ExcelServices
             }
 
             return nonHoTrovatoInfo;
+        }
+
+
+        /// <summary>
+        /// Permette la lettura per le concentrazioni e il quadrante corrente 
+        /// </summary>
+        /// <param name="currentExcelSheet"></param>
+        /// <param name="currentConcQuadrant"></param>
+        /// <returns></returns>
+        private List<RowFoglio2Excel> FillConcentrationsRow(ref ExcelWorksheet currentExcelSheet, ExcelConcQuadrant currentConcQuadrant)
+        {
+            List<RowFoglio2Excel> currentReadConcentrations = new List<RowFoglio2Excel>();
+
+            do
+            {
+                // inizializzazione dell'indice di colonna corrente 
+                _tracciaCurrentCol = currentConcQuadrant.Head_Col;
+
+                do
+                {
+                    // inizializzazioen dell'indice di riga corrente 
+                    _tracciaCurrentRow = currentConcQuadrant.Conc_Row_Start;
+
+
+                }
+                while (_tracciaCurrentRow <= currentConcQuadrant.Conc_Row_End);
+
+            }
+            while (_tracciaCurrentCol <= currentConcQuadrant.Get_Max_Col_Quadrante);
+
+            
+
+
+            return currentReadConcentrations;
         }
         
         #endregion

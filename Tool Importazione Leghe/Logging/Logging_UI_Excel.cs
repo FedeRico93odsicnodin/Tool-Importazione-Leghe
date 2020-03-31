@@ -127,6 +127,11 @@ namespace Tool_Importazione_Leghe.Logging
             throw new NotImplementedException();
         }
 
+        public override void NonPossoContinuareLetturaQuadranteConcentrazioni(int currentQuadranteEnumerator, string currentExcelSheet)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void SegnalazioneEccezione(string currentException)
         {
             throw new NotImplementedException();

@@ -117,6 +117,12 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// su una certa lega 
         /// </summary>
         private List<string> _additionalHeadersForGeneralInfo;
+
+
+        /// <summary>
+        /// Permette di dare una enumerazione crescente a tutti i quadranti che vengono via via letti all'interno di un foglio per le concentrazioni
+        /// </summary>
+        private int _currentSheetQuadrantsEnumerator = 1;
         
         #endregion
 
@@ -293,7 +299,10 @@ namespace Tool_Importazione_Leghe.ExcelServices
             // reset della lista sulla quale si andranno a inserire le eventuali posizioni utili trovate per la lettura delle concentrazioni
             detectedMaterials = new List<ExcelConcQuadrant>();
             _currentPositionsConcentrations = new List<ExcelConcQuadrant>();
-            
+
+
+            // reset enumeratore quadranti concentrazioni
+            _currentSheetQuadrantsEnumerator = 1;
             
 
             // vado a riconoscere la prima posizione utile per la lettura delle concentrazioni
@@ -489,6 +498,11 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     // ho trovato una informazione
                     if (isValid)
                     {
+                        // do enumerazione progressiva per il quadrante delle concentrazioni che sto leggendo 
+                        currentReadInfoConcentration.EnumerationQuadrant = _currentSheetQuadrantsEnumerator;
+
+                        _currentSheetQuadrantsEnumerator++;
+
                         // indico di aver almeno letto un materiale per l'iterazione sulla riga corrente 
                         hoLettoMateriale = true;
 

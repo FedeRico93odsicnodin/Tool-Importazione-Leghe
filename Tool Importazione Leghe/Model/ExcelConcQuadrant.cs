@@ -10,6 +10,16 @@ namespace Tool_Importazione_Leghe.Model
     /// </summary>
     public class ExcelConcQuadrant
     {
+        #region ENUMERAZIONE QUADRANTE 
+
+        /// <summary>
+        /// Mi serve per identificare progressivamente i quadranti individuati
+        /// </summary>
+        public int EnumerationQuadrant { get; set; }
+
+        #endregion
+
+
         #region IDENTIFICATORI PER IL TITOLO MATERIALE
 
         /// <summary>

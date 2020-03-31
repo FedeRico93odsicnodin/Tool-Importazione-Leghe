@@ -168,7 +168,18 @@ namespace Tool_Importazione_Leghe.Logging
         /// Messaggio di segnalazione di fine lettura di tutti i valori per gli header di carattere generale per la lega correntemente in lettura dal foglio excel
         /// </summary>
         protected string _hoAppenaFinitoLetturaValoriInformazioniGenerali = "EXCEL SERVICES: ho appena finito la lettura di tutti i valori di lega contenuti per il foglio '{0}'";
+        
+        #endregion
 
+
+        #region LETTURA + VALIDAZIONE INFORMAZIONI ALL'INTERNO DEL FOGLIO DELLE CONCENTRAZIONI MATERIALI DI UNA CERTA LEGA 
+        
+        /// <summary>
+        /// Messaggio di segnalazione che il quadrante corrente non ha passato una certa validazione e quindi non posso continuarne la lettura delle informazioni contenute 
+        /// al suo interno
+        /// </summary>
+        protected string _internalExceptionReadConcQuadrants = "LETTURA CONCENTRAZIONI QUADRANTE: non posso leggere il quadrante {0} per il foglio '{1}'\n";
+        
         #endregion
 
         #endregion
@@ -391,6 +402,18 @@ namespace Tool_Importazione_Leghe.Logging
         /// <param name="currentFoglioExcel"></param>
         /// <param name="currentRiga"></param>
         public abstract void NonHoTrovatoInformazioniGeneraliLegaPerRiga(string currentFoglioExcel, int currentRiga);
+
+        #endregion
+
+
+        #region MESSAGGISTICA RELATIVA ALLA LETTURA + VALIDAZIONE DELLE INFORMAZIONI CONCENTRAZIONI MATERIALI
+
+        /// <summary>
+        /// Indicazione di non poter continuare la lettura per la definizione di un certo quadrante 
+        /// </summary>
+        /// <param name="currentQuadranteEnumerator"></param>
+        /// <param name="currentExcelSheet"></param>
+        public abstract void NonPossoContinuareLetturaQuadranteConcentrazioni(int currentQuadranteEnumerator, string currentExcelSheet);
 
         #endregion
 

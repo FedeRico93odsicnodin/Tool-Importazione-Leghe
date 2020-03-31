@@ -415,6 +415,24 @@ namespace Tool_Importazione_Leghe.Logging
             LoggingService.LogInADocument(currentMessage, base._currentLogFile);
         }
 
+
+        /// <summary>
+        /// Segnalazione a console di non poter continuare la lettura di un certo quadrante per le concentrazioni all'interno
+        /// del foglio corrente 
+        /// </summary>
+        /// <param name="currentQuadranteEnumerator"></param>
+        /// <param name="currentExcelSheet"></param>
+        public override void NonPossoContinuareLetturaQuadranteConcentrazioni(int currentQuadranteEnumerator, string currentExcelSheet)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._internalExceptionReadConcQuadrants, currentQuadranteEnumerator, currentExcelSheet);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
         #endregion
 
         #endregion

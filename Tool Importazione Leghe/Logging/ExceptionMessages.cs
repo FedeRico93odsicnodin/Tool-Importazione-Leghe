@@ -119,7 +119,43 @@ namespace Tool_Importazione_Leghe.Logging
         /// Segnalazione di disallineamento delle celle di headers per il foglio excel corrente 
         /// </summary>
         public static string DISALLINEAMENTOHEADERSNELFOGLIO = "non posso continuare la lettura di '{0}' perché gli headers letti sono disallineati";
-        
+
+
+        /// <summary>
+        /// Segnalazione di disallineamento di colonna per headers e per title per la lettura delle informazioni per il quadrante delle concentrazioni corrente
+        /// </summary>
+        public static string CONCENTRATIONSQUADRANT_COLONNEHEADERTITLEDISALLINEATE = "le colonne di header e di titolo sono disallineate nel quadrante di concentrazione corrente";
+
+
+        /// <summary>
+        /// Segnalazione di disallineamento di riga per il titolo e l'indice relativo alla posizione dell'header per la lettura delle informazioni correnti legate al quadrante delle concentrazioni
+        /// </summary>
+        public static string CONCENTRATIONSQUADRANT_RIGATITLEPRIMADIRIGAHEADER = "la riga per il titolo del materiale viene prima della colonna relativa agli header";
+
+
+        /// <summary>
+        /// Segnalazione di disallineamento di riga per la lettura delle concentrazioni correnti rispetto alla riga di header identificativo delle proprieta in lettura 
+        /// </summary>
+        public static string CONCENTRATIONSQUADRANT_RIGACONCENTRATIONSPRIMADIHEADER = "la riga per l'inizio di lettura delle concentrazioni è mionore o uguale di quella dell'header identificativo";
+
+
+        /// <summary>
+        /// Segnalazione di disallineamento della riga di fine lettura rispetto a quella di inizio lettura per le concentrazioni correnti
+        /// </summary>
+        public static string CONCENTRATIONSQUADRANT_RIGAFINELETTURACONCMINORE = "la riga di fine lettura per la lettura delle concentrazioni è minore di quella di inizio lettura";
+
+
+        /// <summary>
+        /// Segnalazione di titolo nullo per il materiale in lettura per il quadrante delle concentrazioni correnti, l'analisi deve essere bloccata 
+        /// </summary>
+        public static string CONCENTRATIONSQUADRANT_TITLEMATERIALNULL = "il titolo del materiale è nullo per il materiale correntemente in analisi";
+
+
+        /// <summary>
+        /// Segnalazione di non aver trovato nessuna concentrazione per il quadrante in lettura corrente 
+        /// </summary>
+        public static string CONCENTRATIONSQUADRANT_NESSUNACONCENTRAZIONETROVATA = "non ho trovato nessuna concentrazione per il quadrante corrente";
+
         #endregion
 
         #endregion

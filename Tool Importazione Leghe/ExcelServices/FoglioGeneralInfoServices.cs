@@ -22,10 +22,10 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// L'effettivo inserimento 
         /// </summary>
         /// <returns></returns>
-        public List<RowFoglio1Excel> GetCurrentSheet1Information(Microsoft.Office.Interop.Excel._Worksheet currentSheet)
+        public List<RowFoglioExcel> GetCurrentSheet1Information(Microsoft.Office.Interop.Excel._Worksheet currentSheet)
         {
             // TODO: implementazione del metodo 
-            return new List<RowFoglio1Excel>();
+            return new List<RowFoglioExcel>();
         }
 
 
@@ -58,7 +58,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <param name="currentColumn"></param>
         /// <param name="nextRow"></param>
         /// <param name="nextCol"></param>
-        public void WriteCurrentRow1Excel(Microsoft.Office.Interop.Excel._Worksheet currentSheet, RowFoglio1Excel currentRow1, int currentRow, int currentColumn, out int nextRow, out int nextCol)
+        public void WriteCurrentRow1Excel(Microsoft.Office.Interop.Excel._Worksheet currentSheet, RowFoglioExcel currentRow1, int currentRow, int currentColumn, out int nextRow, out int nextCol)
         {
             nextCol = 0;
             nextRow = 0;
