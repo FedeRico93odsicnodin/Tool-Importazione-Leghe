@@ -94,7 +94,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// Questa lista contiene tutti gli headers necessari al ricoscimento del quadrante di header per le diverse concentrazioni
         /// del materiale in questione
         /// </summary>
-        private List<string> _concentrationsList;
+        private List<string> _concentrationsMandatoryInfo;
 
 
         /// <summary>
@@ -117,6 +117,12 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// su una certa lega 
         /// </summary>
         private List<string> _additionalHeadersForGeneralInfo;
+
+        
+        /// <summary>
+        /// Porprieta addizionali per la lettura degli headers relativi alle concentrazioni
+        /// </summary>
+        public List<string> _concentrationsAdditionalInfo;
 
 
         /// <summary>
@@ -143,7 +149,12 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
 
             // inizializzazione della lsita contenente gli headers per le concentrazioni in lettura 
-            _concentrationsList = ExcelMarkers.GetAllColumnHeadersForConcentrationsInfoSheet();
+            _concentrationsMandatoryInfo = ExcelMarkers.GetAllMandatoryPropertiesForConcentrations();
+
+            // inizializzazione della lista contenente gli headers addizionali per la lettura delle concentrazioni
+            _concentrationsAdditionalInfo = ExcelMarkers.GetAllColumnAdditionalHeadersForConcentrations();
+
+
             
         }
 
@@ -456,7 +467,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
 
             if (currentTipologiaFoglio == Utils.Constants.TipologiaFoglioExcel.Informazioni_Concentrazione)
-                currentHeaderFoglio = ExcelMarkers.GetAllColumnHeadersForConcentrationsInfoSheet();
+                currentHeaderFoglio = ExcelMarkers.GetAllMandatoryPropertiesForConcentrations();
 
             // non ho trovato nessuna informazione utile di header per il foglio corrente
             if (currentHeaderFoglio.Count() == 0)
@@ -787,21 +798,41 @@ namespace Tool_Importazione_Leghe.ExcelServices
         {
             nextColIndex = 0;
 
-            foreach(string currentHeaderConc in _concentrationsList)
+            // indice relativo a quante proprieta obbligatorie sono state lette fino adesso iterando sulla colonna corrente 
+            int mandatoryPropertiesCount = 0;
+
+            do
             {
+                // se non trovo nessun valore ritorno direttamente 
                 if (currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value == null)
                     return false;
 
-                if (currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value.ToString() != currentHeaderConc)
-                    return false;
+                string currentProperty = currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value.ToString();
 
-                currentColIndex++;
+                if (_concentrationsMandatoryInfo.Contains(currentProperty))
+                {
+                    mandatoryPropertiesCount++;
+                }
+                else if(!_concentrationsAdditionalInfo.Contains(currentProperty))
+                {
+                    // non ho riconosciuto correttamente l'header
+                    return false;
+                }
+
+                mandatoryPropertiesCount++;
+            }
+            while (currentColIndex <= currentExcelSheet.Dimension.End.Column || currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value != null);
+            
+            if(_concentrationsMandatoryInfo.Count == mandatoryPropertiesCount)
+            {
+                // indice di colonna di fine lettura header
+                nextColIndex = currentColIndex - 1;
+
+                return true;
             }
 
-            // indice di colonna di fine lettura header
-            nextColIndex = currentColIndex - 1;
+            return false;
 
-            return true;
         }
 
 

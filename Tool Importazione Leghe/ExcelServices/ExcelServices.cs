@@ -45,6 +45,12 @@ namespace Tool_Importazione_Leghe.ExcelServices
         private ReadHeaders _currentReadHeadersServices;
 
 
+        /// <summary>
+        /// Servizio di validazione e match delle informazioni per il file excel corrente
+        /// </summary>
+        private ReadAndValidateExcelInfo _currentInfoExcelValidator;
+
+
 
         #endregion
 
@@ -59,6 +65,9 @@ namespace Tool_Importazione_Leghe.ExcelServices
         {
             // servizi lettura headers e riconoscimento foglio
             _currentReadHeadersServices = new ReadHeaders();
+
+            // servizi di validazione e match informazioni foglio 
+            _currentInfoExcelValidator = new ReadAndValidateExcelInfo();
         }
 
         #endregion
@@ -227,6 +236,42 @@ namespace Tool_Importazione_Leghe.ExcelServices
         public void AnalyzeExcelSheetsSyntax(CurrentModalitaExcel currentModalita)
         {
 
+
+
+            if (_currentSheetsExcel == null)
+                throw new Exception(ExceptionMessages.NESSUNFOGLIOCONTENUTOINEXCEL);
+
+            if (_currentSheetsExcel.Count == 0)
+                throw new Exception(ExceptionMessages.NESSUNFOGLIOCONTENUTOINEXCEL);
+
+
+            foreach (ExcelSheetWithUtilInfo currentExcelSheet in _currentSheetsExcel)
+            {
+               
+
+
+                int currentSheetPos = currentExcelSheet.PositionInExcelFile;
+
+                // recupero del foglio excel in base alla posizione 
+                ExcelWorksheet currentFoglio = _currentOpenedExcel.Workbook.Worksheets[currentSheetPos];
+
+                // lista righe finali per il caso relativo a foglio leghe 
+                List<RowFoglioExcel> listaInformazioniGeneraliLega = new List<RowFoglioExcel>();
+
+                // lista oggetti elementi per il caso in cui stia parlando di un foglio di concentrazioni
+                List<MaterialConcentrationsObject> listaInformazioniConcentrazioniMateriali = new List<MaterialConcentrationsObject>();
+
+                if(currentExcelSheet.TipologiaRiconosciuta == Constants.TipologiaFoglioExcel.Informazioni_Lega)
+                {
+                    // recupero delle informazioni generali per il foglio corrente 
+                    bool hoLettoInformazioni = _currentInfoExcelValidator.GetAllGeneralInfoFromExcel(ref currentFoglio, currentExcelSheet.GeneralInfo_Lega, out listaInformazioniGeneraliLega);
+                }
+                else if(currentExcelSheet.TipologiaRiconosciuta == Constants.TipologiaFoglioExcel.Informazioni_Concentrazione)
+                {
+
+                }
+
+            }
         }
 
 

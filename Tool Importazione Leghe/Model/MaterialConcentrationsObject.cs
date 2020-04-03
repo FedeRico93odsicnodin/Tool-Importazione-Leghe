@@ -35,7 +35,7 @@ namespace Tool_Importazione_Leghe.Model
         /// <summary>
         /// Tutte le righe lette per il quadrante di concentrazioni corrente
         /// </summary>
-        public List<RowFoglio2Excel> ReadConcentrationsRows { get; set; }
+        public List<RowFoglioExcel> ReadConcentrationsRows { get; set; }
 
 
         /// <summary>

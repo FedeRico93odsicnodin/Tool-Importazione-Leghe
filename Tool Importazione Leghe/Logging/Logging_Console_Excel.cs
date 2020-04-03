@@ -433,6 +433,26 @@ namespace Tool_Importazione_Leghe.Logging
             LoggingService.LogInADocument(currentMessage, base._currentLogFile);
         }
 
+        public override void HoRecuperatoInformazioniConcentrazioniPerQuadrante(int enumQuadrante, string currentExcelSheet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void InizioLetturaInformazioniPerFoglioExcelCorrente(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologiaFoglio)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void InformazioniPerFoglioRecuperateCorrettamente(string currentFoglioExcel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void NonHoTrovatoAlcunaInformazionePerIlFoglio(string currentFoglioExcel)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #endregion

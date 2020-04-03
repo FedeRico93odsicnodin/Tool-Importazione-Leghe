@@ -135,7 +135,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// prima all'interno del foglio excel
         /// </summary>
         /// <returns></returns>
-        public static List<string> GetAllColumnHeadersForConcentrationsInfoSheet()
+        public static List<string> GetAllMandatoryPropertiesForConcentrations()
         {
             List<string> currentInfo = new List<string>();
 
@@ -163,6 +163,21 @@ namespace Tool_Importazione_Leghe.ExcelServices
             currentInfo.Add(COMMENTO_CELL);
 
             return currentInfo;
+        }
+
+
+        /// <summary>
+        /// Tutto cio che viene inserito nel foglio in una particolare cella per capire che l'informazione corrispondente 
+        /// non ha in sé nessun valore 
+        /// </summary>
+        /// <returns></returns>
+        public static List<string> ExcelNullMarkers()
+        {
+            List<string> currentNullMarkers = new List<string>();
+
+            currentNullMarkers.Add("-");
+
+            return currentNullMarkers;
         }
 
         #endregion

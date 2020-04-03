@@ -156,6 +156,12 @@ namespace Tool_Importazione_Leghe.Logging
         /// </summary>
         public static string CONCENTRATIONSQUADRANT_NESSUNACONCENTRAZIONETROVATA = "non ho trovato nessuna concentrazione per il quadrante corrente";
 
+
+        /// <summary>
+        /// Segnalazione di errore inaspettato nella lettura di un quadrante di concentrazioni per un certo foglio excel che viene comunque passato in input
+        /// </summary>
+        public static string CONCENTRATIONSQUADRANT_ERROREINASPETTATONELLALETTURAQUADRANTE = "errore inaspettato nella lettura del quadrante '{0}' per il foglio excel '{1}'";
+
         #endregion
 
         #endregion

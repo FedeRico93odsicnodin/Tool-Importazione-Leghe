@@ -179,6 +179,35 @@ namespace Tool_Importazione_Leghe.Logging
         /// al suo interno
         /// </summary>
         protected string _internalExceptionReadConcQuadrants = "LETTURA CONCENTRAZIONI QUADRANTE: non posso leggere il quadrante {0} per il foglio '{1}'\n";
+
+
+        /// <summary>
+        /// Messaggio di segnalazione di  aver recuperato correttamente tutte le informazioni sulle concentrazioni per un certo quadrante di cui viene passata l'enumerazione e
+        /// contenuto in un determinato foglio excel in lettura corrente 
+        /// </summary>
+        protected string _riconoscimentoInformazioniValidePerQuadrante = "LETTURA CONCENTRAZIONI QUADRANTE: ho recuperato le informazioni per il quadrante {0} per il foglio excel '{1}'";
+
+        #endregion
+
+
+        #region STEPS DI LETTURA INFORMAZIONI DA EXCEL 
+
+        /// <summary>
+        /// Messaggio di indicazione che inizia lo step di lettura delle informazioni contenute all'interno di un determinato foglio di cui viene passato nome e tipologia 
+        /// </summary>
+        protected string _inizioLetturaInformazioniFoglioCorrente = "EXCEL SERVICES: inizio della lettura delle informazioni per il foglio '{0}' (tipologia '{1}')";
+
+
+        /// <summary>
+        /// Messaggio di indicazione che le informazioni per il foglio correntemente in analisi sono state recuperate correttamente 
+        /// </summary>
+        protected string _updateInfoCorrettaPerFoglio = "EXCEL SERVICES: le informazioni per il folgio '{0}' sono state recuperate correttamente";
+
+
+        /// <summary>
+        /// Indicazione che non è stata trovata nessuna informazione inserita per il foglio in analisi
+        /// </summary>
+        protected string _nonHoTrovatoAlcunaInformazionePerFoglio = "EXCEL SERVICES: non ho trovato nessuna informazione durante la lettura di questo foglio '{0}'";
         
         #endregion
 
@@ -414,6 +443,40 @@ namespace Tool_Importazione_Leghe.Logging
         /// <param name="currentQuadranteEnumerator"></param>
         /// <param name="currentExcelSheet"></param>
         public abstract void NonPossoContinuareLetturaQuadranteConcentrazioni(int currentQuadranteEnumerator, string currentExcelSheet);
+
+
+        /// <summary>
+        /// Indicazione di aver recuperato correttamente tutte le informazioni per un certo quadrante in lettura per il foglio excel corrente 
+        /// </summary>
+        /// <param name="enumQuadrante"></param>
+        /// <param name="currentExcelSheet"></param>
+        public abstract void HoRecuperatoInformazioniConcentrazioniPerQuadrante(int enumQuadrante, string currentExcelSheet);
+
+        #endregion
+
+
+        #region INIZIO LETTURA VALIDAZIONE E MATCH INFORMAZIONI PER IL FOGLIO EXCEL 
+
+        /// <summary>
+        /// Indicazione di inizio lettura informazioni per il foglio excel di cui nome e tipologia sono passati in input
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        /// <param name="currentTipologiaFoglio"></param>
+        public abstract void InizioLetturaInformazioniPerFoglioExcelCorrente(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologiaFoglio);
+
+
+        /// <summary>
+        /// Indicazione che sul foglio excel le informazioni sono state recuperate tutte correttamente 
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        public abstract void InformazioniPerFoglioRecuperateCorrettamente(string currentFoglioExcel);
+
+
+        /// <summary>
+        /// Indicazione che il foglio è stato letto correttamente ma non è stata trovata alcuna informazione al suo interno
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        public abstract void NonHoTrovatoAlcunaInformazionePerIlFoglio(string currentFoglioExcel);
 
         #endregion
 
