@@ -201,14 +201,36 @@ namespace Tool_Importazione_Leghe.Logging
         /// <summary>
         /// Messaggio di indicazione che le informazioni per il foglio correntemente in analisi sono state recuperate correttamente 
         /// </summary>
-        protected string _updateInfoCorrettaPerFoglio = "EXCEL SERVICES: le informazioni per il folgio '{0}' sono state recuperate correttamente";
+        protected string _updateInfoCorrettaPerFoglio = "EXCEL SERVICES: le informazioni per il foglio '{0}' sono state recuperate correttamente";
 
 
         /// <summary>
         /// Indicazione che non è stata trovata nessuna informazione inserita per il foglio in analisi
         /// </summary>
         protected string _nonHoTrovatoAlcunaInformazionePerFoglio = "EXCEL SERVICES: non ho trovato nessuna informazione durante la lettura di questo foglio '{0}'";
-        
+
+        #endregion
+
+
+        #region MESSAGGI DI INIZIO LETTURA, VALIDAZIONE, MATCH INFORMAZIONI PER DESTINAZIONE 
+
+        /// <summary>
+        /// Segnalazione di inizio lettura delle informazioni per tutti i fogli individuati e riconosciuti all'interno del file excel correntemente in analisi
+        /// </summary>
+        protected string StoIniziandoLetturaInformazioni = "Sto iniziando la lettura delle informazioni per tutti i fogli contenuti all'interno del file excel '{0}'";
+
+
+        /// <summary>
+        /// Segnalazione dell'inizio dello step di validazione per tutti i fogli excel epr i quali sono state ritrovate delle informazioni utili con lo step precedente 
+        /// </summary>
+        protected string StoIniziandoValidazioneInformazioni = "Sto iniziando la validazione delle informazioni per tutti i fogli excel per i quali sono contenute delle informazioni";
+
+
+        /// <summary>
+        /// Segnalazione dell'inizio dello step di match delle informazioni per la persistenza delle informazioni all'interno della destinazione individuata 
+        /// </summary>
+        protected string StoIniziandoMatchInformazioniPerDestinazione = "Sto iniziando il match delle informazioni per la destinazione";
+
         #endregion
 
         #endregion
@@ -477,6 +499,17 @@ namespace Tool_Importazione_Leghe.Logging
         /// </summary>
         /// <param name="currentFoglioExcel"></param>
         public abstract void NonHoTrovatoAlcunaInformazionePerIlFoglio(string currentFoglioExcel);
+
+        #endregion
+
+
+        #region INIZIO DELLE PROCEDURE DI LETTURA / ANALISI E MATCH DELLE INFORMAZIONI PER LA DESTINAZIONE E PER I FOGLI EXCEL 
+
+        /// <summary>
+        /// Segnalazione di inizio recupero delle informazioni dai fogli excel correntemente analizzati per il file corrente 
+        /// </summary>
+        /// <param name="currentFileExcel"></param>
+        public abstract void InizioProceduraRecuperoInformazioni(string currentFileExcel);
 
         #endregion
 

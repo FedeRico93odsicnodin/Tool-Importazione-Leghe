@@ -73,9 +73,9 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <param name="currentInfoHeaders"></param>
         /// <param name="currentListRowsInfoLega"></param>
         /// <returns></returns>
-        public bool GetAllGeneralInfoFromExcel(ref ExcelWorksheet currentExcelSheet, List<HeadersInfoLega_Excel> currentInfoHeaders, out List<RowFoglioExcel> currentListRowsInfoLega)
+        public bool GetAllGeneralInfoFromExcel(ref ExcelWorksheet currentExcelSheet, List<HeadersInfoLega_Excel> currentInfoHeaders, out List<LegaInfoObject> currentListRowsInfoLega)
         {
-            currentListRowsInfoLega = new List<RowFoglioExcel>();
+            currentListRowsInfoLega = new List<LegaInfoObject>();
 
             // primo check: se la lista è = 0 allora non posso continuare lettura 
             if (currentInfoHeaders == null)
@@ -99,6 +99,8 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 {
                     // segnalazione di non aver trovato nessuna informazione per la lettura della riga corrente 
                     ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazioniGeneraliLegaPerRiga(currentExcelSheet.Name, _tracciaCurrentRow);
+
+                    _tracciaCurrentRow++;
                     
                     continue;
                 }
@@ -125,7 +127,17 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     currentRowInfo.SetValue(currentHeader.NomeProprietà, currentPropertyValue);
                 }
 
-                currentListRowsInfoLega.Add(currentRowInfo);
+                // creazione dell'oggetto transizione per le informazioni di lega correnti
+                LegaInfoObject currentOggettoLega = new LegaInfoObject()
+                {
+                    Lega_ExcelRow = currentRowInfo,
+                    Step1_Recupero = true
+                };
+
+
+                currentListRowsInfoLega.Add(currentOggettoLega);
+
+                _tracciaCurrentRow++;
 
                 // segnalazione di inserimento di una riga di informazioni generali per il foglio excel correntemente in lettura 
                 ServiceLocator.GetLoggingService.GetLoggerExcel.HoLettoUnaRigaDiValoriGeneralPerFoglioExcelInRiga(_tracciaCurrentRow, currentExcelSheet.Name);
@@ -208,6 +220,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
                     currentLettura.ExcelQuadrantReference = currentConcQuadrant;
                     currentLettura.ReadConcentrationsRows = currentLetturaConcentrazioni;
+                    currentLettura.Step1_Recupero = true;
 
                     concentrationsObjects.Add(currentLettura);
                 }

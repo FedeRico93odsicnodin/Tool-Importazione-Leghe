@@ -111,6 +111,11 @@ namespace Tool_Importazione_Leghe.Logging
             throw new NotImplementedException();
         }
 
+        public override void InizioProceduraRecuperoInformazioni(string currentFileExcel)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void InserimentoQuadranteLetturaConcentrazioniPerFoglio(string currentFoglioExcel)
         {
             throw new NotImplementedException();

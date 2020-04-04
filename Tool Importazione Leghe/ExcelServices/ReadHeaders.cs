@@ -812,6 +812,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 if (_concentrationsMandatoryInfo.Contains(currentProperty))
                 {
                     mandatoryPropertiesCount++;
+                    
                 }
                 else if(!_concentrationsAdditionalInfo.Contains(currentProperty))
                 {
@@ -819,7 +820,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     return false;
                 }
 
-                mandatoryPropertiesCount++;
+                currentColIndex++;
             }
             while (currentColIndex <= currentExcelSheet.Dimension.End.Column || currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value != null);
             

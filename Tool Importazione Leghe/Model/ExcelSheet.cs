@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Tool_Importazione_Leghe.Utils;
 
 namespace Tool_Importazione_Leghe.Model
@@ -13,6 +9,21 @@ namespace Tool_Importazione_Leghe.Model
     /// </summary>
     public class ExcelSheetWithUtilInfo
     {
+        #region COSTRUTTORE
+
+        /// <summary>
+        /// By default le informazioni relative alla lettura / validazione e possibile inserimento all'interno della sorgente 
+        /// vengono settate a false per il foglio corrente 
+        /// </summary>
+        public ExcelSheetWithUtilInfo()
+        {
+            LetturaInformazioniCorretto = false;
+            ValidazioneInformazioniCorretto = false;
+            PersistenzaInformazioniPossibile = false;
+        }
+
+        #endregion
+        
 
         #region INFORMAZIONI DI CARATTERE GENERALE FOGLIO
 
@@ -38,13 +49,7 @@ namespace Tool_Importazione_Leghe.Model
         /// Ottenimento della tipologia riconosciuta per il foglio excel corrente 
         /// </summary>
         public Constants.TipologiaFoglioExcel TipologiaRiconosciuta { get; set; }
-
         
-        /// <summary>
-        /// Tiene traccia del fatto che il foglio sia stato effettivamente letto o meno
-        /// </summary>
-        public bool Letto { get; set; }
-
         #endregion
 
 
@@ -69,7 +74,44 @@ namespace Tool_Importazione_Leghe.Model
 
         #region INFORMAZIONI LETTE EFFETTIVAMETE SU FOGLIO 
 
-        // TODO : inserire qui le informazioni a carattere generale che vengono lette con il dovuto scarto rispetto alle informazioni gia contenute nel database
+        /// <summary>
+        /// Tiene traccia di tutti i valori letti per la persistenza delle informazioni di lega al primo step
+        /// tiene traccia di tutti i valori che vengono validati per la persistenza corretta al secondo step
+        /// </summary>
+        public List<LegaInfoObject> InfoLegheFromThisExcel { get; set; }
+
+
+        /// <summary>
+        /// Tiene traccia dei valori che sono stati letti analizzando i quadranti delle concentrazioni al primo step 
+        /// Tiene traccia di tutti i valori che vengono validati per la persistenza database al secondo step 
+        /// </summary>
+        public List<MaterialConcentrationsObject> InfoConcentrationsFromThisExcel { get; set; }
+
+        #endregion
+
+
+        #region PASSAGGIO VALIDAZIONI 
+
+        /// <summary>
+        /// Mi dice se ho completato correttamente la lettura delle informazioni per il foglio excel corrente 
+        /// sia che si tratti di un foglio di informazioni di lega sia che si tratti di un foglio relativo alle concentrazioni
+        /// </summary>
+        public bool LetturaInformazioniCorretto { get; set; }
+
+
+        /// <summary>
+        /// Mi dice se ho completato correttamente la validazione per le informazioni contenute all'interno del foglio excel corrente 
+        /// sia che si tratti di un foglio per le informazioni di lega sia di uno per le concentrazioni
+        /// </summary>
+        public bool ValidazioneInformazioniCorretto { get; set; }
+
+
+        /// <summary>
+        /// Mi dice in base ai valori precedenti se sarà possibile la persistenza delle informazioni per il foglio excel corrente 
+        /// in base all'analisi relativa alle informazioni acquisite e validate agli steps precedenti e a che cosa è gia presente 
+        /// di utile all'interno della destinazione 
+        /// </summary>
+        public bool PersistenzaInformazioniPossibile { get; set; }
 
         #endregion
     }

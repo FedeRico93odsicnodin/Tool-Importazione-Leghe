@@ -107,7 +107,6 @@
     <Compile Include="ExcelServices\ExcelMarkers.cs" />
     <Compile Include="ExcelServices\ExcelServices.cs" />
     <Compile Include="ExcelServices\ExcelSheetValidators.cs" />
-    <Compile Include="ExcelServices\FoglioConcentrazioniServices.cs" />
     <Compile Include="ExcelServices\FoglioGeneralInfoServices.cs" />
     <Compile Include="ExcelServices\ReadAndValidateExcelInfo.cs" />
     <Compile Include="ExcelServices\ReadHeaders.cs" />
@@ -139,11 +138,11 @@
     <Compile Include="Model\ExcelSheet.cs" />
     <Compile Include="Model\HeadersInfoLega_Excel.cs" />
     <Compile Include="Model\LabEntities.cs" />
+    <Compile Include="Model\LegaInfoObject.cs" />
     <Compile Include="Model\LegheDB.cs" />
     <Compile Include="Model\MaterialConcentrationsObject.cs" />
     <Compile Include="Model\NormativeDB.cs" />
     <Compile Include="Model\RowFoglio1Excel.cs" />
-    <Compile Include="Model\RowFoglio2Excel.cs" />
     <Compile Include="ModifiedElements\ExtendedStopWatch.cs" />
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="StartingLoad_Activity.cs" />

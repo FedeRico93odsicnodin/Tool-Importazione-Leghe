@@ -152,6 +152,9 @@ namespace Tool_Importazione_Leghe
             ServiceLocator.GetLoggingService.GetLoggerImportActivity.EndingCurrentStep_ExcelToDatabase(Constants.TipologiaImport_ExcelToDatabase.ANALISI_MARKERS_EXCEL);
 
             Console.ReadKey();
+
+            // inizio della lettura relativo all'acquisizione delle informazioni per il foglio excel corrente 
+            ServiceLocator.GetExcelServices.AnalyzeExcelSheetsSyntax(CurrentModalitaExcel.EXCELREADER);
             
             #endregion
 

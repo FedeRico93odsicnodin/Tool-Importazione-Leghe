@@ -438,19 +438,72 @@ namespace Tool_Importazione_Leghe.Logging
             throw new NotImplementedException();
         }
 
+
+        /// <summary>
+        /// Segnalazione di inizio lettura delle informazioni per il foglio excel correntemente in analisi
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
+        /// <param name="currentTipologiaFoglio"></param>
         public override void InizioLetturaInformazioniPerFoglioExcelCorrente(string currentFoglioExcel, Constants.TipologiaFoglioExcel currentTipologiaFoglio)
         {
-            throw new NotImplementedException();
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._inizioLetturaInformazioniFoglioCorrente, currentFoglioExcel, currentTipologiaFoglio);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
         }
 
+
+        /// <summary>
+        /// Segnalazione di recupero corretto delle informazioni contenute nel foglio excel correntemnte in analisi
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
         public override void InformazioniPerFoglioRecuperateCorrettamente(string currentFoglioExcel)
         {
-            throw new NotImplementedException();
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._updateInfoCorrettaPerFoglio, currentFoglioExcel);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
         }
 
+
+        /// <summary>
+        /// Segnalazione di non aver trovato nessuna informazione nella lettura del foglio excel corrente 
+        /// </summary>
+        /// <param name="currentFoglioExcel"></param>
         public override void NonHoTrovatoAlcunaInformazionePerIlFoglio(string currentFoglioExcel)
         {
-            throw new NotImplementedException();
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base._nonHoTrovatoAlcunaInformazionePerFoglio, currentFoglioExcel);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+        }
+
+
+        /// <summary>
+        /// Segnalazione a console di inizio della procedura relativa al recupero delle informazioni individuate sul file excel corrente 
+        /// </summary>
+        /// <param name="currentFileExcel"></param>
+        public override void InizioProceduraRecuperoInformazioni(string currentFileExcel)
+        {
+            string currentMessage = ServiceLocator.GetConfigurations.GetCurrentProcedureTime().ToString();
+            currentMessage += FormatModalitaCorrente(XlsServices.CurrentModalitaExcel.EXCELREADER);
+            currentMessage += String.Format(base.StoIniziandoLetturaInformazioni, currentFileExcel);
+
+            Console.WriteLine(currentMessage);
+
+            LoggingService.LogInADocument(currentMessage, base._currentLogFile);
+            
+            // prendo un po di tempo sulla console 
+            LoggingService.GetSomeTimeOnConsole();
         }
 
         #endregion

@@ -146,9 +146,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 currentSheetInfo.SheetName = currentSheetName;
                 currentSheetInfo.ExcelFile = _currentExcelName;
                 currentSheetInfo.PositionInExcelFile = currentSheetPosition;
-                currentSheetInfo.Letto = false;
                 currentSheetInfo.TipologiaRiconosciuta = Utils.Constants.TipologiaFoglioExcel.Unknown;
-                currentSheetInfo.Letto = false;
                 
                 _currentSheetsExcel.Add(currentSheetInfo);
 
@@ -235,43 +233,8 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <param name="currentModalita"></param>
         public void AnalyzeExcelSheetsSyntax(CurrentModalitaExcel currentModalita)
         {
-
-
-
-            if (_currentSheetsExcel == null)
-                throw new Exception(ExceptionMessages.NESSUNFOGLIOCONTENUTOINEXCEL);
-
-            if (_currentSheetsExcel.Count == 0)
-                throw new Exception(ExceptionMessages.NESSUNFOGLIOCONTENUTOINEXCEL);
-
-
-            foreach (ExcelSheetWithUtilInfo currentExcelSheet in _currentSheetsExcel)
-            {
-               
-
-
-                int currentSheetPos = currentExcelSheet.PositionInExcelFile;
-
-                // recupero del foglio excel in base alla posizione 
-                ExcelWorksheet currentFoglio = _currentOpenedExcel.Workbook.Worksheets[currentSheetPos];
-
-                // lista righe finali per il caso relativo a foglio leghe 
-                List<RowFoglioExcel> listaInformazioniGeneraliLega = new List<RowFoglioExcel>();
-
-                // lista oggetti elementi per il caso in cui stia parlando di un foglio di concentrazioni
-                List<MaterialConcentrationsObject> listaInformazioniConcentrazioniMateriali = new List<MaterialConcentrationsObject>();
-
-                if(currentExcelSheet.TipologiaRiconosciuta == Constants.TipologiaFoglioExcel.Informazioni_Lega)
-                {
-                    // recupero delle informazioni generali per il foglio corrente 
-                    bool hoLettoInformazioni = _currentInfoExcelValidator.GetAllGeneralInfoFromExcel(ref currentFoglio, currentExcelSheet.GeneralInfo_Lega, out listaInformazioniGeneraliLega);
-                }
-                else if(currentExcelSheet.TipologiaRiconosciuta == Constants.TipologiaFoglioExcel.Informazioni_Concentrazione)
-                {
-
-                }
-
-            }
+            // lettura delle informazioni per i fogli contenuti nel file excel corrente 
+            ReadExcelUtilInformation(currentModalita);
         }
 
 
@@ -282,7 +245,72 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// <param name="currentModalita"></param>
         private void ReadExcelUtilInformation(CurrentModalitaExcel currentModalita)
         {
+            if (_currentSheetsExcel == null)
+                throw new Exception(ExceptionMessages.NESSUNFOGLIOCONTENUTOINEXCEL);
 
+            if (_currentSheetsExcel.Count == 0)
+                throw new Exception(ExceptionMessages.NESSUNFOGLIOCONTENUTOINEXCEL);
+
+
+            foreach (ExcelSheetWithUtilInfo currentExcelSheet in _currentSheetsExcel)
+            {
+
+                int currentSheetPos = currentExcelSheet.PositionInExcelFile;
+
+                // recupero del foglio excel in base alla posizione 
+                ExcelWorksheet currentFoglio = _currentOpenedExcel.Workbook.Worksheets[currentSheetPos];
+
+                // lista righe finali per il caso relativo a foglio leghe 
+                List<LegaInfoObject> listaInformazioniGeneraliLega = new List<LegaInfoObject>();
+
+                // lista oggetti elementi per il caso in cui stia parlando di un foglio di concentrazioni
+                List<MaterialConcentrationsObject> listaInformazioniConcentrazioniMateriali = new List<MaterialConcentrationsObject>();
+
+                if (currentExcelSheet.TipologiaRiconosciuta == Constants.TipologiaFoglioExcel.Informazioni_Lega)
+                {
+                    // segnalazione di inizio recupero informazioni per il foglio excel corrente
+                    ServiceLocator.GetLoggingService.GetLoggerExcel.InizioLetturaInformazioniPerFoglioExcelCorrente(currentFoglio.Name, currentExcelSheet.TipologiaRiconosciuta);
+
+                    // recupero delle informazioni generali per il foglio corrente 
+                    bool hoLettoInformazioni = _currentInfoExcelValidator.GetAllGeneralInfoFromExcel(ref currentFoglio, currentExcelSheet.GeneralInfo_Lega, out listaInformazioniGeneraliLega);
+
+                    if (!hoLettoInformazioni)
+                        ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoAlcunaInformazionePerIlFoglio(currentFoglio.Name);
+                    else
+                    {
+                        ServiceLocator.GetLoggingService.GetLoggerExcel.InformazioniPerFoglioRecuperateCorrettamente(currentFoglio.Name);
+
+                        // inserimento per il foglio della lista delle concentrazioni letto
+                        currentExcelSheet.InfoLegheFromThisExcel = listaInformazioniGeneraliLega;
+
+                        // indico che la lettura delle informazioni è andata a buon fine 
+                        currentExcelSheet.LetturaInformazioniCorretto = true;
+                    }
+
+                }
+                else if (currentExcelSheet.TipologiaRiconosciuta == Constants.TipologiaFoglioExcel.Informazioni_Concentrazione)
+                {
+                    // segnalazione di inizio recupero informazioni per il foglio excel corrente
+                    ServiceLocator.GetLoggingService.GetLoggerExcel.InizioLetturaInformazioniPerFoglioExcelCorrente(currentFoglio.Name, currentExcelSheet.TipologiaRiconosciuta);
+
+                    bool hoLettoInformazioni = _currentInfoExcelValidator.GetAllConcentrationsFromExcel(ref currentFoglio, currentExcelSheet.Concentrations_Quadrants, out listaInformazioniConcentrazioniMateriali);
+
+                    if (!hoLettoInformazioni)
+                        ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoAlcunaInformazionePerIlFoglio(currentFoglio.Name);
+                    else
+                    {
+                        ServiceLocator.GetLoggingService.GetLoggerExcel.InformazioniPerFoglioRecuperateCorrettamente(currentFoglio.Name);
+
+                        // inserimento per il foglio della lista delle concentrazioni letto
+                        currentExcelSheet.InfoConcentrationsFromThisExcel = listaInformazioniConcentrazioniMateriali;
+
+                        // indico che la lettura delle informazioni è andata a buon fine 
+                        currentExcelSheet.LetturaInformazioniCorretto = true;
+                    }
+
+                }
+
+            }
         }
 
 
