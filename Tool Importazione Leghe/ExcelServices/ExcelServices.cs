@@ -215,7 +215,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 // separazione delle attività
                 ServiceLocator.GetLoggingService.GetLoggerImportActivity.GetSeparatorInternalActivity();
 
-                LoggingService.GetSomeTimeOnConsole();
+                //LoggingService.GetSomeTimeOnConsole();
 
             }
         }

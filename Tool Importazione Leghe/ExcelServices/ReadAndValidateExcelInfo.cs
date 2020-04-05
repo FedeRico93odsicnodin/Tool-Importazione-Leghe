@@ -107,7 +107,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
 
                 // creo il nuovo oggetto di riga per le informazioni generali
-                RowFoglioExcel currentRowInfo = new RowFoglioExcel();
+                RowFoglioExcel currentRowInfo = new RowFoglioExcel(Utils.Constants.TipologiaFoglioExcel.Informazioni_Lega);
 
                 // inserisco la riga corrente come identificatrice dell'oggetto di valori
                 currentRowInfo.Excel_CurrentRow = _tracciaCurrentRow;
@@ -275,12 +275,13 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
             do
             {
+
+                RowFoglioExcel currentRowInfo = new RowFoglioExcel(Utils.Constants.TipologiaFoglioExcel.Informazioni_Concentrazione);
+
+                _tracciaCurrentCol = currentConcQuadrant.Head_Col;
+
                 do
                 {
-                    RowFoglioExcel currentRowInfo = new RowFoglioExcel();
-
-                    _tracciaCurrentCol = currentConcQuadrant.Head_Col;
-
                     // proprieta di riferimento letta tra gli headers di partenza 
                     string currentPropertyHeader = currentExcelSheet.Cells[currentConcQuadrant.Head_Row, _tracciaCurrentCol].Value.ToString();
 
@@ -302,8 +303,13 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     else
                         throw new Exception(String.Format(ExceptionMessages.CONCENTRATIONSQUADRANT_ERROREINASPETTATONELLALETTURAQUADRANTE, currentExcelSheet.Name, currentConcQuadrant.EnumerationQuadrant));
 
+                    _tracciaCurrentCol++;
                 }
                 while (_tracciaCurrentCol <= currentConcQuadrant.Get_Max_Col_Quadrante);
+
+                currentReadConcentrations.Add(currentRowInfo);
+
+                _tracciaCurrentRow++;
             }
             while (_tracciaCurrentRow <= _tracciaEndInfo);
 

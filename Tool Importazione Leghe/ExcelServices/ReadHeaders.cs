@@ -874,6 +874,14 @@ namespace Tool_Importazione_Leghe.ExcelServices
                         elementsIterations++;
                         continue;
                     }
+                    // verifico che la cella successiva non contenga lo stesso valore 
+                    else if(!currentExcelSheet.Cells[currentRowIndex, currentColIndex + 1].Merge == true)
+                    {
+                        // incremento indice di riga ad ogni iterazione oltre che l'elemento corrispondente
+                        currentRowIndex++;
+                        elementsIterations++;
+                        continue;
+                    }
 
                     // stesso controllo fatto su, nel caso in cui in una cella non trovo piu contenuto conforme alla definizione di un elemento
                     // finisco l'iterazione cosi

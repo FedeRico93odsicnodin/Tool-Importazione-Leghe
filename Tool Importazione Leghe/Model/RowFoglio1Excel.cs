@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tool_Importazione_Leghe.ExcelServices;
+using Tool_Importazione_Leghe.Utils;
 
 namespace Tool_Importazione_Leghe.Model
 {
@@ -47,15 +48,28 @@ namespace Tool_Importazione_Leghe.Model
         #region COSTRUTTORE: INIZIALIZZAZIONE DELLE LISTE DELLE PROPRIETA OBBLIGATORIE E ADDIZIONALI CON I VALORI PRESENTI NELLE COSTANTI
 
         /// <summary>
-        /// Inizializzazione delle 2 liste con i valori di chiave presenti all'interno delle costanti
+        /// Inizializzazione con le proprieta obbligatorie / opzionali in lettuta in base alla tipologia di foglio excel che viene passata in input
         /// </summary>
-        public RowFoglioExcel()
+        /// <param name="tipologiaFoglioExcelLettura"></param>
+        public RowFoglioExcel(Constants.TipologiaFoglioExcel tipologiaFoglioExcelLettura)
         {
-            // 1. inizializzazione dei valori per le proprieta obbligatorie
-            FillMandatoryProperties_InfoLega();
+            if(tipologiaFoglioExcelLettura == Constants.TipologiaFoglioExcel.Informazioni_Lega)
+            {
+                // 1. inizializzazione dei valori per le proprieta obbligatorie
+                FillMandatoryProperties_InfoLega();
 
-            // 2. inizializzazione dei valori per le proprieta opzionali
-            FillAdditionalProperties_InfoLega();
+                // 2. inizializzazione dei valori per le proprieta opzionali
+                FillAdditionalProperties_InfoLega();
+            }
+            else if(tipologiaFoglioExcelLettura == Constants.TipologiaFoglioExcel.Informazioni_Concentrazione)
+            {
+                // 1. fill delle proprieta obbligatorie per le concentrazioni
+                FillMandatoryProperties_Concentrations();
+
+                // 2. fill delle proprieta opzionali per le concentrazioni
+                FillAdditionalProperties_Concentrations();
+            }
+
         }
 
         #endregion
@@ -107,7 +121,15 @@ namespace Tool_Importazione_Leghe.Model
         /// </summary>
         private void FillMandatoryProperties_Concentrations()
         {
-            // TODO: implementazione delle liste e della lettura "DINAMICA" delle informazioni obbligatorie per le concentrazioni
+            _mandatoryProperties_Info = new Dictionary<string, string>();
+
+            _currentMandatoryProperties = ExcelMarkers.GetAllMandatoryPropertiesForConcentrations();
+
+            foreach (string currentMandatoryProperty in _currentMandatoryProperties)
+            {
+                // inizializzazione con il valore a stringa vuota 
+                _mandatoryProperties_Info.Add(currentMandatoryProperty, String.Empty);
+            }
         }
         
 
@@ -116,7 +138,15 @@ namespace Tool_Importazione_Leghe.Model
         /// </summary>
         private void FillAdditionalProperties_Concentrations()
         {
-            // TODO: refactoring come sopra 
+            _additionalProperties_Info = new Dictionary<string, string>();
+
+            _currentAdditionalProperties = ExcelMarkers.GetAllColumnAdditionalHeadersForConcentrations();
+
+            foreach (string currentAdditionalProperty in _currentAdditionalProperties)
+            {
+                // inizializzazione con il valore a stringa vuota 
+                _additionalProperties_Info.Add(currentAdditionalProperty, String.Empty);
+            }
         }
 
         #endregion
