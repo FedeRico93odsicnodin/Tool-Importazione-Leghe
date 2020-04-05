@@ -212,7 +212,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                         if (RecognizeMandatoryInfoPropertyPresence(readMandatoryInfo, currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString(), out readMandatoryInfo))
                         {
                             // segnalazione di trovata proprieta obbligatoria per il foglio excel corrente 
-                            ServiceLocator.GetLoggingService.GetLoggerExcel.TrovataInformazioneObbligatoriaLetturaInformazioniGenerali(currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString(), _tracciaCurrentRow, _tracciaCurrentCol);
+                            //ServiceLocator.GetLoggingService.GetLoggerExcel.TrovataInformazioneObbligatoriaLetturaInformazioniGenerali(currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString(), _tracciaCurrentRow, _tracciaCurrentCol);
 
                             _tracciaCurrentCol++;
 
@@ -223,7 +223,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                         if(RecognizeAdditionalInfoPropertiesPresence(readAdditionalInfo, currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString(), out readAdditionalInfo))
                         {
                             // segnalazione di trovata proprieta addizionale per il foglio excel corrente 
-                            ServiceLocator.GetLoggingService.GetLoggerExcel.TrovataInformazioneAddizionaleLetturaInformazioniGenerali(currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString(), _tracciaCurrentRow, _tracciaCurrentCol);
+                            //ServiceLocator.GetLoggingService.GetLoggerExcel.TrovataInformazioneAddizionaleLetturaInformazioniGenerali(currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value.ToString(), _tracciaCurrentRow, _tracciaCurrentCol);
 
                             _tracciaCurrentCol++;
 
@@ -265,7 +265,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
             while (_tracciaCurrentCol <= currentExcelSheet.Dimension.End.Column);
 
             // segnalazione di fine lettura per tutte le informazioni di carattere generale sulla lega corrente 
-            ServiceLocator.GetLoggingService.GetLoggerExcel.FineProcessamentoGeneralInfoPerFoglioExcel(currentExcelSheet.Name);
+            //ServiceLocator.GetLoggingService.GetLoggerExcel.FineProcessamentoGeneralInfoPerFoglioExcel(currentExcelSheet.Name);
 
             
             // ho letto almeno tutte le proprieta obbligatorie
@@ -354,7 +354,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
             if (currentRecognizedProperties.Where(x => x.NomeProprietà == currentProperty).ToList().Count() > 0)
             {
                 // ho gia letto questa informazione per gli headers correnti
-                ServiceLocator.GetLoggingService.GetLoggerExcel.HoGiaTrovatoInformazioneACarattereGenerale(currentProperty);
+                //ServiceLocator.GetLoggingService.GetLoggerExcel.HoGiaTrovatoInformazioneACarattereGenerale(currentProperty);
 
                 newRecognizedProperties = currentRecognizedProperties;
 
@@ -365,7 +365,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
             if(!_mandatoryHeadersForGeneralInfo.Contains(currentProperty.ToUpper()))
             {
                 // l'informazione non è contenuta nelle definizioni delle proprieta obbligatorie per la lettura delle informazioni generali per la lega corrente 
-                ServiceLocator.GetLoggingService.GetLoggerExcel.InformazioneGeneraleNonContenutaNelleDefinizioniObbligatorie(currentProperty);
+                //ServiceLocator.GetLoggingService.GetLoggerExcel.InformazioneGeneraleNonContenutaNelleDefinizioniObbligatorie(currentProperty);
 
                 newRecognizedProperties = currentRecognizedProperties;
 
@@ -419,10 +419,10 @@ namespace Tool_Importazione_Leghe.ExcelServices
             }
 
 
-            if(!_mandatoryHeadersForGeneralInfo.Contains(currentProperty.ToUpper()))
+            if(!_additionalHeadersForGeneralInfo.Contains(currentProperty.ToUpper()))
             {
                 // l'informazione non è contenuta nelle definizioni delle proprieta addizionali per la lettura delle informazioni generali per la lega corrente 
-                ServiceLocator.GetLoggingService.GetLoggerExcel.InformazioneGeneraleNonContenutaNelleDefinizioniAddizionali(currentProperty);
+                //ServiceLocator.GetLoggingService.GetLoggerExcel.InformazioneGeneraleNonContenutaNelleDefinizioniAddizionali(currentProperty);
 
                 newRecognizedProperties = currentRecognizedProperties;
 
@@ -523,7 +523,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
                         _currentPositionsConcentrations.Add(currentReadInfoConcentration);
 
-                        ServiceLocator.GetLoggingService.GetLoggerExcel.InserimentoQuadranteLetturaConcentrazioniPerFoglio(currentExcelSheet.Name);
+                        //ServiceLocator.GetLoggingService.GetLoggerExcel.InserimentoQuadranteLetturaConcentrazioniPerFoglio(currentExcelSheet.Name);
 
                     }
                     else
@@ -642,7 +642,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
             if (currentExcelSheet.Cells[_tracciaCurrentRow, _tracciaCurrentCol].Value == null)
             {
-                ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazioniPerTitoloMateriale(_tracciaCurrentCol, _tracciaCurrentRow);
+                //ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazioniPerTitoloMateriale(_tracciaCurrentCol, _tracciaCurrentRow);
 
                 _tracciaCurrentRow = startingCurrentRow;
                 return false;
@@ -654,7 +654,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 hoTrovatoNome = true;
                 startingRowTitle = _tracciaCurrentRow;
 
-                ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoInformazioniPerTitoloDelMateriale(_tracciaCurrentCol, _tracciaCurrentRow);
+                //ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoInformazioniPerTitoloDelMateriale(_tracciaCurrentCol, _tracciaCurrentRow);
                 
             }
 
@@ -681,7 +681,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     {
                         startingRowHeaders = _tracciaCurrentRow;
 
-                        ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoInformazioniHeaderPerQuadranteCorrente(_tracciaCurrentCol, _tracciaCurrentRow);
+                        //ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoInformazioniHeaderPerQuadranteCorrente(_tracciaCurrentCol, _tracciaCurrentRow);
                         break;
                     }
 
@@ -692,7 +692,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 // segnalazione di non aver trovato informazioni header per il quadrante corrente
                 if (!hoTrovatoHeader)
                 {
-                    ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazioniHeaderPerQuadranteCorrente(_tracciaCurrentCol, _tracciaCurrentRow);
+                    //ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoInformazioniHeaderPerQuadranteCorrente(_tracciaCurrentCol, _tracciaCurrentRow);
                     _tracciaCurrentRow = startingCurrentRow;
                     return false;
                 }
@@ -725,7 +725,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     {
                         startingRowConcentrations = _tracciaCurrentRow;
 
-                        ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoConcentrazioniPerIlQuadranteCorrente(numElementi);
+                        //ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoConcentrazioniPerIlQuadranteCorrente(numElementi);
 
                         break;
                     }
@@ -736,10 +736,10 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
                 if(!hoTrovatoConcentrazioni)
                 {
-                    if (numElementi > Utils.Constants.CurrentListElementi.Count)
-                        ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoConcentrazioniPerUnNumeroMaggioreDiElementi();
-                    else
-                        ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoConcentrazioniPerIlQuadranteCorrente();
+                    //if (numElementi > Utils.Constants.CurrentListElementi.Count)
+                    //    ServiceLocator.GetLoggingService.GetLoggerExcel.HoTrovatoConcentrazioniPerUnNumeroMaggioreDiElementi();
+                    //else
+                    //    ServiceLocator.GetLoggingService.GetLoggerExcel.NonHoTrovatoConcentrazioniPerIlQuadranteCorrente();
 
                     _tracciaCurrentRow = startingCurrentRow;
                     return false;
@@ -805,7 +805,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
             {
                 // se non trovo nessun valore ritorno direttamente 
                 if (currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value == null)
-                    return false;
+                    break;
 
                 string currentProperty = currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value.ToString();
 
@@ -814,15 +814,10 @@ namespace Tool_Importazione_Leghe.ExcelServices
                     mandatoryPropertiesCount++;
                     
                 }
-                else if(!_concentrationsAdditionalInfo.Contains(currentProperty))
-                {
-                    // non ho riconosciuto correttamente l'header
-                    return false;
-                }
 
                 currentColIndex++;
             }
-            while (currentColIndex <= currentExcelSheet.Dimension.End.Column || currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value != null);
+            while ((currentColIndex <= currentExcelSheet.Dimension.End.Column || currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value != null) || mandatoryPropertiesCount < _concentrationsMandatoryInfo.Count);
             
             if(_concentrationsMandatoryInfo.Count == mandatoryPropertiesCount)
             {

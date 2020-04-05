@@ -79,7 +79,7 @@ namespace Tool_Importazione_Leghe.Model
         {
             get
             {
-                return this.Head_Col + (ExcelMarkers.GetAllMandatoryPropertiesForConcentrations().Count - 1);
+                return this.Head_Col + (ExcelMarkers.GetAllColumnAdditionalHeadersForConcentrations().Count + ExcelMarkers.GetAllMandatoryPropertiesForConcentrations().Count - 1);
             }
         }
 

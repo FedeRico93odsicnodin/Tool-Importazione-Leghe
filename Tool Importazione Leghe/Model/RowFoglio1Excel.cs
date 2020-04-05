@@ -71,6 +71,9 @@ namespace Tool_Importazione_Leghe.Model
         /// </summary>
         private void FillMandatoryProperties_InfoLega()
         {
+            _mandatoryProperties_Info = new Dictionary<string, string>();
+
+
             _currentMandatoryProperties = ExcelMarkers.GetAllColumnHeadersForGeneralInfoSheet();
 
             foreach(string currentMandatoryProperty in _currentMandatoryProperties)
@@ -86,6 +89,8 @@ namespace Tool_Importazione_Leghe.Model
         /// </summary>
         private void FillAdditionalProperties_InfoLega()
         {
+            _additionalProperties_Info = new Dictionary<string, string>();
+
             _currentAdditionalProperties = ExcelMarkers.GetAdditionalPropertiesGeneralInfoSheet();
 
             foreach(string currentAdditionalProperty in _currentAdditionalProperties)
