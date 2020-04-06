@@ -229,12 +229,17 @@ namespace Tool_Importazione_Leghe.ExcelServices
         /// Permette l'analisi della sintassi del foglio excel per il quale al momento sono stati letti sono i quadranti e gli headers relativi 
         /// alle informazioni di lega e di concentrazioni materiali.
         /// Questa analisi viene fatta prima di eseguire il compare delle informazioni database vere e proprie
+        /// durante il compare delle informazioni vere e proprie invece si tiene conto anche della destinazione alla quale sono rivolte le informazioni contenute sul file excel corrente 
         /// </summary>
         /// <param name="currentModalita"></param>
-        public void AnalyzeExcelSheetsSyntax(CurrentModalitaExcel currentModalita)
+        /// <param name="currentTipologiaImport"></param>
+        public void AnalyzeExcelSheetsSyntax(CurrentModalitaExcel currentModalita, Utils.Constants.TipologiaImport currentTipologiaImport)
         {
             // lettura delle informazioni per i fogli contenuti nel file excel corrente 
             ReadExcelUtilInformation(currentModalita);
+
+            // permette di capire cosa inserire effettivamente nella destinazione per quanto riguarda la lettura delle informazioni dal foglio excel corrente 
+            AnalyzeSyntaxAndExcelContent(currentModalita, currentTipologiaImport);
         }
 
 
@@ -315,25 +320,17 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
 
         /// <summary>
-        /// Permette l'analis di sintassi del foglio excel corrente nei fogli per i quali è stato inserito contenuto
+        /// Analisi di sintassi validazione e recupero delle informazioni contenute sul file excel corrente 
+        /// da questa analsi saranno ricreate tutto un set di informazioni che sara possibile caricare successivamente all'interno della destinazione in selezione 
+        /// corrente 
         /// </summary>
         /// <param name="currentModalita"></param>
-        private void AnalyzeExcelSyntax(CurrentModalitaExcel currentModalita)
+        /// <param name="currentTipologiaImport"></param>
+        private void AnalyzeSyntaxAndExcelContent(CurrentModalitaExcel currentModalita, Utils.Constants.TipologiaImport currentTipologiaImport)
         {
 
         }
-
-
-        /// <summary>
-        /// Permette l'esecuzione del match delle informazioni contenute nel foglio excel per la successiva (ancora ipotetica)
-        /// persistenza all'interno della detinazione 
-        /// </summary>
-        /// <param name="currentModalita"></param>
-        public void MatchInformationForDestination(CurrentModalitaExcel currentModalita)
-        {
-
-        }
-
+            
         #endregion
 
         #endregion

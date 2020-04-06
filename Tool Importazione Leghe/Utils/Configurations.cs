@@ -72,6 +72,13 @@ namespace Tool_Importazione_Leghe.Utils
 
 
         /// <summary>
+        /// Indicazione di come deve essere eseguito il tool se accodando sovrascrivendo o ignorando rispetto alle informazioni 
+        /// gia contenute all'interno della settata sorgente 
+        /// </summary>
+        private object[] MODALITAIMPORTAZIONE = { "MODALITAIMPORTAZIONE:", false };
+
+
+        /// <summary>
         /// In questa lista saranno contenuti tutti gli oggetti di configurazione utile all'avviamento 
         /// dell'import
         /// </summary>
@@ -116,6 +123,7 @@ namespace Tool_Importazione_Leghe.Utils
 
             _letturaConfig.Add(this.PATHLOGFILE);
 
+            _letturaConfig.Add(this.MODALITAIMPORTAZIONE);
 
             _currentTimerOnProcedure = new ExtendedStopWatch();
         }
@@ -439,6 +447,45 @@ namespace Tool_Importazione_Leghe.Utils
 
                     // log della lettura corretta per la configurazione corrente 
                     ServiceLocator.GetLoggingService.GetLoggerConfiguration.LetturaCorrettaConfigurazione(this.PATHLOGFILE[0].ToString());
+                }
+                // CONFIGURAZIONE TOOL: SOVRASCRITTURA ACCODAMENTO O IGNORA le informazioni che eventualmente sono gia contenute all'interno della destinazione
+                else if(currentLetturaConfig.Contains((string)this.MODALITAIMPORTAZIONE[0]))
+                {
+                    string currentModalitaInserimentoInformazioni = currentLetturaConfig.Substring(this.MODALITAIMPORTAZIONE[0].ToString().Length);
+
+                    currentModalitaInserimentoInformazioni = currentModalitaInserimentoInformazioni.Trim();
+
+
+                    switch(currentModalitaInserimentoInformazioni)
+                    {
+                        case "sovrascrittura":
+                            {
+                                Constants.CurrentModalitaEsecuzioneImport = Constants.ModalitaEsecuzioneImport.sovrascrittura;
+
+                                // ho letto la configurazione sulla modalita del tool 
+                                _letturaConfig.Where(x => x[0] == this.MODALITAIMPORTAZIONE[0]).FirstOrDefault()[1] = true;
+
+                                break;
+                            }
+                        case "accodamento":
+                            {
+                                Constants.CurrentModalitaEsecuzioneImport = Constants.ModalitaEsecuzioneImport.accodamento;
+
+                                // ho letto la configurazione sulla modalita del tool 
+                                _letturaConfig.Where(x => x[0] == this.MODALITAIMPORTAZIONE[0]).FirstOrDefault()[1] = true;
+
+                                break;
+                            }
+                        case "ignoro":
+                            {
+                                Constants.CurrentModalitaEsecuzioneImport = Constants.ModalitaEsecuzioneImport.noneseguire;
+
+                                // ho letto la configurazione sulla modalita del tool 
+                                _letturaConfig.Where(x => x[0] == this.MODALITAIMPORTAZIONE[0]).FirstOrDefault()[1] = true;
+
+                                break;
+                            }
+                    }
                 }
 
                 

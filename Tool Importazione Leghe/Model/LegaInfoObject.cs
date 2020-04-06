@@ -12,6 +12,33 @@ namespace Tool_Importazione_Leghe.Model
     /// </summary>
     public class LegaInfoObject
     {
+        #region ATTRIBUTI PRIVATI - CREAZIONE REPORTS INSERIMENTO 
+
+        /// <summary>
+        /// Report relativo a messaggio di errore da inserire per la lega corrente all'interno del report di errori excel 
+        /// </summary>
+        private List<string> _currentReportErrorsExcel;
+
+
+        /// <summary>
+        /// Report relativo a messaggio di errore da inserire per la lega corrente all'interno del report di errori xml
+        /// </summary>
+        private List<string> _currentReportErrorsXML;
+
+
+        /// <summary>
+        /// Report relativo a messaggio di warning da inserire per la lega corrente all'interno del report di warnings excel
+        /// </summary>
+        private List<string> _currentReportWarningsExcel;
+
+
+        /// <summary>
+        /// Report relativo a messaggio di warning da inserire per la lega corrente all'interno del report di warnings xml
+        /// </summary>
+        private List<string> _currentReportWarningsXML;
+
+        #endregion 
+
 
         #region COSTRUTTORE 
 
@@ -23,7 +50,18 @@ namespace Tool_Importazione_Leghe.Model
         {
             Step1_Recupero = false;
             Step2_Validazione_SameSheet = false;
-            Step3_Persistenza = false;
+
+            // inizializzazione della lista dei possibili errori Excel 
+            _currentReportErrorsExcel = new List<string>();
+
+            // inizializzazione della lsita dei possibili errori XML 
+            _currentReportErrorsXML = new List<string>();
+
+            // inizializzazione della lista dei possibili warnings excel
+            _currentReportWarningsExcel = new List<string>();
+
+            // inizializzazione della lista dei possibili warnings XML 
+            _currentReportWarningsXML = new List<string>();
         }
 
         #endregion
@@ -73,10 +111,71 @@ namespace Tool_Importazione_Leghe.Model
 
 
         /// <summary>
-        /// Indica se l'informazione corrente può essere persistita in base alle informazioni di lega contenute in questo foglio o gia presenti 
-        /// all'interno della sorgente (che quindi validano in se il set di leghe che si sta inserendo)
+        /// Permette l'inserimento di un nuovo messaggio di errore all'interno del report degli errori nella lettura della lega corrente 
+        /// dal file excel 
         /// </summary>
-        public bool Step3_Persistenza { get; set; }
+        /// <param name="currentMessage"></param>
+        public void InsertNewMessage_ReportExcelError(string currentMessage)
+        {
+            this._currentReportErrorsExcel.Add(currentMessage);
+        }
+
+
+        /// <summary>
+        /// Permette l'inserimento di un nuovo messaggio di errore all'interno del report degli errori nella lettura della lega corrente 
+        /// dal file xml
+        /// </summary>
+        /// <param name="currentMessage"></param>
+        public void InsertNewMessage_ReportXMLError(string currentMessage)
+        {
+            this._currentReportErrorsXML.Add(currentMessage);
+        }
+
+
+        /// <summary>
+        /// Permette l'inserimento di un nuovo messaggio di warning all'interno del report dei messaggi warning nella lettura della lega corrente 
+        /// dal file excel 
+        /// </summary>
+        /// <param name="currentMessage"></param>
+        public void InsertNewMessage_ReportExcelWarnings(string currentMessage)
+        {
+            this._currentReportWarningsExcel.Add(currentMessage);
+        }
+
+
+        /// <summary>
+        /// Permette l'inserimento di un nuovo messaggio di warning all'interno del report dei messaggi di warning nella lettura della lega corrente 
+        /// dal file xml
+        /// </summary>
+        /// <param name="currentMessage"></param>
+        public void InsertNewMessage_ReportXMLWarnings(string currentMessage)
+        {
+            this._currentReportWarningsXML.Add(currentMessage);
+        }
+
+
+        /// <summary>
+        /// Ottenimento del report di errori per la lega corrente e la lettura del file excel 
+        /// </summary>
+        public List<string> GetReportErrorExcel { get { return this._currentReportErrorsExcel; } }
+
+
+        /// <summary>
+        /// Ottenimento del report di errori per la lega corrente e la lettura del file xml
+        /// </summary>
+        public List<string> GetReportErrorXML { get { return this._currentReportErrorsXML; } }
+
+
+        /// <summary>
+        /// Ottenimento del report di warnings per la lega corrente e la lettura del file excel
+        /// </summary>
+        public List<string> GetReportWarningExcel { get { return this._currentReportWarningsExcel; } }
+
+
+        /// <summary>
+        /// Ottenimento del report di warnings per la lega corrente e la lettura del file xml
+        /// </summary>
+        public List<string> GetReportWarningsXML { get { return this._currentReportWarningsXML; } }
 
         #endregion
     }

@@ -317,7 +317,24 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
             return currentReadConcentrations;
         }
-        
+
+        #endregion
+
+
+        #region METODI PER LA VALIDAZIONE DELLE INFORMAZIONI CONTENUTE NEL FILE EXCEL 
+
+        /// <summary>
+        /// Premtte l'analisi delle informazioni contenute nel foglio di leghe correnti 
+        /// da questa analisi si potra avere un possibile inserimento dovuto al fatto che tutte le informazioni tratte dal file excel siano effettivamente inseribili 
+        /// ma anche dal fatto che non ci sia il loro gia presente inserimento all'interno della destinazione della quale si deve comunque tenere conto ed eventuale recupero
+        /// </summary>
+        /// <param name="currentInfoLeghe"></param>
+        /// <param name="currentTipologiaImport"></param>
+        public void ValidateInformationLega(ref List<ExcelSheetWithUtilInfo> currentInfoLeghe, Utils.Constants.TipologiaImport currentTipologiaImport)
+        {
+
+        }
+
         #endregion
     }
 }

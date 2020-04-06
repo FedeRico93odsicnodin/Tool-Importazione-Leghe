@@ -75,6 +75,26 @@ namespace Tool_Importazione_Leghe.Utils
 
 
         /// <summary>
+        /// Mi dice come eseguire l'import in base alle informazioni gia contenute nella destinazione quindi se 
+        /// sovrascrivere il set di informazioni eventualmente copia rispetto a quello che è gia contenuto all'interno della sorgente 
+        /// se accodarle rispetto al set di informazioni che è già presente 
+        /// o se ignorare del tutto l'inserimento di questi nuovi valori
+        /// </summary>
+        public enum ModalitaEsecuzioneImport
+        {
+            sovrascrittura = 1,
+            accodamento = 2,
+            noneseguire = 3
+        }
+
+
+        /// <summary>
+        /// Valore nella modalita di esecuzione settato in base alla scelta fatta sulle alternative precedenti
+        /// </summary>
+        public static ModalitaEsecuzioneImport CurrentModalitaEsecuzioneImport;
+
+
+        /// <summary>
         /// Stringa di connessione al database postgres sul quale vengono eseguite le operazioni 
         /// di import (origine)
         /// </summary>

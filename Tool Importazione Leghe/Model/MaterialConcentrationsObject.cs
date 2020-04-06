@@ -13,6 +13,33 @@ namespace Tool_Importazione_Leghe.Model
     /// </summary>
     public class MaterialConcentrationsObject
     {
+        #region ATTRIBUTI PRIVATI - REPORTS DI SEGNALAZIONE 
+
+        /// <summary>
+        /// Report di errori riscontrati nella lettura del file excel delle concentrazioni per il materiale corrente 
+        /// </summary>
+        private List<string> _currentReportErrorsExcel;
+
+
+        /// <summary>
+        /// Report di errori riscontrati nella lettura del file xml delle concentraiozni per il materiale corrente 
+        /// </summary>
+        private List<string> _currentReportErrorsXML;
+
+
+        /// <summary>
+        /// Report di warnings riscontrati nella lettura del file excel delle concentrazioni per il materiale corrente 
+        /// </summary>
+        private List<string> _currentReportWarningsExcel;
+
+
+        /// <summary>
+        /// Report di warnings riscontrati nella lettura del file xml delle concentrazioni per il materiale corrente 
+        /// </summary>
+        private List<string> _currentReportWarningsXML;
+
+        #endregion
+
 
         #region COSTRUTTORE 
 
@@ -25,9 +52,25 @@ namespace Tool_Importazione_Leghe.Model
             Step1_Recupero = false;
             Step2_Validazione_SameSheet = false;
             Step3_Persistenza = false;
+
+
+            // inizializzazione della stringa di report errori excel 
+            _currentReportErrorsExcel = new List<string>();
+
+            // inizializzazione della stringa di report errori xml
+            _currentReportErrorsXML = new List<string>();
+
+            // inizializzazione della stringa di report warnings excel 
+            _currentReportWarningsExcel = new List<string>();
+
+            // inizializzazione della stringa di report warnings xml
+            _currentReportWarningsXML = new List<string>();
         }
 
         #endregion
+
+
+        #region PROPRIETA RELATIVE AL RIEMPIMENTO PER LE CONCENTRAZIONI CORRENTI
 
         /// <summary>
         /// Quadrante di riferimento sul quale vengono lette le informazioni inerenti 
@@ -80,6 +123,80 @@ namespace Tool_Importazione_Leghe.Model
         /// all'interno della sorgente (che quindi validano in se il set di concentrazioni che si sta inserendo)
         /// </summary>
         public bool Step3_Persistenza { get; set; }
+
+        #endregion
+
+
+        #region SEGNALAZIONI RELATIVE ALL'EVENTUALE REPORT DI COMPIILAZIONE PER IL SET DI CONCENTRAZIONI CORRENTE 
+
+        /// <summary>
+        /// Permette l'accodamento di un messaggio relativamente alla segnalazione di qualcosa che non va nella lettura delle concentrazioni per il materiale corrente 
+        /// all'interno del foglio excel 
+        /// </summary>
+        /// <param name="currentMessage"></param>
+        public void InsertNewErroMessageInReport_Excel(string currentMessage)
+        {
+            _currentReportErrorsExcel.Add(currentMessage);
+        }
+
+
+        /// <summary>
+        /// Permette l'accodamento di un messaggio relativamente alla segnalazione di qualcosa che non va nella lettura delle concentrazioni per il materiale corrente 
+        /// all'interno del foglio xml
+        /// </summary>
+        /// <param name="currentMessage"></param>
+        public void InsertNewErrorMessageInReport_XML(string currentMessage)
+        {
+            _currentReportErrorsXML.Add(currentMessage);
+        }
+
+
+        /// <summary>
+        /// Segnalazione di un messaggio di warning che non inficia la natura dell'importazione ma che viene comunque segnalato all'utente nel caso si riscontri
+        /// qualcosa che potrebbe generare anomalia nell'analisi delle concentrazioni per il materiale e per il foglio excel corrente 
+        /// </summary>
+        /// <param name="currentMessage"></param>
+        public void InsertNewWarningMessageInReport_Excel(string currentMessage)
+        {
+            _currentReportWarningsExcel.Add(currentMessage);
+        }
+
+
+        /// <summary>
+        /// Segnalazione di un messaggio di warning che non inficia la natura dell'importazione ma che viene comunque segnalato all'utente nel caso si riscontri 
+        /// qualcosa che potrebbe generare anomalia nell'analis delle concentrazioni per il materiale e per il foglio xml corrente 
+        /// </summary>
+        /// <param name="currentMessage"></param>
+        public void InsertNewWarningMessageInReport_XML(string currentMessage)
+        {
+            _currentReportWarningsXML.Add(currentMessage);
+        }
+
+
+        /// <summary>
+        /// Permette di ottenere il report corrente per gli errori nella lettura dell'excel 
+        /// </summary>
+        public List<string> GetReportErrorsExcel { get { return this._currentReportErrorsExcel; } }
+
+
+        /// <summary>
+        /// Permette di ottenere il report corrente per gli errori nella lettura del file xml
+        /// </summary>
+        public List<string> GetReportErrorsXML { get { return this._currentReportErrorsXML; } }
+
+
+        /// <summary>
+        /// Permette di ottenere il report di messaggi di alert per il file excel 
+        /// </summary>
+        public List<string> GetReportWarningsExcel { get { return this._currentReportWarningsExcel; } }
+
+
+        /// <summary>
+        /// Permette di ottenere il report di messaggi di alert per il file xml
+        /// </summary>
+        public List<string> GetReportWarningsXML { get { return this._currentReportWarningsXML; } }
+
+        #endregion
 
         #endregion
     }
