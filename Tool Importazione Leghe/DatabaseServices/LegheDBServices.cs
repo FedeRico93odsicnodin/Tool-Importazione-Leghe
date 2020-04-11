@@ -57,6 +57,10 @@ namespace Tool_Importazione_Leghe.DatabaseServices
                 currentLegaDB.Trattamento = currentReader.GetString(5);
 
                 currentLegaDB.IdNormativa = currentReader.GetInt32(6);
+
+                currentLegaDB.IDBase = currentReader.GetInt32(7);
+
+                currentLegaDB.MatNum = currentReader.GetString(8);
             }
             catch (Exception e)
             {

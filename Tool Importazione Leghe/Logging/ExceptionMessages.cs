@@ -164,6 +164,34 @@ namespace Tool_Importazione_Leghe.Logging
 
         #endregion
 
+
+        #region MATCH INFORMAZIONI SORGENTE / DESTINAZIONE 
+
+        /// <summary>
+        /// Eccezione relativa al non caricamento della lista per le normative per la validazione rispetto alla destinazione
+        /// </summary>
+        public static string NONHOTROVATOINFORMAZIONINORMATIVE = "non ho trovato le informazioni necessarie al riconoscimento della tabella NORMATIVE";
+
+
+        /// <summary>
+        /// Eccezione relativa al non caricamento della lista per le leghe per la validazione rispetto alla destinazione 
+        /// </summary>
+        public static string NONHOTROVATOINFORMAZIONILEGHE = "non ho trovato le informazioni necessarie al riconoscimento della tabella LEGHE";
+
+
+        /// <summary>
+        /// Eccezione relativa al non caricamento della lista per le categorie leghe per la validazione rispetto alla destinazione 
+        /// </summary>
+        public static string NONHOTROVATOINFORMAZIONICATEGORIELEGHE = "non ho trovato informazioni necessarie al riconoscimento della tabella CATEGORIELEGHE";
+
+
+        /// <summary>
+        /// Eccezione relativa al non caricamento della lista per le basi per la validazione rispetto alla destinazione
+        /// </summary>
+        public static string NONHOTROVATOINFORMAZIONIBASI = "non ho trovato informazioni necessarie al riconoscimento della tabella BASI";
+
+        #endregion
+
         #endregion
     }
 }

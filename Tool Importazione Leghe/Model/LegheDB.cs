@@ -50,5 +50,18 @@ namespace Tool_Importazione_Leghe.Model
         /// IdNormativa Lega
         /// </summary>
         public int IdNormativa { get; set; }
+
+
+        /// <summary>
+        /// ID base di riferimento
+        /// </summary>
+        public int IDBase { get; set; }
+
+
+        /// <summary>
+        /// Materiale 
+        /// </summary>
+        public string MatNum { get; set; }
+
     }
 }

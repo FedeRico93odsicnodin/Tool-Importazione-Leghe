@@ -37,7 +37,13 @@ namespace Tool_Importazione_Leghe.Model
         /// </summary>
         private List<string> _currentReportWarningsXML;
 
-        #endregion 
+
+        /// <summary>
+        /// Provenienza per l'informazione corrente 
+        /// </summary>
+        private Utils.Constants.OriginOfInformation _origineInformazione;
+
+        #endregion
 
 
         #region COSTRUTTORE 
@@ -45,11 +51,15 @@ namespace Tool_Importazione_Leghe.Model
         /// <summary>
         /// By default le proprieta relative al recupero alla validazione e alla possibile persistenza sono a false 
         /// per l'oggetto corrente 
+        /// per l'oggetto viene anche passata la provenienza dell'informazione corrente 
         /// </summary>
-        public LegaInfoObject()
+        /// <param name="origineInfomazione"></param>
+        public LegaInfoObject(Utils.Constants.OriginOfInformation origineInfomazione)
         {
             Step1_Recupero = false;
             Step2_Validazione_SameSheet = false;
+
+            _origineInformazione = origineInfomazione;
 
             // inizializzazione della lista dei possibili errori Excel 
             _currentReportErrorsExcel = new List<string>();
@@ -108,6 +118,12 @@ namespace Tool_Importazione_Leghe.Model
         /// Indica se l'informazione corrente per il foglio è stata validata correttamente in base alle informazioni contenute nello stesso foglio 
         /// </summary>
         public bool Step2_Validazione_SameSheet { get; set; }
+        
+
+        /// <summary>
+        /// Indicazione della provenienza dell'informazione corrente ai fini dell'import
+        /// </summary>
+        public Utils.Constants.OriginOfInformation OrigineInformazione { get; set; }
 
 
         /// <summary>

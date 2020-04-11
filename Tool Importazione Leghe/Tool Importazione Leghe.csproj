@@ -97,6 +97,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\CommonLists.cs" />
     <Compile Include="DatabaseServices\BasIDBServices.cs" />
     <Compile Include="DatabaseServices\Categorie_LegheDBServices.cs" />
     <Compile Include="DatabaseServices\ConclegheDBServices.cs" />

@@ -155,6 +155,11 @@ namespace Tool_Importazione_Leghe
 
             // inizio della lettura relativo all'acquisizione delle informazioni per il foglio excel corrente 
             ServiceLocator.GetExcelServices.AnalyzeExcelSheetsSyntax(CurrentModalitaExcel.EXCELREADER, Constants.TipologiaImport.excel_to_database);
+
+            Console.ReadKey();
+
+            // recupero delle leghe dal database di destinazione 
+
             
             #endregion
 

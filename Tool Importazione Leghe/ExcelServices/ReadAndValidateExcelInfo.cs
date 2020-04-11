@@ -128,7 +128,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 }
 
                 // creazione dell'oggetto transizione per le informazioni di lega correnti
-                LegaInfoObject currentOggettoLega = new LegaInfoObject()
+                LegaInfoObject currentOggettoLega = new LegaInfoObject(Utils.Constants.OriginOfInformation.FromExcel)
                 {
                     Lega_ExcelRow = currentRowInfo,
                     Step1_Recupero = true
@@ -216,7 +216,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 // se le concentrazioni lette sono valide le inserisco nell'oggetto per la gestione delle informazioni di concentrazione corrente 
                 if(letturaCorretta)
                 {
-                    MaterialConcentrationsObject currentLettura = new MaterialConcentrationsObject();
+                    MaterialConcentrationsObject currentLettura = new MaterialConcentrationsObject(Utils.Constants.OriginOfInformation.FromExcel);
 
                     currentLettura.ExcelQuadrantReference = currentConcQuadrant;
                     currentLettura.ReadConcentrationsRows = currentLetturaConcentrazioni;

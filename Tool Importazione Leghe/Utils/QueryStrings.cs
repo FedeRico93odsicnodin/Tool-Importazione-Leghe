@@ -19,7 +19,7 @@ namespace Tool_Importazione_Leghe.Utils
         /// <summary>
         /// Permette la selezione di tutte le leghe disponibili nell'origine
         /// </summary>
-        public static string GetALLLeghe_Query = "SELECT \"GradeId\", \"Nome\", \"Descrizione\", \"CategoriaId\", \"Normativa\", \"Trattamento\", \"IdNormativa\"FROM public.\"Leghe\";";
+        public static string GetALLLeghe_Query = "SELECT \"GradeId\", \"Nome\", \"Descrizione\", \"CategoriaId\", \"Normativa\", \"Trattamento\", \"IdNormativa\", \"IDBase\", \"MatNum\" FROM public.\"Leghe\";";
 
 
         /// <summary>
@@ -33,7 +33,9 @@ namespace Tool_Importazione_Leghe.Utils
                                                         "\"CategoriaId\", " +
                                                         "\"Normativa\", " +
                                                         "\"Trattamento\", " +
-                                                        "\"IdNormativa\")" +
+                                                        "\"IdNormativa\"," +
+                                                        "\"IDBase\", " +
+                                                        "\"MatNum\")" +
                                                     "VALUES" +
                                                     "(" +
                                                         "@GradeId, " +
@@ -43,6 +45,8 @@ namespace Tool_Importazione_Leghe.Utils
                                                         "@Normativa, " +
                                                         "@Trattamento, " +
                                                         "@IdNormativa" +
+                                                        "@IDBase" + 
+                                                        "@MatNum" + 
                                                      ");";
 
         #endregion
@@ -78,7 +82,7 @@ namespace Tool_Importazione_Leghe.Utils
         /// <summary>
         /// Permette di ottenere tutte le categorie leghe dall'origine
         /// </summary>
-        public static string GetAllCategorieLeghe_Query = "SELECT \"ID\", \"Categoria\", \"IDBase\" FROM public.\"Categorie_Leghe\";";
+        public static string GetAllCategorieLeghe_Query = "SELECT \"ID\", \"Categoria\" FROM public.\"Categorie_Leghe\";";
 
 
         /// <summary>
@@ -88,13 +92,11 @@ namespace Tool_Importazione_Leghe.Utils
                                                                                 "(" + 
 	                                                                                "\"ID\"," +
                                                                                     "\"Categoria\", " +
-                                                                                    "\"IDBase\"" +
                                                                                 ")" + 
 	                                                          "VALUES" +
                                                                                 "(" +
                                                                                     "@ID, " +
                                                                                     "@Categoria, " +
-                                                                                    "@IDBase" +
                                                                                 ")";
 
         #endregion
@@ -131,7 +133,7 @@ namespace Tool_Importazione_Leghe.Utils
         /// <summary>
         /// Permette di ottenere tutte le concentrazioni leghe dall'origine
         /// </summary>
-        public static string GetAllConcleghe_Query = "SELECT \"GradeId\", \"Elemento\", \"concMin\", \"concMax\", \"derogaMin\", \"derogaMax\", obiettivo FROM public.\"Concleghe\";";
+        public static string GetAllConcleghe_Query = "SELECT \"GradeId\", \"Elemento\", \"concMin\", \"concMax\", \"derogaMin\", \"derogaMax\", \"IDElemento\" obiettivo FROM public.\"Concleghe\";";
 
 
         /// <summary>
@@ -144,7 +146,8 @@ namespace Tool_Importazione_Leghe.Utils
                                                                                             "\"concMax\", " +
                                                                                             "\"derogaMin\", " +
                                                                                             "\"derogaMax\", " +
-                                                                                            "\"obiettivo\")" +
+                                                                                            "\"obiettivo\",)" +
+                                                                                            "\"IDElemento\"" + 
                                                                                     "VALUES" +
                                                                                             "(@GradeId, " +
                                                                                             "@Elemento, " +
@@ -152,7 +155,9 @@ namespace Tool_Importazione_Leghe.Utils
                                                                                             "@concMax, " +
                                                                                             "@derogaMin, " +
                                                                                             "@derogaMax, " +
-                                                                                            "@obiettivo);";
+                                                                                            "@obiettivo," +
+                                                                                            "@IDElemento" +
+                                                                                         ");";
 
         #endregion
 

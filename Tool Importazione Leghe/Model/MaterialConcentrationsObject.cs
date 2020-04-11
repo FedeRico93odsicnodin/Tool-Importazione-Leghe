@@ -46,13 +46,16 @@ namespace Tool_Importazione_Leghe.Model
         /// <summary>
         /// By default le proprieta relative al recupero alla validazione e alla possibile persistenza sono a false 
         /// per l'oggetto corrente 
+        /// per l'oggetto viene anche passata la provenienza dell'informazione corrente
         /// </summary>
-        public MaterialConcentrationsObject()
+        /// <param name="origineInfomazione"></param>
+        public MaterialConcentrationsObject(Utils.Constants.OriginOfInformation origineInfomazione)
         {
             Step1_Recupero = false;
             Step2_Validazione_SameSheet = false;
             Step3_Persistenza = false;
 
+            _origineInformazione = origineInfomazione;
 
             // inizializzazione della stringa di report errori excel 
             _currentReportErrorsExcel = new List<string>();
@@ -124,6 +127,18 @@ namespace Tool_Importazione_Leghe.Model
         /// </summary>
         public bool Step3_Persistenza { get; set; }
 
+
+        /// <summary>
+        /// Provenienza per l'informazione corrente 
+        /// </summary>
+        private Utils.Constants.OriginOfInformation _origineInformazione;
+
+
+        /// <summary>
+        /// Origine per l'informazione corrente 
+        /// </summary>
+        public Utils.Constants.OriginOfInformation OrigineInformazione { get { return this._origineInformazione; } }
+        
         #endregion
 
 

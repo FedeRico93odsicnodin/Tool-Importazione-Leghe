@@ -89,6 +89,17 @@ namespace Tool_Importazione_Leghe.Utils
 
 
         /// <summary>
+        /// Indicazione della provenienza di una certa informazione rispetto all'import corrente
+        /// </summary>
+        public enum OriginOfInformation
+        {
+            FromDB = 1,
+            FromExcel = 2,
+            FromXML = 3
+        }
+
+
+        /// <summary>
         /// Valore nella modalita di esecuzione settato in base alla scelta fatta sulle alternative precedenti
         /// </summary>
         public static ModalitaEsecuzioneImport CurrentModalitaEsecuzioneImport;
