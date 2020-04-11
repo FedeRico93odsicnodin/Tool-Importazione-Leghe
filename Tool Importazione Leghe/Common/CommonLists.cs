@@ -69,10 +69,10 @@ namespace Tool_Importazione_Leghe.Common
 
         /// <summary>
         /// Esecuzione check di validità per le informazioni di lega:
-        /// CASO 1: Lega -> ASSENTE / Normativa -> ASSENTE : devo inserire 
+        /// CASO 1: Lega -> ASSENTE / Normativa -> ASSENTE : devo inserire (sia lega che normativa)
         /// CASO 2: Lega -> PRESENTE / Normativa -> ASSENTE : devo inserire (ma ottenere conferma... potrei inserire la lega ma con una normativa diversa ...)
         /// CASO 3: Lega -> PRESENTE / Normativa -> PRESENTE : non devo eseguire nessun inserimento 
-        /// CASO 4: Lega -> ASSENTE / Normativa -> PRESENTE : al momento non compio nessun inserimento 
+        /// CASO 4: Lega -> ASSENTE / Normativa -> PRESENTE : da inserire con l'ID della normativa di cui trovo la presenza
         /// 
         /// Questi casi sono distinguere sulla tipologia di import excel / xml
         /// </summary>
@@ -97,13 +97,36 @@ namespace Tool_Importazione_Leghe.Common
         /// <param name="currentReadLega"></param>
         private static void CheckLega_Normativa_ExcelOrigin(LegaInfoObject currentReadLega)
         {
-            #region CASO 1
 
-            // TODO : implementazione del match oggetti 
+            // recupero della stringa relativa al nome della lega corrispondente 
+            string infoNomeLegaFromExcel = currentReadLega.Lega_ExcelRow.GetValue("MATERIALE");
 
-            #endregion
+            // recupero della stringa relativa al nome della normativa lega corrispondente 
+            string infoNormativaFromExcel = currentReadLega.Lega_ExcelRow.GetValue("TIPO");
+            
+            // verifica della presenza della Lega 
+            LegheDB correspondingLega = LegheDB.Where(x => x.Nome == infoNomeLegaFromExcel).ToList().FirstOrDefault();
+            NormativeDB correspondingNormativa = NormativeDB.Where(x => x.Normativa == infoNormativaFromExcel).ToList().FirstOrDefault();
+            
 
-
+            // non è presente ne l'informazione per la lega ne quella per la normativa, dovrò compiere l'inserimento di entrambe le righe 
+            if(correspondingLega == null && correspondingNormativa == null)
+            {
+                // TODO : inserire messaggistica 
+            }
+            // inserisco solo l'informazione per la normativa 
+            else if(correspondingLega != null && correspondingNormativa == null)
+            {
+                // TODO : inserire messaggistica
+            }
+            else if(correspondingLega != null && correspondingNormativa != null)
+            {
+                // TODO : inserire messaggistica 
+            }
+            else if(correspondingLega == null && correspondingNormativa != null)
+            {
+                // TODO : inserire messaggistica 
+            }    
 
         }
 

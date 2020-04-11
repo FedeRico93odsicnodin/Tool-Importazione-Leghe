@@ -57,7 +57,6 @@ namespace Tool_Importazione_Leghe.Model
         public LegaInfoObject(Utils.Constants.OriginOfInformation origineInfomazione)
         {
             Step1_Recupero = false;
-            Step2_Validazione_SameSheet = false;
 
             _origineInformazione = origineInfomazione;
 
@@ -113,13 +112,7 @@ namespace Tool_Importazione_Leghe.Model
         /// </summary>
         public bool Step1_Recupero { get; set; }
 
-
-        /// <summary>
-        /// Indica se l'informazione corrente per il foglio è stata validata correttamente in base alle informazioni contenute nello stesso foglio 
-        /// </summary>
-        public bool Step2_Validazione_SameSheet { get; set; }
         
-
         /// <summary>
         /// Indicazione della provenienza dell'informazione corrente ai fini dell'import
         /// </summary>
