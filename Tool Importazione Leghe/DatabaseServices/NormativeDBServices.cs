@@ -112,7 +112,7 @@ namespace Tool_Importazione_Leghe.DatabaseServices
                 currentInsertCommand.Parameters.AddWithValue("Normativa", currentNormativa.Normativa);
 
                 // richiamo il servizio con la connessione vera e propria
-                DBServices.InsertNewValue(currentInsertCommand, base.currentDBEntity);
+                DBServices.InsertUpdateValue(currentInsertCommand, base.currentDBEntity);
 
             }
             catch (Exception e)

@@ -167,7 +167,7 @@ namespace Tool_Importazione_Leghe.Utils
         /// <summary>
         /// Permette di ottenere tutti gli elementi dall'origine
         /// </summary>
-        public static string GetAllElementi_Query = "SELECT \"ID\", \"Symbol\" FROM public.\"Elementi\";";
+        public static string GetAllElementi_Query = "SELECT \"ID\", \"Symbol\" \"Nome\" FROM public.\"Elementi\";";
 
 
         /// <summary>
@@ -181,6 +181,12 @@ namespace Tool_Importazione_Leghe.Utils
                                                                                         "(@ID, " +
                                                                                         "@Symbol" +
                                                                                         ");";
+
+
+        /// <summary>
+        /// Query che esegue update nella definizione per il nome dell'elemento nel caso questo abbia valore nullo
+        /// </summary>
+        public static string UpdateNomeElemento_Query = "update \"Elementi\" set \"Nome\" = '{0}' where \"Symbol\" = '{1}'";
 
         #endregion
     }

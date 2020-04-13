@@ -182,5 +182,63 @@ namespace Tool_Importazione_Leghe.ExcelServices
 
         #endregion
 
+
+        #region MAPPING PER INSERIMENTO CATEGORIE LEGHE E BASI
+
+        /// <summary>
+        /// Enumeratore che mi da la tipologia rispetto alla regola applicata nella lettura del tipo per l'inserimento delle categorie leghe ed eventualmente 
+        /// della base corrispondente 
+        /// </summary>
+        public enum RegolaLetturaTipo
+        {
+            dedottoFromExcel = 1,
+            giaPresenteInDB = 2,
+            dedottoDaRegolaApplicataAExcel = 3,
+            nessunaRegola = 4
+        }
+
+
+        /// <summary>
+        /// Permette di mappare in diverso modo il tipo di lega individuato sul foglio excel per la riga in analisi corrente 
+        /// Per ognuna di queste righe si esegue un mapping primariamente "cablato" rispetto alla lettura del foglio excel 
+        /// dopo si segue una denominazione rispetto a quanto già presente a database per le basi inserite 
+        /// viene restituito un  valore che permette di capire se:
+        /// 1) il valore si è trovato perché inserito e analizzato dal file excel 
+        /// 2) il valore era già inserito a database
+        /// 3) il valore è stato dedotto / inferito rispetto alla regola comune individuata sul foglio excel 
+        /// </summary>
+        /// <param name="tipoLegaFromExcel"></param>
+        /// <param name="regolaApplicataInLettura"></param>
+        public static string MapReadTipoLegaFromExcel(string tipoLegaFromExcel, out RegolaLetturaTipo regolaApplicataInLettura)
+        {
+            // applicazione delle regole trovate sul foglio excel di riferimento
+            regolaApplicataInLettura = RegolaLetturaTipo.dedottoFromExcel;
+            
+            switch(tipoLegaFromExcel)
+            {
+                case "Metallo / Nichel":
+                    {
+                        return "Ni";
+                    }
+                case "Metallo / Cobalto":
+                    {
+                        return "Co";
+                    }
+                case "Metallo / Rame":
+                    {
+                        return "Cu";
+                    }
+                
+
+            }
+
+            // applicazione della regola rispetto alle eventuali basi già presenti a DB
+            return String.Empty;
+
+            
+        }
+
+        #endregion
+
     }
 }

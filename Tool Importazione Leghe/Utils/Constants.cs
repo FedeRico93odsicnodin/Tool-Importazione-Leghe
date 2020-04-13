@@ -224,7 +224,7 @@ namespace Tool_Importazione_Leghe.Utils
         /// nel caso delle diverse importazioni questi elementi vengono sempre checkati a priori per verificarne
         /// poi la validità
         /// </summary>
-        public static List<string> CurrentListElementi { get; set; }
+        public static List<ElementiDB> CurrentListElementi { get; set; }
 
         #endregion
 

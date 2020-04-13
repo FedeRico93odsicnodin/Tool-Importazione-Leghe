@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tool_Importazione_Leghe.ExcelServices;
 using Tool_Importazione_Leghe.Logging;
 using Tool_Importazione_Leghe.Model;
 using Tool_Importazione_Leghe.Utils;
@@ -80,6 +81,9 @@ namespace Tool_Importazione_Leghe.Common
         /// <param name="tipologiaImport"></param>
         private static void CheckLega_Normativa_Match(LegaInfoObject currentReadLega, Constants.TipologiaImport tipologiaImport)
         {
+            // inizializzazione della lista nella quale andare a inserire gli oggetti
+            _fusedListInfoLeghe = new List<LegaInfoObject>();
+
             if(tipologiaImport == Constants.TipologiaImport.excel_to_database)
             {
                 CheckLega_Normativa_ExcelOrigin(currentReadLega);
@@ -98,21 +102,45 @@ namespace Tool_Importazione_Leghe.Common
         private static void CheckLega_Normativa_ExcelOrigin(LegaInfoObject currentReadLega)
         {
 
-            // recupero della stringa relativa al nome della lega corrispondente 
-            string infoNomeLegaFromExcel = currentReadLega.Lega_ExcelRow.GetValue("MATERIALE");
+            // se per i valori obbligatori su cui era stata fatta una validazione non trovo nulla ritorno subito
+            if (!currentReadLega.IsDaInserire)
+            {
+                _fusedListInfoLeghe.Add(currentReadLega);
+                return;
+            }
+                
 
-            // recupero della stringa relativa al nome della normativa lega corrispondente 
-            string infoNormativaFromExcel = currentReadLega.Lega_ExcelRow.GetValue("TIPO");
+
+            #region RECUPERO DELLE INFORMAZIONI CORRENTEMENTE CONTENUTE PER L'EXCEL CORRENTE 
+
+            string infoNomeLegaFromExcel = currentReadLega.Lega_ExcelRow.GetValue(ExcelMarkers.MATERIALE_CELL);
+            string infoNormativaFromExcel = currentReadLega.Lega_ExcelRow.GetValue(ExcelMarkers.NORMATIVA_CELL);
+            string infoPaeseProduttore = currentReadLega.Lega_ExcelRow.GetValue(ExcelMarkers.PAESEPRODUTTORE_CELL);
+            string infoTipo = currentReadLega.Lega_ExcelRow.GetValue(ExcelMarkers.TIPO_CELL);            
+
+            #endregion
             
+
             // verifica della presenza della Lega 
             LegheDB correspondingLega = LegheDB.Where(x => x.Nome == infoNomeLegaFromExcel).ToList().FirstOrDefault();
             NormativeDB correspondingNormativa = NormativeDB.Where(x => x.Normativa == infoNormativaFromExcel).ToList().FirstOrDefault();
+            Categorie_LegheDB correspondingCategoriaLega = CategorieLegheDB.Where(x => x.Categoria == infoTipo).ToList().FirstOrDefault();
             
+
+            // inserimento della categoria e della base corrispondente nel caso in cui non sia presente a DB
+
 
             // non è presente ne l'informazione per la lega ne quella per la normativa, dovrò compiere l'inserimento di entrambe le righe 
             if(correspondingLega == null && correspondingNormativa == null)
             {
-                // TODO : inserire messaggistica 
+                // inserimento della normativa che verrà persistita
+                currentReadLega.Lega_NormativaDB = new NormativeDB()
+                {
+                    Normativa = infoNomeLegaFromExcel
+                };
+
+                // verfico che sia già inserita la base per il tipo in analisi 
+
             }
             // inserisco solo l'informazione per la normativa 
             else if(correspondingLega != null && correspondingNormativa == null)

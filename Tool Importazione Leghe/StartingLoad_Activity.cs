@@ -22,12 +22,9 @@ namespace Tool_Importazione_Leghe
         {
             // recupero della lista di tutti gli elementi all'interno del DB
             List<ElementiDB> _currentElementi = ServiceLocator.GetDBServices.GetElementiDBServices.GetAllElementiDB();
-
-            // select delle sole stringhe rappresentanti i diversi elementi
-            List<string> _elementsDescriptions = _currentElementi.Select(x => x.Symbol).ToList();
-
+            
             // caricamento della lista appena formata all'interno delle costanti
-            Constants.CurrentListElementi = _elementsDescriptions;
+            Constants.CurrentListElementi = _currentElementi;
 
             // segnalazione log
             // TODO: inserire la segnalazione per il caso corrente 

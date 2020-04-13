@@ -98,6 +98,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\CommonLists.cs" />
+    <Compile Include="Common\PeriodicTable.cs" />
     <Compile Include="DatabaseServices\BasIDBServices.cs" />
     <Compile Include="DatabaseServices\Categorie_LegheDBServices.cs" />
     <Compile Include="DatabaseServices\ConclegheDBServices.cs" />

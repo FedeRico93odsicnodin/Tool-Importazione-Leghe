@@ -21,5 +21,11 @@ namespace Tool_Importazione_Leghe.Model
         /// Symbol elemento
         /// </summary>
         public string Symbol { get; set; }
+
+
+        /// <summary>
+        /// Nome elemento
+        /// </summary>
+        public string Nome { get; set; }
     }
 }

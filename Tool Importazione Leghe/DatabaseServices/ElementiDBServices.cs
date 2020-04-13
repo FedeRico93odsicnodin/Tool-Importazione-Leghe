@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tool_Importazione_Leghe.Common;
 using Tool_Importazione_Leghe.Logging;
 using Tool_Importazione_Leghe.Model;
 using Tool_Importazione_Leghe.Utils;
@@ -41,6 +42,9 @@ namespace Tool_Importazione_Leghe.DatabaseServices
                 currentElemento.ID = currentReader.GetInt32(0);
 
                 currentElemento.Symbol = currentReader.GetString(1);
+
+                if(currentReader.GetValue(2) != null)
+                    currentElemento.Nome = currentReader.GetString(2);
             }
             catch(Exception e)
             {
@@ -85,9 +89,35 @@ namespace Tool_Importazione_Leghe.DatabaseServices
             throw new NotImplementedException();
         }
 
+
+        /// <summary>
+        /// Update relativo possibile della lista del nome attribuito all'elemento
+        /// </summary>
+        /// <param name="currentEntity"></param>
         protected override void UpdateSetDB(LabEntities currentEntity)
         {
-            throw new NotImplementedException();
+
+            ElementiDB currentElemento = (ElementiDB)currentEntity;
+
+            // inserimento del valore per il nome dell'elemento corrente nel caso in cui questo sia empty
+            if(currentElemento.Nome == null)
+            {
+
+
+                string nomeElemento = PeriodicTable.Elements.Where(x => x.Symbol == currentElemento.Symbol).FirstOrDefault().Name;
+
+                currentElemento.Nome = nomeElemento;
+                
+                // istanza del comando
+                NpgsqlCommand currentInsertCommand = new NpgsqlCommand(
+                    String.Format(QueryStrings.UpdateNomeElemento_Query, currentElemento.Nome, currentElemento.Symbol)
+                    );
+
+                // richiamo il servizio con la connessione vera e propria
+                DBServices.InsertUpdateValue(currentInsertCommand, base.currentDBEntity);
+            }
+
+
         }
 
         protected override void DeleteSetDB(int currentID)
@@ -109,23 +139,17 @@ namespace Tool_Importazione_Leghe.DatabaseServices
             return GetSetDB(QueryStrings.GetAllElementi_Query).Cast<ElementiDB>().ToList();
         }
 
-
+        
         /// <summary>
-        /// Permette di tenere in memoria tutti gli elementi all'interno delle constants
-        /// per i successivi import.
-        /// Questo consente di checkare direttamente sulla lista presenti nella classe constants
+        /// Permette di andare a eseguire un check rispetto al nome per l'elemento corrente
+        /// nel caso in cui il nome non sia stato inserito, questo viene recuperato dalla lista della tavola periodica con 
+        /// corrisponenza per il simbolo dell'elemento e viene eseguito l'update per il campo in questione
         /// </summary>
-        public void UpdateListaComuneElementi()
+        /// <param name="listaElementiDB"></param>
+        public void CheckElementiDB(List<ElementiDB> listaElementiDB)
         {
-            // recupero dal database del set di tutti gli elementi
-            List<ElementiDB> currentElementsSet = GetSetDB(QueryStrings.GetAllElementi_Query).Cast<ElementiDB>().ToList();
-
-            // istanza nuova lista di stringhe
-            List<string> currentElementsNames = new List<string>();
-
-            // inserimento nella lista comune di tutte le descrizioni di nome per gli elementi correnti
-            foreach (ElementiDB currentElementoDB in currentElementsSet)
-                currentElementsNames.Add(currentElementoDB.Symbol);
+            foreach (ElementiDB currentElemento in listaElementiDB)
+                UpdateSetDB(currentElemento);
         }
 
         #endregion

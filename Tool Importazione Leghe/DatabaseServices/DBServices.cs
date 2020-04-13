@@ -185,7 +185,7 @@ namespace Tool_Importazione_Leghe.DatabaseServices
         /// </summary>
         /// <param name="currentInsertCommand"></param>
         /// <param name="currentEntity"></param>
-        public static void InsertNewValue(NpgsqlCommand currentInsertCommand, Constants.DBLabEntities currentEntity)
+        public static void InsertUpdateValue(NpgsqlCommand currentInsertCommand, Constants.DBLabEntities currentEntity)
         {
             try
             {
@@ -207,8 +207,6 @@ namespace Tool_Importazione_Leghe.DatabaseServices
                 currentException += e.Message;
 
             }
-
-            
         }
 
         #endregion

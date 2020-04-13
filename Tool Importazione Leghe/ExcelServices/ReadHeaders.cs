@@ -867,7 +867,7 @@ namespace Tool_Importazione_Leghe.ExcelServices
                 // leggo ogni volta un elemento se la cella contiene un valore 
                 if (currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value != null)
                 {
-                    if(Utils.Constants.CurrentListElementi.Contains(currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value.ToString()))
+                    if(Utils.Constants.CurrentListElementi.Select(x => x.Symbol).Contains(currentExcelSheet.Cells[currentRowIndex, currentColIndex].Value.ToString()))
                     {
                         // incremento indice di riga ad ogni iterazione oltre che l'elemento corrispondente
                         currentRowIndex++;

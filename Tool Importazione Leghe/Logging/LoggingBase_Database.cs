@@ -11,7 +11,21 @@ namespace Tool_Importazione_Leghe.Logging
     /// </summary>
     public abstract class LoggingBase_Database
     {
-        
+        #region DIVERSIFICAZIONE CLASSI DALLE QUALI PUO PROVENIRE IL MESSAGGIO
+
+        /// <summary>
+        /// Messaggistica proveniente dal servizio database per le operazioni eseguite sugli elementi
+        /// </summary>
+        public class ElementiDB_Messages
+        {
+
+        }
+
+
+        #endregion
+
+
+
         #region ATTRIBUTI PROTECTED
 
         /// <summary>

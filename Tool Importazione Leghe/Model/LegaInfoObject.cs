@@ -58,6 +58,8 @@ namespace Tool_Importazione_Leghe.Model
         {
             Step1_Recupero = false;
 
+            IsDaInserire = true;
+
             _origineInformazione = origineInfomazione;
 
             // inizializzazione della lista dei possibili errori Excel 
@@ -111,6 +113,12 @@ namespace Tool_Importazione_Leghe.Model
         /// Indica se l'informazione corrente per la lega è stata letta correttamente  
         /// </summary>
         public bool Step1_Recupero { get; set; }
+
+
+        /// <summary>
+        /// Indicazione se l'informazione correntemente compilata sarà da inserire o meno all'interno della destinazione 
+        /// </summary>
+        public bool IsDaInserire { get; set; }
 
         
         /// <summary>

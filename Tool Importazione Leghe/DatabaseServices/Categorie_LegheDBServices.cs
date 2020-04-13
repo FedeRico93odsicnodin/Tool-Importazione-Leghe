@@ -114,7 +114,7 @@ namespace Tool_Importazione_Leghe.DatabaseServices
                 currentInsertCommand.Parameters.AddWithValue("IDBase", currentCategoriaLega.IDBase);
 
                 // richiamo il servizio con la connessione vera e propria
-                DBServices.InsertNewValue(currentInsertCommand, base.currentDBEntity);
+                DBServices.InsertUpdateValue(currentInsertCommand, base.currentDBEntity);
             }
             catch (Exception e)
             {
